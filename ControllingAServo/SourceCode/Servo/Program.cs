@@ -7,10 +7,10 @@ using System;
 
 namespace ServoTest
 {
-	public class Program
-	{
-		public static void Main()
-		{
+    public class Program
+    {
+        public static void Main()
+        {
             Servo servo = new Servo(PWMChannels.PWM_PIN_D9, 500, 2400);
             while (true)
             {
@@ -32,6 +32,6 @@ namespace ServoTest
                     Debug.Print(ex.Message);
                 }
             }
- 		}
-	}
+         }
+    }
 }

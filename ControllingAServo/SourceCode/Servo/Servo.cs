@@ -4,8 +4,8 @@ using Microsoft.SPOT;
 
 namespace ArduinoLib
 {
-	class Servo
-	{
+    class Servo
+    {
         #region Constants
 
         /// <summary>
@@ -32,9 +32,9 @@ namespace ArduinoLib
         ///</Summary>
         ///<Returns>true if the instance is attached to a PWM pin, false otherwise.</Returns>
         public bool Attached
-		{
-			get { return (Pin != Cpu.PWMChannel.PWM_NONE); }
-		}
+        {
+            get { return (Pin != Cpu.PWMChannel.PWM_NONE); }
+        }
 
         /// <summary>
         /// PWM pin that the servo is attached to.
@@ -47,7 +47,7 @@ namespace ArduinoLib
         /// </summary>
         /// <value>Angle of the servo in the range 0 to 180 degrees inclusive.</value>
         private double _angle = 0;
-		public double Angle
+        public double Angle
         {
             get 
             {
@@ -141,42 +141,42 @@ namespace ArduinoLib
         /// <param name="minimum">Minimum pulse width for the servo.  The minimum width define the value used for 0 degrees.</param>
         /// <param name="maximum">Maximum pulse width for the servo.  The maximum value determines the value used for 180 degrees.</param>
         void Attach(Cpu.PWMChannel pin, int minimum = 544, int maximum = 2400)
-		{
+        {
             Pin = pin;
             MinimumPulseWidth = minimum;
             MaximumPulseWidth = maximum;
-		}
+        }
 
-		/// <summary>
-		/// Set the angle of the servo to the specified nuber of degrees.
-		/// </summary>
-		/// <param name="angle">Angle for the servo which should be between 0 and 180 degrees inclusive.</param>
-		void Write(int angle)
-		{
-			Angle = angle;
-		}
+        /// <summary>
+        /// Set the angle of the servo to the specified nuber of degrees.
+        /// </summary>
+        /// <param name="angle">Angle for the servo which should be between 0 and 180 degrees inclusive.</param>
+        void Write(int angle)
+        {
+            Angle = angle;
+        }
 
-		/// <summary>
-		/// Read the angle of the servo.
-		/// </summary>
-		/// <returns>The read.</returns>
-		double Read()
-		{
-			return (Angle);
-		}
+        /// <summary>
+        /// Read the angle of the servo.
+        /// </summary>
+        /// <returns>The read.</returns>
+        double Read()
+        {
+            return (Angle);
+        }
 
-		/// <summary>
-		/// Detach the pin from the servo.
-		/// </summary>
-		void Detach()
-		{
-			if (Attached)
-			{
-				PWMPin.Stop();
-				PWMPin = null;
+        /// <summary>
+        /// Detach the pin from the servo.
+        /// </summary>
+        void Detach()
+        {
+            if (Attached)
+            {
+                PWMPin.Stop();
+                PWMPin = null;
                 Pin = Cpu.PWMChannel.PWM_NONE;
-			}
-		}
+            }
+        }
 
         /// <summary>
         /// Stop the PWM pulse from this instance of the Servo class.
@@ -186,6 +186,6 @@ namespace ArduinoLib
             PWMPin.Stop();
         }
 
-		#endregion
-	}
+        #endregion
+    }
 }
