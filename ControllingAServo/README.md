@@ -6,7 +6,7 @@ This sample shows how to control a servo using a PWM signal from a Netduino.
 
 ## Discussion
 
-A full discussion on SPI and the software can be found on the [Wilderness Labs](https://www.wildernesslabs.co/) PWM Pages:
+A full discussion on the hardware and software can be found on the [Wilderness Labs](https://www.wildernesslabs.co/) PWM Pages:
 
 * [Introduction to PWM](http://developer.wildernesslabs.co/Netduino/Input_Output/Digital/PWM/)
 * [Controlling an Servo](http://developer.wildernesslabs.co/Netduino/Input_Output/Digital/PWM/ControllingAServo/)
