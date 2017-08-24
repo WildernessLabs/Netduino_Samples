@@ -1,6 +1,4 @@
----
-title: RGB LED Blinky
----
+# RGB LED Blinky
 
 This sample illustrates a simple program to cycle an RGB LED through each of its primary colors; red, green, and blue.
 
@@ -21,7 +19,7 @@ Using the RGB calculation described [here](/Hardware/Reference/Components/LEDs/D
 3.3V - 3.2V (green and blue) = .1V
 ```
 
-Therefore, the resistance neccessary is:
+Therefore, the resistance necessary is:
 
 ```
 Red R = 1.1V / 0.020A = 55Ω
