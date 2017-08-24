@@ -1,4 +1,4 @@
-# Reading From a TMP102 Temperature Sensor Using I2C
+# Writing to a TMP102 Temperature Sensor Using I2C
 
 This example demonstrates how to read from and write to a [TMP102 temperature sensor](https://www.sparkfun.com/products/13314) using the I2C protocol.
 
