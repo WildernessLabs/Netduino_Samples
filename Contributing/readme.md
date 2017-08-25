@@ -12,17 +12,15 @@ Typos and other small fixes, additions can just be made and submitted as a pull-
 
 ### General Documenation
 
-For general documentation, please refer to the [Documentation Roadmap](/DocumentationRoadmap.md) to see a list of high priority requested docs, as well as writer reservations and other notes. 
+For general documentation, please refer to the [Documentation Roadmap](http://developer.wildernesslabs.co/DocumentationRoadmap) to see a list of high priority requested docs, as well as writer reservations and other notes. 
 
 ### Samples
 
 When contributing samples, please document them in a way that someone who is new to the concepts illustrated within can pick up the code and understand it. This includes both code-commenting, as well as a simple sample documentation page. 
 
-
 ### Pull Requests
 
 All contributions should be submitted as [pull requests](https://help.github.com/articles/about-pull-requests/). 
-
 
 ### [Style Guide](style_guide.md)
 
