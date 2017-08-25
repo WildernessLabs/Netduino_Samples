@@ -12,7 +12,7 @@ The forward voltage on the LED is:
 
 And a current draw of 20mA for each color.
 
-Using the RGB calculation described [here](/Hardware/Reference/Components/LEDs/Driving_w_Resistor/), we get the following necessary resistance:
+Using the RGB calculation described [here](http://developer.wildernesslabs.co/Hardware/Reference/Components/LEDs/Driving_w_Resistor/), we get the following necessary resistance:
 
 ```
 3.3V - 2.2V (red) = 1.1V
@@ -93,8 +93,8 @@ namespace RGB_Blinky
 
 ## Schematic
 
-![](RGB_Blinky_schem.svg)
+![RGB Schematic](RGB_Blinky_schem.svg)
 
 ### Breadboard View
 
-![](RGB_Blinky_bb.svg)
+![RGB LED on Breadboard](RGB_Blinky_bb.svg)
