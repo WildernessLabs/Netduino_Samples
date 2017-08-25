@@ -93,7 +93,7 @@ namespace RGB_Blinky
 
 ## Schematic
 
-![RGB Schematic](RGB_Blinky_schem.svg)
+![RGB Schematic](RGB_Blinky_schem.png)
 
 ### Breadboard View
 
