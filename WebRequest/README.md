@@ -36,7 +36,6 @@ namespace Blinky
                 Thread.Sleep(250); // sleep for 250ms
                 led.Write(false); // turn off the LED
                 Thread.Sleep(250); // sleep for 250ms
-
             }
 
             Debug.Print ("App finished.");
@@ -86,16 +85,17 @@ namespace Blinky
                 // debug out
                 ListNetworkInfo (net);
 
-                switch (net.NetworkInterfaceType) {
-                case (NetworkInterfaceType.Ethernet):
-                    Debug.Print ("Found Ethernet Interface");
-                    break;
-                case (NetworkInterfaceType.Wireless80211):
-                    Debug.Print ("Found 802.11 WiFi Interface");
-                    break;
-                case (NetworkInterfaceType.Unknown):
-                    Debug.Print ("Found Unknown Interface");
-                    break;
+                switch (net.NetworkInterfaceType)
+                {
+                    case (NetworkInterfaceType.Ethernet):
+                        Debug.Print ("Found Ethernet Interface");
+                        break;
+                    case (NetworkInterfaceType.Wireless80211):
+                        Debug.Print ("Found 802.11 WiFi Interface");
+                        break;
+                    case (NetworkInterfaceType.Unknown):
+                        Debug.Print ("Found Unknown Interface");
+                        break;
                 }
 
                 // check for an IP address, try to get one if it's empty
