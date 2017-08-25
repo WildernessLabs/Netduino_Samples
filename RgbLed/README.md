@@ -96,60 +96,60 @@ namespace RgbLed
                 switch (i)
                 {
 
-                // Red Dominant
-                case 0:
-                    R = brightValue;
-                    G = tv;
-                    B = pv;
-                    break;
+                    // Red Dominant
+                    case 0:
+                        R = brightValue;
+                        G = tv;
+                        B = pv;
+                        break;
 
-                // Green Dominant
-                case 1:
-                    R = qv;
-                    G = brightValue;
-                    B = pv;
-                    break;
-                case 2:
-                    R = pv;
-                    G = brightValue;
-                    B = tv;
-                    break;
+                    // Green Dominant
+                    case 1:
+                        R = qv;
+                        G = brightValue;
+                        B = pv;
+                        break;
+                    case 2:
+                        R = pv;
+                        G = brightValue;
+                        B = tv;
+                        break;
 
-                // Blue Dominant
-                case 3:
-                    R = pv;
-                    G = qv;
-                    B = brightValue;
-                    break;
-                case 4:
-                    R = tv;
-                    G = pv;
-                    B = brightValue;
-                    break;
+                    // Blue Dominant
+                    case 3:
+                        R = pv;
+                        G = qv;
+                        B = brightValue;
+                        break;
+                    case 4:
+                        R = tv;
+                        G = pv;
+                        B = brightValue;
+                        break;
 
-                // Red Red Dominant
-                case 5:
-                    R = brightValue;
-                    G = pv;
-                    B = qv;
-                    break;
+                    // Red Red Dominant
+                    case 5:
+                        R = brightValue;
+                        G = pv;
+                        B = qv;
+                        break;
 
-                // In case the math is out of bounds, this is a fix.
-                case 6:
-                    R = brightValue;
-                    G = tv;
-                    B = pv;
-                    break;
-                case -1:
-                    R = brightValue;
-                    G = pv;
-                    B = qv;
-                    break;
+                    // In case the math is out of bounds, this is a fix.
+                    case 6:
+                        R = brightValue;
+                        G = tv;
+                        B = pv;
+                        break;
+                    case -1:
+                        R = brightValue;
+                        G = pv;
+                        B = qv;
+                        break;
 
-                // If the color is not defined, go grayscale
-                default:
-                    R = G = B = brightValue;
-                    break;
+                    // If the color is not defined, go grayscale
+                    default:
+                        R = G = B = brightValue;
+                        break;
                 }
             }
             r = Clamp(R);
@@ -171,6 +171,8 @@ namespace RgbLed
 
 ```
 
-# TODO
+# Hardware
 
-* Fritzing schematic with breadboard here.
+A common anode LED should be connected to the Netduino as follows:
+
+![RGB LED on Breadboard](RGBLedBreadboardFritzing.png)
