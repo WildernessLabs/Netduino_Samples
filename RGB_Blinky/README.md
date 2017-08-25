@@ -97,4 +97,4 @@ namespace RGB_Blinky
 
 ### Breadboard View
 
-![RGB LED on Breadboard](RGB_Blinky_bb.svg)
+![RGB LED on Breadboard](RGB_Blinky_bb.png)
