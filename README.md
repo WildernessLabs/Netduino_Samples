@@ -9,7 +9,7 @@ Further information about the Netduino boards and the samples in this repository
 | [Blinky](Blinkky/) | Quintessential Netduino `Hello, world.` application. |
 | [Button with Interrupts](ButtonInterruptEvents/) | Listening to an `InterruptPort` for button press events. |
 | [Controlling a Servo](ControllingAServo/) | Using PWM to control a servo. |
-| [Driving and LED using PWM](DrivingLED_w_PWM/) | Driving a single LED using a PWM signal. |
+| [Driving an LED using PWM](DrivingLED_w_PWM/) | Driving a single LED using a PWM signal. |
 | [Glitch filtering](GlitchFilter/) | Filtering circuit noise using a `Glitch Filter` in the event model. |
 | [LCD Display](LCDDisplay/) | Driving a 16 x 2 LCD using the `MicroLiquidCrystal` library. | [Onboard Button and LED](OnboardButtonAndLed/) | Using the onboard button to light the onboard LED. |
 | [Potentiometer and RGB LED](PotentiometerControlled_RgbLed/) | Changing the color of an RGB LED using the `AnalogPort` to read a potentiometer. |
