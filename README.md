@@ -13,6 +13,7 @@ Further information about the Netduino boards and the samples in this repository
 | [Glitch filtering](GlitchFilter/) | Filtering circuit noise using a `Glitch Filter` in the event model. |
 | [LCD Display](LCDDisplay/) | Driving a 16 x 2 LCD using the `MicroLiquidCrystal` library. | [Onboard Button and LED](OnboardButtonAndLed/) | Using the onboard button to light the onboard LED. |
 | [Potentiometer and RGB LED](PotentiometerControlled_RgbLed/) | Changing the color of an RGB LED using the `AnalogPort` to read a potentiometer. |
+| [Read DS3234 Using SPI](ReadDS3234) | Read the current date and time from a [DS3234](https://www.sparkfun.com/products/10160) Real Time Clock module. |
 | [RGB Blinky](RGB_Blinky/) | Simple sample driving a RGB LED. |
 | [RGB LED and PWM](RgbLed/) | Driving a RGB LED using PWM. |
 | [SD Cards](SDCardIO/) | Reading and writing an SD card. |
