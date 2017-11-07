@@ -8,15 +8,16 @@ using NeonMika.Webserver;
 using System.Collections;
 using System;
 using NeonMika.Webserver.Responses;
+using Microsoft.SPOT.Hardware;
+using SecretLabs.NETMF.Hardware.Netduino;
 
-namespace Blinky
+namespace ApplianceHost
 {
     public class Program
     {
         static bool isToggledOn = false;
         public static void Main()
         {
-
             App app = new App();
             app.Run();
 

@@ -43,8 +43,6 @@ namespace NeonMika.Webserver
         private Socket listeningSocket = null;
         private Hashtable responses = new Hashtable();
         private OutputPort led;
-        private bool isToggledOn = false;
-
 
         /// <summary>
         /// Creates an NeonMika.Webserver instance running in a seperate thread
