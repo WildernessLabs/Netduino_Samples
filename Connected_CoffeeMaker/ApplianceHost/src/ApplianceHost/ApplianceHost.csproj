@@ -46,26 +46,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="JSONLib, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\JSONLib.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.SPOT.Graphics" />
     <Reference Include="Microsoft.SPOT.Hardware" />
     <Reference Include="Microsoft.SPOT.Native" />
     <Reference Include="Microsoft.SPOT.Net" />
-    <Reference Include="NeonMika.Util, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\NeonMika.Util.dll</HintPath>
-    </Reference>
-    <Reference Include="NeonMika.Webserver, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\NeonMika.Webserver.dll</HintPath>
-    </Reference>
-    <Reference Include="NeonMika.XML, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\NeonMika.XML.dll</HintPath>
-    </Reference>
     <Reference Include="SecretLabs.NETMF.Hardware.Netduino, Version=4.3.1.0, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Http" />
@@ -77,6 +61,24 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FastloadMedia.NETMF.Http\JSONLib\JSONLib.csproj">
+      <Project>{48B8AB1A-D086-4058-AB66-E3B10B9A8DC1}</Project>
+      <Name>JSONLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NeonMika.Util\NeonMika.Util.csproj">
+      <Project>{A0B9E75A-9052-4140-A86A-9AC82B484F98}</Project>
+      <Name>NeonMika.Util</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NeonMika.Webserver\NeonMika.Webserver\NeonMika.Webserver.csproj">
+      <Project>{55E240F2-95F1-4ABE-9EEA-7137F908BD25}</Project>
+      <Name>NeonMika.Webserver</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NeonMika.XML\NeonMika.XML.csproj">
+      <Project>{0AD21E9F-0370-40B6-B045-109A266C9FC2}</Project>
+      <Name>NeonMika.XML</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Condition="EXISTS('$(NetMfTargetsBaseDir)$(TargetFrameworkVersion)\CSharp.Targets')" Project="$(NetMfTargetsBaseDir)$(TargetFrameworkVersion)\CSharp.Targets" />
   <Import Condition="!EXISTS('$(NetMfTargetsBaseDir)$(TargetFrameworkVersion)\CSharp.Targets')" Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

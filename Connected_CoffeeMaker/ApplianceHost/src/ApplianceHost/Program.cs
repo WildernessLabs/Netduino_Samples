@@ -5,24 +5,62 @@ using System.IO;
 using Microsoft.SPOT;
 using Microsoft.SPOT.Net.NetworkInformation;
 using NeonMika.Webserver;
+using System.Collections;
+using System;
+using NeonMika.Webserver.Responses;
 
 namespace Blinky
 {
     public class Program
     {
+        static bool isToggledOn = false;
         public static void Main()
         {
 
             App app = new App();
             app.Run();
 
-            //OutputPort led = new OutputPort(Pins.ONBOARD_LED, false);
-
             Debug.Print("App finished.");
             Debug.Print("I've seen things you people wouldn't believe. Attack ships on fire off the shoulder of Orion. I watched C-beams glitter in the dark near the Tannhäuser Gate. All those moments will be lost in time, like tears in rain.");
             Debug.Print("Time to die.");
 
             Server WebServer = new Server(PinManagement.OnboardLED, 80, true);
+            WebServer.AddResponse(new XMLResponse("status", new XMLResponseMethod(Status)));
+            WebServer.AddResponse(new XMLResponse("turnon", new XMLResponseMethod(TurnOn)));
+            WebServer.AddResponse(new XMLResponse("turnoff", new XMLResponseMethod(TurnOff)));
+        }
+
+        private static void Status(Request e, Hashtable results)
+        {
+            results.Add("status", isToggledOn ? "on" : "off");
+        }
+
+        private static void TurnOn(Request e, Hashtable results)
+        {
+            try
+            {
+                isToggledOn = true;
+                PinManagement.OnboardLED.Write(isToggledOn);
+                results.Add("success", "true");
+            }
+            catch (Exception ex)
+            {
+                results.Add("success", "false");
+            }
+        }
+
+        private static void TurnOff(Request e, Hashtable results)
+        {
+            try
+            {
+                isToggledOn = false;
+                PinManagement.OnboardLED.Write(isToggledOn);
+                results.Add("success", "true");
+            }
+            catch (Exception ex)
+            {
+                results.Add("success", "false");
+            }
         }
     }
 

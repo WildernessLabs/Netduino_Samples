@@ -325,9 +325,6 @@ namespace NeonMika.Webserver
             AddResponse(new IndexResponse(""));
             AddResponse(new FileResponse());
             AddResponse(new XMLResponse("echo", new XMLResponseMethod(Echo)));
-            AddResponse(new XMLResponse("status", new XMLResponseMethod(Status)));
-            AddResponse(new XMLResponse("turnon", new XMLResponseMethod(TurnOn)));
-            AddResponse(new XMLResponse("turnoff", new XMLResponseMethod(TurnOff)));
             AddResponse(new XMLResponse("switchDigitalPin", new XMLResponseMethod(SwitchDigitalPin)));
             AddResponse(new XMLResponse("setDigitalPin", new XMLResponseMethod(SetDigitalPin)));
             AddResponse(new XMLResponse("xmlResponseList", new XMLResponseMethod(ResponseListXML)));
@@ -361,39 +358,6 @@ namespace NeonMika.Webserver
                 results.Add("echo", e.GetArguments["value"]);
             else
                 results.Add("ERROR", "No 'value'-parameter transmitted to server");
-        }
-
-        private void Status(Request e, Hashtable results)
-        {
-            results.Add("status", isToggledOn ? "on" : "off");
-        }
-
-        private void TurnOn(Request e, Hashtable results)
-        {
-            try
-            {
-                isToggledOn = true;
-                led.Write(isToggledOn);
-                results.Add("success", "true");
-            }
-            catch(Exception ex)
-            {
-                results.Add("success", "false");
-            }
-        }
-
-        private void TurnOff(Request e, Hashtable results)
-        {
-            try
-            {
-                isToggledOn = false;
-                led.Write(isToggledOn);
-                results.Add("success", "true");
-            }
-            catch(Exception ex)
-            {
-                results.Add("success", "false");
-            }
         }
 
         /// <summary>
