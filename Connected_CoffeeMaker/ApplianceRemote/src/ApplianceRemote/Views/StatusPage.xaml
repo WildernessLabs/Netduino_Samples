@@ -5,9 +5,9 @@
     </ContentPage.ToolbarItems>
 	<ContentPage.Content>
         <StackLayout>
-            <Label Text="Current Status"></Label>
-            <Label x:Name="lblStatus"></Label>
-            <Button x:Name="btnAction" Text="Configure Appliance" Clicked="Configure_Clicked" />
+            <Label x:Name="lblHeader" Text="Current Status" HorizontalOptions="Center" FontSize="25" Margin="0, 20, 0, 0"></Label>
+            <Label x:Name="lblStatus" HorizontalOptions="Center"></Label>
+            <Button x:Name="btnAction" Clicked="Configure_Clicked" Margin="0,175,0,0" Image="ConfigureAppliance.png" />
         </StackLayout>
 	</ContentPage.Content>
 </ContentPage>

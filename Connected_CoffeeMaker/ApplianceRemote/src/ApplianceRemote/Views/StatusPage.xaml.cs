@@ -16,13 +16,14 @@ namespace ApplianceRemote
         {
             InitializeComponent();
             btnAction.CommandParameter = Commands.Configure;
+            this.Title = "Connected Appliance";
         }
 
         async protected override void OnAppearing()
         {
             if (string.IsNullOrEmpty(App.HostAddress))
             {
-                lblStatus.Text = "Disconnected";
+                lblStatus.Text = "Not Connected";
             }
             else
             {
@@ -85,21 +86,21 @@ namespace ApplianceRemote
         {
             if (!App.IsConnected)
             {
-                lblStatus.Text = "Disconnected";
+                lblStatus.Text = "Not Connected";
                 btnAction.CommandParameter = Commands.Configure;
-                btnAction.Text = "Configure Appliance";
+                btnAction.Image = "ConfigureAppliance.png";
             }
             else if (App.ApplianceStatus == ApplianceStatus.On)
             {
                 lblStatus.Text = "On";
-                btnAction.Text = "Turn Off";
                 btnAction.CommandParameter = Commands.TurnOff;
+                btnAction.Image = "Stop.png";
             }
             else
             {
                 lblStatus.Text = "Off";
-                btnAction.Text = "Turn On";
                 btnAction.CommandParameter = Commands.TurnOn;
+                btnAction.Image = "Start.png";
             }
         }
     }
