@@ -16,19 +16,28 @@ namespace ApplianceHost
     public class Program
     {
         static bool isToggledOn = false;
+
         public static void Main()
         {
+            // initialize our network
             App app = new App();
             app.Run();
 
-            Debug.Print("App finished.");
-            Debug.Print("I've seen things you people wouldn't believe. Attack ships on fire off the shoulder of Orion. I watched C-beams glitter in the dark near the Tannhäuser Gate. All those moments will be lost in time, like tears in rain.");
-            Debug.Print("Time to die.");
+            //
+            Debug.Print("Network done.");
 
+
+            // configure the web server
             Server WebServer = new Server(PinManagement.OnboardLED, 80, true);
             WebServer.AddResponse(new XMLResponse("status", new XMLResponseMethod(Status)));
             WebServer.AddResponse(new XMLResponse("turnon", new XMLResponseMethod(TurnOn)));
             WebServer.AddResponse(new XMLResponse("turnoff", new XMLResponseMethod(TurnOff)));
+
+            while (true)
+            {
+                Thread.Sleep(500);
+                Debug.Print("still alive.");
+            }
         }
 
         private static void Status(Request e, Hashtable results)
@@ -42,6 +51,7 @@ namespace ApplianceHost
             {
                 isToggledOn = true;
                 PinManagement.OnboardLED.Write(isToggledOn);
+                PinManagement.SetDigitalPinState(1, isToggledOn);
                 results.Add("success", "true");
             }
             catch (Exception ex)
@@ -56,6 +66,7 @@ namespace ApplianceHost
             {
                 isToggledOn = false;
                 PinManagement.OnboardLED.Write(isToggledOn);
+                PinManagement.SetDigitalPinState(1, isToggledOn);
                 results.Add("success", "true");
             }
             catch (Exception ex)

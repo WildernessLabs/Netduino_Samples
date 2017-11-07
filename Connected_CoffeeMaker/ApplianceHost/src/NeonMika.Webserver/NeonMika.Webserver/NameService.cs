@@ -100,7 +100,7 @@ namespace NeonMika.Webserver
         /// <summary>
         /// Available flags used in the header.
         /// </summary>
-        [Flags]
+        //[Flags]
         private enum HeaderFlags : byte
         {
             /// <summary>
