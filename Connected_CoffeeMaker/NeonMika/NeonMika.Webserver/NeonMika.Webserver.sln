@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeonMika.Webserver", "NeonMika.Webserver\NeonMika.Webserver.csproj", "{55E240F2-95F1-4ABE-9EEA-7137F908BD25}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeonMika.XML", "..\NeonMika.XML\NeonMika.XML.csproj", "{0AD21E9F-0370-40B6-B045-109A266C9FC2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeonMika.Util", "..\NeonMika.Util\NeonMika.Util.csproj", "{A0B9E75A-9052-4140-A86A-9AC82B484F98}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JSONLib", "..\FastloadMedia.NETMF.Http\JSONLib\JSONLib.csproj", "{48B8AB1A-D086-4058-AB66-E3B10B9A8DC1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{55E240F2-95F1-4ABE-9EEA-7137F908BD25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55E240F2-95F1-4ABE-9EEA-7137F908BD25}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55E240F2-95F1-4ABE-9EEA-7137F908BD25}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55E240F2-95F1-4ABE-9EEA-7137F908BD25}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0AD21E9F-0370-40B6-B045-109A266C9FC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0AD21E9F-0370-40B6-B045-109A266C9FC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0AD21E9F-0370-40B6-B045-109A266C9FC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0AD21E9F-0370-40B6-B045-109A266C9FC2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A0B9E75A-9052-4140-A86A-9AC82B484F98}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A0B9E75A-9052-4140-A86A-9AC82B484F98}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A0B9E75A-9052-4140-A86A-9AC82B484F98}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A0B9E75A-9052-4140-A86A-9AC82B484F98}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48B8AB1A-D086-4058-AB66-E3B10B9A8DC1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48B8AB1A-D086-4058-AB66-E3B10B9A8DC1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48B8AB1A-D086-4058-AB66-E3B10B9A8DC1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48B8AB1A-D086-4058-AB66-E3B10B9A8DC1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
