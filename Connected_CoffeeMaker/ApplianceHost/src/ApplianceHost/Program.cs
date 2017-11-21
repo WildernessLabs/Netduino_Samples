@@ -26,7 +26,6 @@ namespace ApplianceHost
             //
             Debug.Print("Network done.");
 
-
             // configure the web server
             Server WebServer = new Server(PinManagement.OnboardLED, 80, true);
             WebServer.AddResponse(new XMLResponse("status", new XMLResponseMethod(Status)));
