@@ -14,6 +14,9 @@ namespace Photoresistor_Lab
             int ambientLight = 0;
             float sensorVoltage = 0;
 
+            float lightThresholdVoltage = 0.85f;
+            float darkThresholdVoltage = 2.1f;
+
             while (true)
             {
                 // read the analog input
@@ -25,6 +28,14 @@ namespace Photoresistor_Lab
                 // output
                 Debug.Print("Light Level = Raw: " + ambientLight.ToString() + 
                             ", Voltage: " + AnalogValueToVoltage(ambientLight).ToString());
+
+                if (sensorVoltage < lightThresholdVoltage) {
+                    Debug.Print("Very bright.");
+                } else if (sensorVoltage > darkThresholdVoltage ) {
+                    Debug.Print("Dark.");
+                } else {
+                    Debug.Print("Moderately Bright.");
+                }
 
                 // wait 1/4 second
                 Thread.Sleep(250);
