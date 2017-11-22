@@ -9,9 +9,11 @@ namespace ApplianceHost
     {
         static Ports()
         {
-            Led = new OutputPort(Pins.ONBOARD_LED, false);
+            ONBOARD_LED = new OutputPort(Pins.ONBOARD_LED, false);
+            GPIO_PIN_D1 = new OutputPort(Pins.GPIO_PIN_D1, false);
         }
 
-        public static OutputPort Led;
+        public static OutputPort ONBOARD_LED;
+        public static OutputPort GPIO_PIN_D1;
     }
 }

@@ -13,7 +13,7 @@ namespace ApplianceHost
 
         public void getStatus()
         {
-            var ledStatus = Ports.Led.Read();
+            var ledStatus = Ports.ONBOARD_LED.Read();
             this.Context.Response.ContentType = "application/text";
             this.Context.Response.StatusCode = 200;
             WriteToOutputStream(ledStatus.ToString());
@@ -21,14 +21,18 @@ namespace ApplianceHost
 
         public void getTurnOn()
         {
-            Ports.Led.Write(true);
+            var val = true;
+            Ports.ONBOARD_LED.Write(val);
+            Ports.GPIO_PIN_D1.Write(val);
             this.Context.Response.StatusCode = 200;
             this.Context.Response.Close();
         }
 
         public void getTurnOff()
         {
-            Ports.Led.Write(false);
+            var val = false;
+            Ports.ONBOARD_LED.Write(val);
+            Ports.GPIO_PIN_D1.Write(val);
             this.Context.Response.StatusCode = 200;
             this.Context.Response.Close();
         }
