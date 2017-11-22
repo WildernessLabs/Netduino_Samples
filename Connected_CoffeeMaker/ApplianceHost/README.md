@@ -1,3 +1,11 @@
 # ApplianceHost
 
-To get this working in VS 2015, run `vs2015_fix.ps1` in the `src` folder.  [Here's an explanation of the problem and solution.](http://old.ghielectronics.com/community/codeshare/entry/1053)
+### Getting Started
+Below are the commands with respective mappings in RequestHandler.cs:
+- GET http://IPADDRESS/status - getStatus()
+- GET http://IPADDRESS/turnon - getTurnOn()
+- GET http://IPADDRESS/turnoff - getTurnOff()
+
+Get this deployed to your Netduino and hit these endpoints to see it in action!
+
+ Maple server is a bare bones web server prototype with many updates needed. If you'd like to contribute, [check out the project](https://github.com/WildernessLabs/Maple).
