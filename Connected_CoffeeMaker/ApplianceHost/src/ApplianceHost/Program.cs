@@ -4,19 +4,14 @@ using System.Net;
 using System.IO;
 using Microsoft.SPOT;
 using Microsoft.SPOT.Net.NetworkInformation;
-using NeonMika.Webserver;
 using System.Collections;
 using System;
-using NeonMika.Webserver.Responses;
-using Microsoft.SPOT.Hardware;
-using SecretLabs.NETMF.Hardware.Netduino;
+using Maple;
 
 namespace ApplianceHost
 {
     public class Program
     {
-        static bool isToggledOn = false;
-
         public static void Main()
         {
             // initialize our network
@@ -26,51 +21,14 @@ namespace ApplianceHost
             //
             Debug.Print("Network done.");
 
-            // configure the web server
-            Server WebServer = new Server(PinManagement.OnboardLED, 80, true);
-            WebServer.AddResponse(new XMLResponse("status", new XMLResponseMethod(Status)));
-            WebServer.AddResponse(new XMLResponse("turnon", new XMLResponseMethod(TurnOn)));
-            WebServer.AddResponse(new XMLResponse("turnoff", new XMLResponseMethod(TurnOff)));
+            // start web server
+            MapleServer server = new MapleServer();
+            server.Start();
 
             while (true)
             {
                 Thread.Sleep(500);
                 Debug.Print("still alive.");
-            }
-        }
-
-        private static void Status(Request e, Hashtable results)
-        {
-            results.Add("status", isToggledOn ? "on" : "off");
-        }
-
-        private static void TurnOn(Request e, Hashtable results)
-        {
-            try
-            {
-                isToggledOn = true;
-                PinManagement.OnboardLED.Write(isToggledOn);
-                PinManagement.SetDigitalPinState(1, isToggledOn);
-                results.Add("success", "true");
-            }
-            catch (Exception ex)
-            {
-                results.Add("success", "false");
-            }
-        }
-
-        private static void TurnOff(Request e, Hashtable results)
-        {
-            try
-            {
-                isToggledOn = false;
-                PinManagement.OnboardLED.Write(isToggledOn);
-                PinManagement.SetDigitalPinState(1, isToggledOn);
-                results.Add("success", "true");
-            }
-            catch (Exception ex)
-            {
-                results.Add("success", "false");
             }
         }
     }
