@@ -30,7 +30,7 @@ namespace ApplianceRemote
                 //var result = JObject.Parse(await response.Content.ReadAsStringAsync());
                 //return result["isOn"].Value<bool>();
                 var result = await response.Content.ReadAsStringAsync();
-                return result.Contains("<status>on</status>");
+                return string.Compare(result, "true", true) == 0;
             }
             else
             {
