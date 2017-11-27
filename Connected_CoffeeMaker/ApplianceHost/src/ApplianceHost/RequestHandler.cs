@@ -2,6 +2,7 @@ using System;
 using Microsoft.SPOT;
 using Maple;
 using System.Net;
+using System.Collections;
 
 namespace ApplianceHost
 {
@@ -15,23 +16,19 @@ namespace ApplianceHost
 
         public void getStatus()
         {
-            this.Context.Response.ContentType = "application/text";
-            this.Context.Response.StatusCode = 200;
-            WriteToOutputStream(_isPowerOn.ToString());
+            StatusResponse();
         }
 
-        public void getTurnOn()
+        public void postTurnOn()
         {
             TogglePower(true);
-            this.Context.Response.StatusCode = 200;
-            this.Context.Response.Close();
+            StatusResponse();
         }
 
-        public void getTurnOff()
+        public void postTurnOff()
         {
             TogglePower(false);
-            this.Context.Response.StatusCode = 200;
-            this.Context.Response.Close();
+            StatusResponse();
         }
 
         private void TogglePower(bool val)
@@ -39,6 +36,14 @@ namespace ApplianceHost
             _isPowerOn = val;
             Ports.ONBOARD_LED.Write(val);
             Ports.GPIO_PIN_D1.Write(val);
+        }
+
+        private void StatusResponse()
+        {
+            this.Context.Response.ContentType = "application/json";
+            this.Context.Response.StatusCode = 200;
+            Hashtable result = new Hashtable { { "isPowerOn", _isPowerOn.ToString().ToLower() } };
+            this.Send(result);
         }
     }
 }

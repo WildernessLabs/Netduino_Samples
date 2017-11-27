@@ -3,8 +3,8 @@
 ### Getting Started
 Below are the commands with respective mappings in RequestHandler.cs:
 - GET http://IPADDRESS/status - getStatus()
-- GET http://IPADDRESS/turnon - getTurnOn()
-- GET http://IPADDRESS/turnoff - getTurnOff()
+- POST http://IPADDRESS/turnon - postTurnOn()
+- POST http://IPADDRESS/turnoff - postTurnOff()
 
 Get this deployed to your Netduino and hit these endpoints to see it in action!
 
