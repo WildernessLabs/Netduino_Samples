@@ -24,13 +24,11 @@ namespace ApplianceRemote
         {
             HttpClient client = new HttpClient();
             client.BaseAddress = new Uri("http://" + _hostAddress+ "/" + _apiBase);
-            var response = client.GetAsync("status").Result;
+            var response = await client.GetAsync("status");
             if (response.IsSuccessStatusCode)
             {
-                //var result = JObject.Parse(await response.Content.ReadAsStringAsync());
-                //return result["isOn"].Value<bool>();
-                var result = await response.Content.ReadAsStringAsync();
-                return string.Compare(result, "true", true) == 0;
+                var result = JObject.Parse(await response.Content.ReadAsStringAsync());
+                return result["isPowerOn"].Value<bool>();
             }
             else
             {
@@ -50,7 +48,6 @@ namespace ApplianceRemote
             catch(Exception ex){
                 return false;
             }
-
         }
 
         async public Task<bool> TurnOn()
@@ -68,7 +65,7 @@ namespace ApplianceRemote
             HttpClient client = new HttpClient();
             client.BaseAddress = new Uri("http://" + _hostAddress + "/" + _apiBase);
 
-            var response = await client.GetAsync(command);
+            var response = await client.PostAsync(command, null);
 
             if (response.IsSuccessStatusCode)
             {
