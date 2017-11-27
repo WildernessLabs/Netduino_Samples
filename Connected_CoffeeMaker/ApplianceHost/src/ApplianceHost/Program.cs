@@ -21,13 +21,17 @@ namespace ApplianceHost
             //
             Debug.Print("Network done.");
 
+            // set initial state
+            Ports.ONBOARD_LED.Write(false);
+            Ports.GPIO_PIN_D1.Write(false);
+
             // start web server
             MapleServer server = new MapleServer();
             server.Start();
 
             while (true)
             {
-                Thread.Sleep(500);
+                Thread.Sleep(1000);
                 Debug.Print("still alive.");
             }
         }
