@@ -86,9 +86,7 @@ namespace Photoresistor_Lab
 
             // swap the values a slot
             for (int i = 0; i < sampleSet.Length - 1; i++) {
-                Debug.Print("i: " + i.ToString());
                 sampleSet[i] = sampleSet[(i + 1)];
-                Debug.Print("here.");
             }
             sampleSet[sampleSet.Length - 1] = newValue;
 
