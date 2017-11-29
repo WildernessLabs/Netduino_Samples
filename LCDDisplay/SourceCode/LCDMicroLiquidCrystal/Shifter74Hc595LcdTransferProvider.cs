@@ -62,13 +62,13 @@ namespace MicroLiquidCrystal
             {
                 _bitOrder = bitOrder;
                 SPI.Configuration spiConfig = new SPI.Configuration(
-                                    ChipSelect_Port: Pins.GPIO_NONE,      // Chip select is digital IO 4.
+                                    ChipSelect_Port: Pins.GPIO_NONE,        // No chip select.
                                     ChipSelect_ActiveState: false,          // Chip select is active low.
                                     ChipSelect_SetupTime: 0,                // Amount of time between selection and the clock starting
                                     ChipSelect_HoldTime: 0,                 // Amount of time the device must be active after the data has been read.
-                                    Clock_Edge: false,                      // Sample on the faling edge.
+                                    Clock_Edge: false,                      // Sample on the falling edge.
                                     Clock_IdleState: true,                  // Clock is idle when low.
-                                    Clock_RateKHz: 1000,                    // 2MHz clock speed.
+                                    Clock_RateKHz: 1000,                    // sMHz clock speed.
                                     SPI_mod: spiBus);
                 _spi = new SPI(spiConfig);
                 _latchPort = new OutputPort(latchPin, false);
