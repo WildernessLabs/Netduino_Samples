@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="ApplianceRemote.StatusPage">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Configure" Clicked="Configure_Clicked" />
+    </ContentPage.ToolbarItems>
+	<ContentPage.Content>
+        <StackLayout>
+            <Label x:Name="lblHeader" Text="Current Status" HorizontalOptions="Center" FontSize="25" Margin="0, 20, 0, 0"></Label>
+            <Label x:Name="lblStatus" HorizontalOptions="Center"></Label>
+            <Button x:Name="btnAction" Clicked="Configure_Clicked" Margin="0,175,0,0" Image="ConfigureAppliance.png" />
+        </StackLayout>
+	</ContentPage.Content>
+</ContentPage>
