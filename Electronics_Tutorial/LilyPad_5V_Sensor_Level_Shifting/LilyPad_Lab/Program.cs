@@ -16,7 +16,7 @@ namespace LilyPad_Lab
             float sensorVoltage = 0;
 
             float lightThresholdVoltage = 1.32f;
-            float darkThresholdVoltage = .66f;
+            float darkThresholdVoltage = .3f;
 
             // setup an array to hold our samples
             int numberOfSamplesToAverage = 3;
