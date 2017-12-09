@@ -19,7 +19,7 @@ namespace LilyPad_Lab
             float darkThresholdVoltage = .3f;
 
             // setup an array to hold our samples
-            int numberOfSamplesToAverage = 3;
+            int numberOfSamplesToAverage = 10;
             int[] previousSamples = new int[numberOfSamplesToAverage];
             for (int i = 0; i < numberOfSamplesToAverage; i++) {
                 previousSamples[i] = 0;
