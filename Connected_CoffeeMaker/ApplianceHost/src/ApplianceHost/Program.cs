@@ -18,21 +18,10 @@ namespace ApplianceHost
             App app = new App();
             app.Run();
 
-            //
-            Debug.Print("Network done.");
-
-            // set initial state
-            Ports.ONBOARD_LED.Write(false);
-            Ports.GPIO_PIN_D1.Write(false);
-
-            // start web server
-            MapleServer server = new MapleServer();
-            server.Start();
-
-            while (true)
+            while (app.IsRunning)
             {
                 Thread.Sleep(1000);
-                Debug.Print("still alive.");
+                Debug.Print("still alive. " + DateTime.Now.Millisecond.ToString());
             }
         }
     }
@@ -47,14 +36,32 @@ namespace ApplianceHost
         public void Run()
         {
             this.IsRunning = true;
-            bool goodToGo = InitializeNetwork();
+            bool goodToGo = false;
+
+            try {
+                goodToGo = InitializeNetwork();
+            } catch (Exception e) {
+                Debug.Print(e.Message);
+            }
 
             if (goodToGo)
             {
                 MakeWebRequest("http://google.com");
+
+                //
+                Debug.Print("Network done.");
+
+                // set initial state
+                Ports.ONBOARD_LED.Write(false);
+                Ports.GPIO_PIN_D1.Write(false);
+
+                // start web server
+                MapleServer server = new MapleServer();
+                server.Start();
+           
             }
 
-            this.IsRunning = false;
+            //this.IsRunning = false;
         }
 
 
@@ -190,17 +197,22 @@ namespace ApplianceHost
 
         protected void ListNetworkInfo(NetworkInterface net)
         {
-            Debug.Print("MAC Address: " + BytesToHexString(net.PhysicalAddress));
-            Debug.Print("DHCP enabled: " + net.IsDhcpEnabled.ToString());
-            Debug.Print("Dynamic DNS enabled: " + net.IsDynamicDnsEnabled.ToString());
-            Debug.Print("IP Address: " + net.IPAddress.ToString());
-            Debug.Print("Subnet Mask: " + net.SubnetMask.ToString());
-            Debug.Print("Gateway: " + net.GatewayAddress.ToString());
-
-            if (net is Wireless80211)
+            try
             {
-                var wifi = net as Wireless80211;
-                Debug.Print("SSID:" + wifi.Ssid.ToString());
+                Debug.Print("MAC Address: " + BytesToHexString(net.PhysicalAddress));
+                Debug.Print("DHCP enabled: " + net.IsDhcpEnabled.ToString());
+                Debug.Print("Dynamic DNS enabled: " + net.IsDynamicDnsEnabled.ToString());
+                Debug.Print("IP Address: " + net.IPAddress.ToString());
+                Debug.Print("Subnet Mask: " + net.SubnetMask.ToString());
+                Debug.Print("Gateway: " + net.GatewayAddress.ToString());
+
+                if (net is Wireless80211)
+                {
+                    var wifi = net as Wireless80211;
+                    Debug.Print("SSID:" + wifi.Ssid.ToString());
+                }
+            } catch (Exception e) {
+                Debug.Print("ListNetworkInfo exception:  " + e.Message);
             }
 
         }
