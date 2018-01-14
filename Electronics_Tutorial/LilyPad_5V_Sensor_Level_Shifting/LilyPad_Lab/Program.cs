@@ -10,7 +10,7 @@ namespace LilyPad_Lab
     {
         public static void Main()
         {
-            var photoresistor = new AnalogInput(Pins.GPIO_PIN_A3);
+            var photoresistor = new AnalogInput(Pins.GPIO_PIN_A2);
             int ambientLight = 0;
             int averageAmbientLight = 0;
             float sensorVoltage = 0;
