@@ -15,11 +15,11 @@ namespace LilyPad_Lab
             int averageAmbientLight = 0;
             float sensorVoltage = 0;
 
-            float lightThresholdVoltage = 1.32f;
-            float darkThresholdVoltage = .3f;
+            float lightThresholdVoltage = 1.0f;
+            float darkThresholdVoltage = 0.005f;
 
             // setup an array to hold our samples
-            int numberOfSamplesToAverage = 10;
+            int numberOfSamplesToAverage = 3;
             int[] previousSamples = new int[numberOfSamplesToAverage];
             for (int i = 0; i < numberOfSamplesToAverage; i++) {
                 previousSamples[i] = 0;
