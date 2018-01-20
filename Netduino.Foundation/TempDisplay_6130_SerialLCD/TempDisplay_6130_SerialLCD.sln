@@ -1,0 +1,24 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TempDisplay_6130_SerialLCD", "TempDisplay_6130_SerialLCD\TempDisplay_6130_SerialLCD.csproj", "{D928249B-DE8A-4C6F-97B3-10F775E5853E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D928249B-DE8A-4C6F-97B3-10F775E5853E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D928249B-DE8A-4C6F-97B3-10F775E5853E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D928249B-DE8A-4C6F-97B3-10F775E5853E}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{D928249B-DE8A-4C6F-97B3-10F775E5853E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D928249B-DE8A-4C6F-97B3-10F775E5853E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D928249B-DE8A-4C6F-97B3-10F775E5853E}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
