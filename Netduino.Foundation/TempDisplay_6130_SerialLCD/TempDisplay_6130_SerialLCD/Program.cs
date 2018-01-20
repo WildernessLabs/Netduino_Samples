@@ -38,14 +38,16 @@ namespace TempDisplay_6130_SerialLCD
                     DisplayTemperature(e.CurrentValue);
                 };
 
+                _lcd.Clear();
+
                 // display the initial stuff
-               DisplayTemperature(_hih.Temperature);
+                DisplayTemperature(_hih.Temperature);
 
             }
 
             public void DisplayTemperature(float value)
             {
-                char degree = System.Convert.ToChar(0x27);
+                char degree = System.Convert.ToChar(223);
                 string temp = value.ToString("N2");
                 string text = ("Temp: " + temp + degree + "C");
                 DisplayHelper.WriteLine(0, text, _lcd, _displayConfig);

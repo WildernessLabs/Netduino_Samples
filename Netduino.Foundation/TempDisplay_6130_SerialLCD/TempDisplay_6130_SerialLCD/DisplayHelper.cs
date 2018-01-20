@@ -6,7 +6,7 @@ namespace TempDisplay_6130_SerialLCD
 {
     public static class DisplayHelper
     {
-        public static void WriteLine(int lineRowNumber, string text, F.Displays.SerialLCD display, DisplayConfig config)
+        public static void WriteLine(byte lineRowNumber, string text, F.Displays.SerialLCD display, DisplayConfig config)
         {
             if(text.Length > config.Width)
             {
@@ -14,7 +14,17 @@ namespace TempDisplay_6130_SerialLCD
             }
 
             // clear the line
-            display.SetCursorPosition(0, 0);
+            ClearLine(lineRowNumber, display, config);
+
+            // write the line
+            display.SetCursorPosition(0, lineRowNumber);
+            display.DisplayText(text);
+        }
+
+        public static void ClearLine(byte lineRowNumber, F.Displays.SerialLCD display, DisplayConfig config)
+        {
+            // clear the line
+            display.SetCursorPosition(0, lineRowNumber);
             char[] clearChars = new char[config.Width];
             for (int i = 0; i < config.Width; i++)
             {
@@ -23,9 +33,6 @@ namespace TempDisplay_6130_SerialLCD
             string clearString = new string(clearChars);
             display.DisplayText(clearString);
 
-            // write the line
-            display.SetCursorPosition(0, 0);
-            display.DisplayText(text);
         }
     }
 }

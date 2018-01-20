@@ -38,6 +38,7 @@
     <Compile Include="DisplayHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="RoslynFix.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.SPOT.Hardware" />
@@ -46,16 +47,16 @@
     <Reference Include="Microsoft.SPOT.IO" />
     <Reference Include="Microsoft.SPOT.Native" />
     <Reference Include="Microsoft.SPOT.TinyCore" />
-    <Reference Include="Netduino.Foundation, Version=0.7.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Netduino.Foundation.0.7.490\lib\netmf43\Netduino.Foundation.dll</HintPath>
+    <Reference Include="Netduino.Foundation, Version=0.8.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Netduino.Foundation.0.8.491\lib\netmf43\Netduino.Foundation.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Netduino.Foundation.Displays.SerialLCD, Version=0.7.0.0, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\packages\Netduino.Foundation.SerialLCD.0.7.0\lib\netmf43\Netduino.Foundation.Displays.SerialLCD.dll</HintPath>
+    <Reference Include="Netduino.Foundation.Displays.SerialLCD, Version=0.8.0.0, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\packages\Netduino.Foundation.SerialLCD.0.8.492\lib\netmf43\Netduino.Foundation.Displays.SerialLCD.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Netduino.Foundation.Sensors.Atmospheric.HIH6130, Version=0.7.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Netduino.Foundation.HIH6130.0.7.0\lib\netmf43\Netduino.Foundation.Sensors.Atmospheric.HIH6130.dll</HintPath>
+    <Reference Include="Netduino.Foundation.Sensors.Atmospheric.HIH6130, Version=0.8.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Netduino.Foundation.HIH6130.0.8.492\lib\netmf43\Netduino.Foundation.Sensors.Atmospheric.HIH6130.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="SecretLabs.NETMF.Hardware.Netduino, Version=4.3.1.0, Culture=neutral, processorArchitecture=MSIL" />
