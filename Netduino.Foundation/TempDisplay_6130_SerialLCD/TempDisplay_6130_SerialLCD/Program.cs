@@ -8,6 +8,16 @@ using F = Netduino.Foundation;
 
 namespace TempDisplay_6130_SerialLCD
 {
+    /// <summary>
+    /// Pulls the temperature and humidity from an HIH6130 sensor and 
+    /// displays them on a serial LCD.
+    /// 
+    /// See http://netduino.foundation/Library/Sensors/Atmospheric/HIH6130/
+    /// for how to wire up the HIH6130.
+    /// 
+    /// See http://netduino.foundation/Library/Displays/SerialLCD/ for how
+    /// to wire up the Serial LCD.
+    /// </summary>
     public class Program
     {
         public static void Main()
