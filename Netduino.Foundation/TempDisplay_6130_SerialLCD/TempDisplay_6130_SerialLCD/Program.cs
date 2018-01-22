@@ -16,18 +16,13 @@ namespace TempDisplay_6130_SerialLCD
             App app = new App();
             app.Run();
 
-            while (app.IsRunning)
-            {
-                Thread.Sleep(10000);
-            }
+            Thread.Sleep(Timeout.Infinite);
         }
 
         public class App
         {
             F.Sensors.Atmospheric.HIH6130 _hih = null;
             F.Displays.SerialLCD _lcd = null;
-            
-            public bool IsRunning { get; set; }
 
             public App()
             {
@@ -38,8 +33,6 @@ namespace TempDisplay_6130_SerialLCD
 
             public void Run()
             {
-                this.IsRunning = true;
-
                 // wire up our events
                 _hih.TemperatureChanged += (object sender, SensorFloatEventArgs e) => {
                     DisplayTemperature(e.CurrentValue);
