@@ -6,6 +6,7 @@ using N = SecretLabs.NETMF.Hardware.Netduino;
 using Netduino.Foundation.Sensors.Temperature;
 using Netduino.Foundation.Relays;
 using Netduino.Foundation.Sensors.Buttons;
+using Netduino.Foundation.Generators;
 
 namespace FoodDehydrator3000
 {
@@ -16,14 +17,16 @@ namespace FoodDehydrator3000
 
         // peripherals
         protected AnalogTemperature _tempSensor = null;
-        protected H.PWM _heaterRelayPwm = null;
-        //protected Relay _heaterRelay = null;
+        protected SoftPwm _heaterRelayPwm = null;
         protected Relay _fanRelay = null;
 
         // controllers
         PidController _pidController = null;
 
-        // members
+        // other members
+        Thread _tempControlThread = null;
+
+        // properties
         public bool Running {
             get { return _running; }
         }
@@ -35,7 +38,7 @@ namespace FoodDehydrator3000
         }
         protected TimeSpan _runningTimeLeft = TimeSpan.MinValue;
 
-        public DehydratorController(AnalogTemperature tempSensor, H.PWM heater, Relay fan)
+        public DehydratorController(AnalogTemperature tempSensor, SoftPwm heater, Relay fan)
         {
             _tempSensor = tempSensor;
             _heaterRelayPwm = heater;
@@ -54,6 +57,8 @@ namespace FoodDehydrator3000
             Debug.Print("Turning off.");
             this._fanRelay.IsOn = false;
             this._heaterRelayPwm.Stop();
+            this._running = false;
+            this._runningTimeLeft = TimeSpan.MinValue;
         }
 
         public void TurnOn()
@@ -63,25 +68,43 @@ namespace FoodDehydrator3000
 
         public void TurnOn(TimeSpan runningTime)
         {
+            // set our state vars
             Debug.Print("Turning on.");
             this._runningTimeLeft = runningTime;
             this._running = true;
 
+            // start our temp regulation thread. might want to change this to notify.
+            StartRegulatingTemperatureThread();
+
+            Debug.Print("Here");
+
+            // TEMP - to be replaced with PID stuff
             this._fanRelay.IsOn = true;
-            this._heaterRelayPwm.Frequency = 1.0 / 10.0; // 10 seconds
-            this._heaterRelayPwm.DutyCycle = 0.5; // 50% on
+            this._heaterRelayPwm.Frequency = 1.0f / 10.0f; // 10 seconds
+            this._heaterRelayPwm.DutyCycle = 0.5f; // 50% on
             this._heaterRelayPwm.Start();
         }
 
         public void PowerButtonClicked()
         {
             if (this._running) {
+                Debug.Print("PowerButtonClicked, _running == true, turning off.");
                 this.TurnOff();
             } else {
+                Debug.Print("PowerButtonClicked, _running == false, turning on.");
                 this.TurnOn();
             }
         }
 
-        
+        protected void StartRegulatingTemperatureThread()
+        {
+            _tempControlThread = new Thread(() => {
+                while (this._running) {
+                    Debug.Print("Temp: " + _tempSensor.Temperature.ToString() + "ºC");
+                    Thread.Sleep(2000);
+                }
+            });
+            _tempControlThread.Start();
+        }
     }
 }
