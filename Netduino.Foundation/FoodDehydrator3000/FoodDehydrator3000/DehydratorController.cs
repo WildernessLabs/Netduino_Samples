@@ -7,6 +7,7 @@ using Netduino.Foundation.Sensors.Temperature;
 using Netduino.Foundation.Relays;
 using Netduino.Foundation.Sensors.Buttons;
 using Netduino.Foundation.Generators;
+using Netduino.Foundation.Displays;
 
 namespace FoodDehydrator3000
 {
@@ -19,6 +20,7 @@ namespace FoodDehydrator3000
         protected AnalogTemperature _tempSensor = null;
         protected SoftPwm _heaterRelayPwm = null;
         protected Relay _fanRelay = null;
+        protected SerialLCD _display = null;
 
         // controllers
         PidController _pidController = null;
@@ -32,17 +34,20 @@ namespace FoodDehydrator3000
         }
         protected bool _running = false;
 
+        public float TargetTemperature { get; set; }
+
         public TimeSpan RunningTimeLeft
         {
             get { return _runningTimeLeft; }
         }
         protected TimeSpan _runningTimeLeft = TimeSpan.MinValue;
 
-        public DehydratorController(AnalogTemperature tempSensor, SoftPwm heater, Relay fan)
+        public DehydratorController(AnalogTemperature tempSensor, SoftPwm heater, Relay fan, SerialLCD display)
         {
             _tempSensor = tempSensor;
             _heaterRelayPwm = heater;
             _fanRelay = fan;
+            _display = display;
 
             _pidController = new PidController(45000);
             _pidController.P = 0.001;
@@ -101,7 +106,13 @@ namespace FoodDehydrator3000
             _tempControlThread = new Thread(() => {
                 while (this._running) {
                     Debug.Print("Temp: " + _tempSensor.Temperature.ToString() + "ºC");
+                    _display.WriteLine("Temp: " + _tempSensor.Temperature.ToString(), 1);
                     Thread.Sleep(2000);
+                    _pidController.Input = _tempSensor.Temperature;
+                    _pidController.TargetInput = this.TargetTemperature;
+
+                    //var powerLevel = _pidController.CalculatePower();
+                    //this._heaterRelayPwm.DutyCycle = powerLevel();
                 }
             });
             _tempControlThread.Start();

@@ -7,7 +7,7 @@ using Netduino.Foundation.Sensors.Temperature;
 using Netduino.Foundation.Relays;
 using Netduino.Foundation.Sensors.Buttons;
 using Netduino.Foundation.Generators;
-//using Netduino.Foundation.Displays;
+using Netduino.Foundation.Displays;
 
 namespace FoodDehydrator3000
 {
@@ -18,7 +18,7 @@ namespace FoodDehydrator3000
         protected SoftPwm _heaterRelayPwm = null;
         protected Relay _fanRelay = null;
         protected PushButton _button = null;
-        //protected SerialLCD _display = null;
+        protected SerialLCD _display = null;
 
         // controllers
         protected DehydratorController _dehydrator = null;
@@ -32,8 +32,8 @@ namespace FoodDehydrator3000
             // setup all of our peripherals
 
             // LCD
-            //_display = new SerialLCD(new TextDisplayConfig() { Width = 20, Height = 4 });
-            //Debug.Print("Display up.");
+            _display = new SerialLCD(new TextDisplayConfig() { Width = 20, Height = 4 });
+            Debug.Print("Display up.");
 
             // Analog Temp Sensor
             _tempSensor = new AnalogTemperature(N.AnalogChannels.ANALOG_PIN_A4,
@@ -56,7 +56,8 @@ namespace FoodDehydrator3000
 
             Debug.Print("Peripherals up");
 
-            _dehydrator = new DehydratorController(_tempSensor, _heaterRelayPwm, _fanRelay);
+            _dehydrator = new DehydratorController(_tempSensor, _heaterRelayPwm, _fanRelay, _display);
+            //_dehydrator.TargetTemperature = 50;
 
             _button.Clicked += (object sender, EventArgs e) => {
                 Debug.Print("Power Button Clicked");
