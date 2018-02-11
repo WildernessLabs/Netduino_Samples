@@ -27,6 +27,7 @@ namespace FoodDehydrator3000
 
         // other members
         Thread _tempControlThread = null;
+        int _powerUpdateInterval = 2000; // milliseconds; how often to update the power
 
         // properties
         public bool Running {
@@ -49,10 +50,10 @@ namespace FoodDehydrator3000
             _fanRelay = fan;
             _display = display;
 
-            _pidController = new PidController(45000);
-            _pidController.P = 0.001;
-            _pidController.I = 0.00001;
-            _pidController.D = 0;
+            _pidController = new PidController();
+            _pidController.P = 0.005f; // proportional
+            _pidController.I = 0.0001f; // integral
+            _pidController.D = 0f; // derivative
 
         }
 
@@ -66,39 +67,33 @@ namespace FoodDehydrator3000
             this._runningTimeLeft = TimeSpan.MinValue;
         }
 
-        public void TurnOn()
+        public void TurnOn(int temp)
         {
-            TurnOn(TimeSpan.MaxValue);
+            TurnOn(temp, TimeSpan.MaxValue);
         }
 
-        public void TurnOn(TimeSpan runningTime)
+        public void TurnOn(int temp, TimeSpan runningTime)
         {
             // set our state vars
+            TargetTemperature = (float)temp;
             Debug.Print("Turning on.");
             this._runningTimeLeft = runningTime;
             this._running = true;
 
-            // start our temp regulation thread. might want to change this to notify.
-            StartRegulatingTemperatureThread();
-
             Debug.Print("Here");
 
-            // TEMP - to be replaced with PID stuff
+            // keeping fan off, to get temp to rise.
             this._fanRelay.IsOn = true;
-            this._heaterRelayPwm.Frequency = 1.0f / 10.0f; // 10 seconds
-            this._heaterRelayPwm.DutyCycle = 0.5f; // 50% on
+            
+            // TEMP - to be replaced with PID stuff
+            this._heaterRelayPwm.Frequency = 1.0f / 5.0f; // 5 seconds to start (later we can slow down)
+            // on start, if we're under temp, turn on the heat to start.
+            float duty = (_tempSensor.Temperature < TargetTemperature) ? 1.0f : 0.0f;
+            this._heaterRelayPwm.DutyCycle = duty;
             this._heaterRelayPwm.Start();
-        }
 
-        public void PowerButtonClicked()
-        {
-            if (this._running) {
-                Debug.Print("PowerButtonClicked, _running == true, turning off.");
-                this.TurnOff();
-            } else {
-                Debug.Print("PowerButtonClicked, _running == false, turning on.");
-                this.TurnOn();
-            }
+            // start our temp regulation thread. might want to change this to notify.
+            StartRegulatingTemperatureThread();
         }
 
         protected void StartRegulatingTemperatureThread()
@@ -106,13 +101,24 @@ namespace FoodDehydrator3000
             _tempControlThread = new Thread(() => {
                 while (this._running) {
                     Debug.Print("Temp: " + _tempSensor.Temperature.ToString() + "ºC");
-                    _display.WriteLine("Temp: " + _tempSensor.Temperature.ToString(), 1);
-                    Thread.Sleep(2000);
+
+                    // set our input and target on the PID calculator
                     _pidController.Input = _tempSensor.Temperature;
                     _pidController.TargetInput = this.TargetTemperature;
 
-                    //var powerLevel = _pidController.CalculatePower();
-                    //this._heaterRelayPwm.DutyCycle = powerLevel();
+                    // get the appropriate power level
+                    var powerLevel = _pidController.CalculatePowerOutput();
+                    Debug.Print("Temp: " + _tempSensor.Temperature.ToString() + "ºC");
+
+                    // set our PWM appropriately
+                    Debug.Print("Setting duty cycle to: " + (powerLevel / 1000).ToString("N0") + "%");
+                    _display.WriteLine("Power: " + (powerLevel / 1000).ToString("N0") + "%", 0);
+                    if (powerLevel > 1) powerLevel = 1;
+                    if (powerLevel < 0) powerLevel = 0;
+                    this._heaterRelayPwm.DutyCycle = powerLevel;
+
+                    // sleep for a while. 
+                    Thread.Sleep(_powerUpdateInterval);
                 }
             });
             _tempControlThread.Start();
