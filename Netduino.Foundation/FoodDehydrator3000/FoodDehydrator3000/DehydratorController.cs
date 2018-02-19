@@ -51,9 +51,11 @@ namespace FoodDehydrator3000
             _display = display;
 
             _pidController = new PidController();
-            _pidController.P = 0.005f; // proportional
-            _pidController.I = 0.0001f; // integral
-            _pidController.D = 0f; // derivative
+            _pidController.ProportionalGain = 1f; // proportional
+            _pidController.IntegralGain = 0.0f; //0.0001f; // integral
+            _pidController.DerivativeGain = 0f; // derivative
+            _pidController.OutputMin = 0.0f; // 0% power minimum
+            _pidController.OutputMax = 1.0f; // 100% power max
 
         }
 
@@ -99,22 +101,24 @@ namespace FoodDehydrator3000
         protected void StartRegulatingTemperatureThread()
         {
             _tempControlThread = new Thread(() => {
+
+                // reset our integral history
+                _pidController.ResetIntegrator();
+
                 while (this._running) {
-                    Debug.Print("Temp: " + _tempSensor.Temperature.ToString() + "ºC");
 
                     // set our input and target on the PID calculator
-                    _pidController.Input = _tempSensor.Temperature;
+                    _pidController.ActualInput = _tempSensor.Temperature;
                     _pidController.TargetInput = this.TargetTemperature;
 
-                    // get the appropriate power level
-                    var powerLevel = _pidController.CalculatePowerOutput();
-                    Debug.Print("Temp: " + _tempSensor.Temperature.ToString() + "ºC");
+                    // get the appropriate power level (only use PI, since the temp signal is noisy)
+                    var powerLevel = _pidController.CalculateControlOutput(PIDActionType.Proportional /*| PIDActionType.Integral*/);
+                    Debug.Print("Temp: " + _tempSensor.Temperature.ToString() + "/" + TargetTemperature.ToString("N0") + "ºC");
 
                     // set our PWM appropriately
-                    Debug.Print("Setting duty cycle to: " + (powerLevel / 1000).ToString("N0") + "%");
-                    _display.WriteLine("Power: " + (powerLevel / 1000).ToString("N0") + "%", 0);
-                    if (powerLevel > 1) powerLevel = 1;
-                    if (powerLevel < 0) powerLevel = 0;
+                    Debug.Print("Setting duty cycle to: " + (powerLevel * 100).ToString("N0") + "%");
+                    _display.WriteLine("Power: " + (powerLevel * 100).ToString("N0") + "%", 0);
+
                     this._heaterRelayPwm.DutyCycle = powerLevel;
 
                     // sleep for a while. 

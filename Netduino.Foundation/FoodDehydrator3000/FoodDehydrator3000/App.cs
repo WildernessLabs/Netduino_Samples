@@ -26,6 +26,8 @@ namespace FoodDehydrator3000
 
         // members
         protected bool _go = false;
+        protected DateTime _buttonPressStart = DateTime.MaxValue;
+        TimeSpan _longPressThreshold = new TimeSpan(0, 0, 0, 0, 500); // 1/2 second
 
         public App()
         {
@@ -73,7 +75,30 @@ namespace FoodDehydrator3000
 
 
             _dehydrator = new DehydratorController(_tempSensor, _heaterRelayPwm, _fanRelay, _display);
-            _button.Clicked += (s,e) => { TogglePower(); };
+            //_button.Clicked += (s,e) => { TogglePower(); };
+            _button.PressStarted += HandleButtonPressStarted;
+            _button.PressEnded += HandleButtonPressEnded;
+        }
+
+        private void HandleButtonPressEnded(object sender, EventArgs e)
+        {
+            TimeSpan pressLength = DateTime.Now - _buttonPressStart;
+            TimeSpan longPressThreshold = new TimeSpan(0, 0, 0, 0, 500); // 1/2 second
+
+            Debug.Print("Press Length: " + pressLength.ToString());
+
+            // reset
+            _buttonPressStart = DateTime.MaxValue;
+
+            // if it's a long press, toggle power
+            if (pressLength > _longPressThreshold) {
+                TogglePower();
+            }
+        }
+
+        private void HandleButtonPressStarted(object sender, EventArgs e)
+        {
+            _buttonPressStart = DateTime.Now;
         }
 
         protected void HandleTempChanged(object sender, Netduino.Foundation.Sensors.SensorFloatEventArgs e)
@@ -97,7 +122,7 @@ namespace FoodDehydrator3000
             else
             {
                 Debug.Print("PowerButtonClicked, _running == false, turning on.");
-                _dehydrator.TurnOn(35); // set to 35C to start
+                _dehydrator.TurnOn(40); // set to 35C to start
             }
 
         }

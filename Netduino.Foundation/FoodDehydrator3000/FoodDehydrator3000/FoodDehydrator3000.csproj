@@ -36,6 +36,7 @@
   <ItemGroup>
     <Compile Include="App.cs" />
     <Compile Include="DehydratorController.cs" />
+    <Compile Include="PIDActionType.cs" />
     <Compile Include="PIDController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
