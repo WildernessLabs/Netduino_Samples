@@ -52,10 +52,11 @@ namespace FoodDehydrator3000
 
             _pidController = new PidController();
             _pidController.ProportionalGain = 1f; // proportional
-            _pidController.IntegralGain = 0.0f; //0.0001f; // integral
+            _pidController.IntegralGain = 0.01f; // integral
             _pidController.DerivativeGain = 0f; // derivative
             _pidController.OutputMin = 0.0f; // 0% power minimum
             _pidController.OutputMax = 1.0f; // 100% power max
+            _pidController.OutputTuningInformation = true;
 
         }
 
@@ -112,11 +113,11 @@ namespace FoodDehydrator3000
                     _pidController.TargetInput = this.TargetTemperature;
 
                     // get the appropriate power level (only use PI, since the temp signal is noisy)
-                    var powerLevel = _pidController.CalculateControlOutput(PIDActionType.Proportional /*| PIDActionType.Integral*/);
-                    Debug.Print("Temp: " + _tempSensor.Temperature.ToString() + "/" + TargetTemperature.ToString("N0") + "ºC");
+                    var powerLevel = _pidController.CalculateControlOutput(PIDActionType.Proportional | PIDActionType.Integral);
+                    //Debug.Print("Temp: " + _tempSensor.Temperature.ToString() + "/" + TargetTemperature.ToString("N0") + "ºC");
 
                     // set our PWM appropriately
-                    Debug.Print("Setting duty cycle to: " + (powerLevel * 100).ToString("N0") + "%");
+                    //Debug.Print("Setting duty cycle to: " + (powerLevel * 100).ToString("N0") + "%");
                     _display.WriteLine("Power: " + (powerLevel * 100).ToString("N0") + "%", 0);
 
                     this._heaterRelayPwm.DutyCycle = powerLevel;

@@ -26,8 +26,6 @@ namespace FoodDehydrator3000
 
         // members
         protected bool _go = false;
-        protected DateTime _buttonPressStart = DateTime.MaxValue;
-        TimeSpan _longPressThreshold = new TimeSpan(0, 0, 0, 0, 500); // 1/2 second
 
         public App()
         {
@@ -64,7 +62,6 @@ namespace FoodDehydrator3000
 
             // Button
             _button = new PushButton(N.Pins.GPIO_PIN_D8, Netduino.Foundation.CircuitTerminationType.CommonGround, 100);
-            // waiting on the CircuitTerminationType floating fix
             //_button = new PushButton((H.Cpu.Pin)0x15, Netduino.Foundation.CircuitTerminationType.Floating);
             Debug.Print("Button up.");
             _display.WriteLine("Button up!", 0);
@@ -76,29 +73,7 @@ namespace FoodDehydrator3000
 
             _dehydrator = new DehydratorController(_tempSensor, _heaterRelayPwm, _fanRelay, _display);
             //_button.Clicked += (s,e) => { TogglePower(); };
-            _button.PressStarted += HandleButtonPressStarted;
-            _button.PressEnded += HandleButtonPressEnded;
-        }
-
-        private void HandleButtonPressEnded(object sender, EventArgs e)
-        {
-            TimeSpan pressLength = DateTime.Now - _buttonPressStart;
-            TimeSpan longPressThreshold = new TimeSpan(0, 0, 0, 0, 500); // 1/2 second
-
-            Debug.Print("Press Length: " + pressLength.ToString());
-
-            // reset
-            _buttonPressStart = DateTime.MaxValue;
-
-            // if it's a long press, toggle power
-            if (pressLength > _longPressThreshold) {
-                TogglePower();
-            }
-        }
-
-        private void HandleButtonPressStarted(object sender, EventArgs e)
-        {
-            _buttonPressStart = DateTime.Now;
+            _button.LongPressClicked += (s, e) => { TogglePower(); };
         }
 
         protected void HandleTempChanged(object sender, Netduino.Foundation.Sensors.SensorFloatEventArgs e)
