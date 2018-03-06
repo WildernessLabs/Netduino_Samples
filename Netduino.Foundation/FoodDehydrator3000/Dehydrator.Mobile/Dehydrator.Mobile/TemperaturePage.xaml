@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage 
+	xmlns="http://xamarin.com/schemas/2014/forms" 
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+	x:Class="Dehydrator.Mobile.TemperaturePage"
+	Title="Temperature"
+	>
+	<ContentPage.Content>
+		<ListView x:Name="TempList">
+			<ListView.ItemTemplate>
+				<DataTemplate>
+					<ViewCell>
+						<StackLayout Orientation="Horizontal" VerticalOptions="CenterAndExpand">
+							<BoxView WidthRequest="10"/>
+							<Label Text="{Binding Name}" VerticalOptions="Center"/>
+	                        <Label Text="{Binding Description}" HorizontalOptions="StartAndExpand" VerticalOptions="Center" TextColor="Gray"/>
+							<BoxView WidthRequest="10"/>
+	                    </StackLayout>
+	                </ViewCell>
+				</DataTemplate>
+			</ListView.ItemTemplate>
+		</ListView>
+	</ContentPage.Content>
+</ContentPage>

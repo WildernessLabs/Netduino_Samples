@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage 
+	xmlns="http://xamarin.com/schemas/2014/forms" 
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+	x:Class="Dehydrator.Mobile.HomePage"
+	Title="Dehydrator 3000 Controller"
+	>
+	<ContentPage.Content>
+		<TableView Intent="Settings">
+			<TableSection>
+				<!-- power -->
+				<SwitchCell Text="Power"/>
+				<!-- temp -->
+				<ViewCell Tapped="Temp_Tapped" StyleId="disclosure">
+					<StackLayout Orientation="Horizontal" VerticalOptions="CenterAndExpand">
+						<BoxView WidthRequest="10"/>
+						<Label Text="Temperature" VerticalOptions="Center"/>
+                        <Label Text="[value]" HorizontalOptions="EndAndExpand" VerticalOptions="Center" TextColor="Gray"/>
+                    </StackLayout>
+                </ViewCell>
+				<!-- runtime -->
+				<ViewCell Tapped="Runtime_Tapped" StyleId="none">
+					<StackLayout Orientation="Horizontal" VerticalOptions="CenterAndExpand">
+						<BoxView WidthRequest="10"/>
+						<Label Text="Run Time" VerticalOptions="Center" HorizontalOptions="StartAndExpand"/>
+						<Picker x:Name="RunTimeHoursPicker" VerticalOptions="Center" TextColor="Gray"/>
+						<Label Text="Hours" VerticalOptions="Center" TextColor="Gray"/>
+
+						<Picker x:Name="RunTimeMinutesPicker" VerticalOptions="Center" TextColor="Gray"/>
+						<Label Text="Minutes" VerticalOptions="Center" TextColor="Gray"/>
+						<BoxView WidthRequest="10"/>
+
+                    </StackLayout>
+                </ViewCell>
+			</TableSection>
+		</TableView>
+	</ContentPage.Content>
+</ContentPage>
