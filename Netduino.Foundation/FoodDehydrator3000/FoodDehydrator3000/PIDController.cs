@@ -4,7 +4,7 @@ using System.Threading;
 
 namespace FoodDehydrator3000
 {
-    public class PidController
+    public abstract class PidController
     {
         // state vars
         protected DateTime _lastUpdateTime;
@@ -31,8 +31,6 @@ namespace FoodDehydrator3000
         public float OutputMax { get; set; } = 1;
 
         public float ProportionalGain { get; set; } = 1;
-        public float IntegralGain { get; set; } = 0;
-        public float DerivativeGain { get; set; } = 0;
 
         /// <summary>
         /// Whether or not to print the calculation information to the
@@ -65,66 +63,7 @@ namespace FoodDehydrator3000
         ///     `PIDActionType.Proportional | PIDActionType.Integral`.
         /// </param>
         /// <returns></returns>
-        public float CalculateControlOutput(PIDActionType correctionActions = PIDActionType.Proportional | PIDActionType.Integral | PIDActionType.Derivative)
-        {
-            // init vars
-            float control = 0.0f;
-            var now = DateTime.Now;
-
-            // time delta (how long since last calculation)
-            var dt = now - _lastUpdateTime;
-            // seconds is better than ticks to bring our calculations into perspective
-            var seconds = (float)(dt.Ticks / 10000 / 1000);
-
-            // if no time has passed, don't make any changes.
-            if (dt.Ticks <= 0.0) return _lastControlOutputValue;
-
-            // copy vars
-            var input = ActualInput;
-            var target = TargetInput;
-
-            // calculate the error (how far we are from target)
-            var error = target - input;
-            //Debug.Print("Actual: " + ActualInput.ToString("N1") + ", Error: " + error.ToString("N1"));
-
-            // calculate the proportional term
-            var proportional = ProportionalGain * error;
-            //Debug.Print("Proportional: " + proportional.ToString("N2"));
-
-            // calculate the integral
-            _integral += error * seconds; // add to the integral history
-            var integral = IntegralGain * _integral; // calcuate the integral action
-
-            // calculate the derivative (rate of change, slop of line) term
-            var diff = error - _lastError / seconds;
-            var derivative = DerivativeGain * diff;
-
-            // add the appropriate corrections
-            if ((correctionActions & PIDActionType.Proportional) == PIDActionType.Proportional) control += proportional;
-            if ((correctionActions & PIDActionType.Integral) == PIDActionType.Integral) control += integral;
-            if ((correctionActions & PIDActionType.Derivative) == PIDActionType.Derivative) control += derivative;
-
-            //
-            //Debug.Print("PID Control (preclamp): " + control.ToString("N4"));
-
-            // clamp
-            if (control > OutputMax) control = OutputMax;
-            if (control < OutputMin) control = OutputMin;
-
-            //Debug.Print("PID Control (postclamp): " + control.ToString("N4"));
-
-            if (OutputTuningInformation) {
-                Debug.Print("SP+PV+PID+O," + target.ToString() + "," + input.ToString() + "," + 
-                    proportional.ToString() + "," + integral.ToString() + "," + 
-                    derivative.ToString() + "," + control.ToString());
-            }
-
-            // persist our state variables
-            _lastControlOutputValue = control;
-            _lastError = error;
-            _lastUpdateTime = now;
-
-            return control;
-        }
+        public abstract float CalculateControlOutput();
+        
     }
 }

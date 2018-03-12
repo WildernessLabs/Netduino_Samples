@@ -92,12 +92,12 @@ namespace FoodDehydrator3000
             {
                 Debug.Print("PowerButtonClicked, _running == true, turning off.");
                 _display.WriteLine("Power OFF.", 0);
-                _dehydrator.TurnOff();
+                _dehydrator.TurnOff(45);
             }
             else
             {
                 Debug.Print("PowerButtonClicked, _running == false, turning on.");
-                _dehydrator.TurnOn(40); // set to 35C to start
+                _dehydrator.TurnOn(50); // set to 35C to start
             }
 
         }

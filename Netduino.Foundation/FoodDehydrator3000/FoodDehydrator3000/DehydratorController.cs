@@ -23,7 +23,7 @@ namespace FoodDehydrator3000
         protected SerialLCD _display = null;
 
         // controllers
-        PidController _pidController = null;
+        StandardPidController _pidController = null;
 
         // other members
         Thread _tempControlThread = null;
@@ -50,22 +50,27 @@ namespace FoodDehydrator3000
             _fanRelay = fan;
             _display = display;
 
-            _pidController = new PidController();
-            _pidController.ProportionalGain = 1f; // proportional
-            _pidController.IntegralGain = 0.01f; // integral
-            _pidController.DerivativeGain = 0f; // derivative
+            _pidController = new StandardPidController();
+            _pidController.ProportionalGain = .5f; // proportional
+            _pidController.IntegralTime = .55f; // integral time minutes
+            _pidController.DerivativeTime = 0f; // derivative time in minutes
             _pidController.OutputMin = 0.0f; // 0% power minimum
             _pidController.OutputMax = 1.0f; // 100% power max
             _pidController.OutputTuningInformation = true;
 
         }
 
-
-        public void TurnOff()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="delay">in seconds</param>
+        public void TurnOff(int delay)
         {
             Debug.Print("Turning off.");
-            this._fanRelay.IsOn = false;
             this._heaterRelayPwm.Stop();
+            Debug.Print("Cooldown delay, " + delay.ToString() + "secs");
+            Thread.Sleep(delay * 1000);
+            this._fanRelay.IsOn = false;
             this._running = false;
             this._runningTimeLeft = TimeSpan.MinValue;
         }
@@ -113,7 +118,7 @@ namespace FoodDehydrator3000
                     _pidController.TargetInput = this.TargetTemperature;
 
                     // get the appropriate power level (only use PI, since the temp signal is noisy)
-                    var powerLevel = _pidController.CalculateControlOutput(PIDActionType.Proportional | PIDActionType.Integral);
+                    var powerLevel = _pidController.CalculateControlOutput();
                     //Debug.Print("Temp: " + _tempSensor.Temperature.ToString() + "/" + TargetTemperature.ToString("N0") + "ºC");
 
                     // set our PWM appropriately
