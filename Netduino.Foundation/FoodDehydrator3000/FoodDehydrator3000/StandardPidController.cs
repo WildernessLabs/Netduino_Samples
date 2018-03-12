@@ -6,12 +6,12 @@ namespace FoodDehydrator3000
     public class StandardPidController : PidControllerBase
     {
         /// <summary>
-        /// Integral time in repeats per minute
+        /// Integral time in minutes
         /// </summary>
         public new float IntegralComponent { get; set; } = 0;
 
         /// <summary>
-        /// Derivative time
+        /// Derivative time in minutes
         /// </summary>
         public new float DerivativeComponent { get; set; } = 0;
 
