@@ -3,16 +3,17 @@ using Microsoft.SPOT;
 
 namespace FoodDehydrator3000
 {
-    public class StandardPidController : PidController
+    public class StandardPidController : PidControllerBase
     {
         /// <summary>
-        /// Integral time in minites
+        /// Integral time in repeats per minute
         /// </summary>
-        public float IntegralTime { get; set; } = 0;
+        public new float IntegralComponent { get; set; } = 0;
+
         /// <summary>
-        /// Derivative time in minutes
+        /// Derivative time
         /// </summary>
-        public float DerivativeTime { get; set; } = 0;
+        public new float DerivativeComponent { get; set; } = 0;
 
         public override float CalculateControlOutput()
         {
@@ -38,14 +39,14 @@ namespace FoodDehydrator3000
 
             // calculate the integral
             _integral += error * seconds; // add to the integral history
-            var integral = (1 / (IntegralTime * 60)) * _integral; // calcuate the integral action
+            var integral = (1 / (IntegralComponent * 60)) * _integral; // calcuate the integral action
 
             // calculate the derivative (rate of change, slop of line) term
             var diff = error - _lastError / seconds;
-            var derivative = (DerivativeTime * 60) * diff;
+            var derivative = (DerivativeComponent * 60) * diff;
 
             // add the appropriate corrections
-            control = ProportionalGain * (error + integral + derivative);
+            control = ProportionalComponent * (error + integral + derivative);
 
             //
             //Debug.Print("PID Control (preclamp): " + control.ToString("N4"));
@@ -59,7 +60,7 @@ namespace FoodDehydrator3000
             if (OutputTuningInformation)
             {
                 Debug.Print("SP+PV+PID+O," + target.ToString() + "," + input.ToString() + "," +
-                    ProportionalGain.ToString() + "," + integral.ToString() + "," +
+                    ProportionalComponent.ToString() + "," + integral.ToString() + "," +
                     derivative.ToString() + "," + control.ToString());
             }
 

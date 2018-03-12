@@ -4,7 +4,7 @@ using System.Threading;
 
 namespace FoodDehydrator3000
 {
-    public abstract class PidController
+    public abstract class PidControllerBase : IPidController
     {
         // state vars
         protected DateTime _lastUpdateTime;
@@ -30,8 +30,18 @@ namespace FoodDehydrator3000
         public float OutputMin { get; set; } = -1;
         public float OutputMax { get; set; } = 1;
 
-        public float ProportionalGain { get; set; } = 1;
-
+        /// <summary>
+        /// Proportional gain
+        /// </summary>
+        public float ProportionalComponent { get; set; } = 1;
+        /// <summary>
+        /// Integral gain
+        /// </summary>
+        public float IntegralComponent { get; set; } = 0;
+        /// <summary>
+        /// Derivative gain
+        /// </summary>
+        public float DerivativeComponent { get; set; } = 0;
         /// <summary>
         /// Whether or not to print the calculation information to the
         /// output console in an comma-delimited form. Useful for 
@@ -41,7 +51,7 @@ namespace FoodDehydrator3000
         /// </summary>
         public bool OutputTuningInformation { get; set; } = false;
 
-        public PidController()
+        public PidControllerBase()
         {
             _lastUpdateTime = DateTime.Now;
             _lastError = 0;

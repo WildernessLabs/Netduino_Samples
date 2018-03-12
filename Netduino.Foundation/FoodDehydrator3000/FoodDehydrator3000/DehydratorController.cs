@@ -23,7 +23,7 @@ namespace FoodDehydrator3000
         protected SerialLCD _display = null;
 
         // controllers
-        StandardPidController _pidController = null;
+        IPidController _pidController = null;
 
         // other members
         Thread _tempControlThread = null;
@@ -51,9 +51,9 @@ namespace FoodDehydrator3000
             _display = display;
 
             _pidController = new StandardPidController();
-            _pidController.ProportionalGain = .5f; // proportional
-            _pidController.IntegralTime = .55f; // integral time minutes
-            _pidController.DerivativeTime = 0f; // derivative time in minutes
+            _pidController.ProportionalComponent = .5f; // proportional
+            _pidController.IntegralComponent = .55f; // integral time minutes
+            _pidController.DerivativeComponent = 0f; // derivative time in minutes
             _pidController.OutputMin = 0.0f; // 0% power minimum
             _pidController.OutputMax = 1.0f; // 100% power max
             _pidController.OutputTuningInformation = true;

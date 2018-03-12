@@ -3,11 +3,8 @@ using Microsoft.SPOT;
 
 namespace FoodDehydrator3000
 {
-    public class IdealPidController : PidController
+    public class IdealPidController : PidControllerBase
     {
-        public float IntegralGain { get; set; } = 0;
-        public float DerivativeGain { get; set; } = 0;
-
         public override float CalculateControlOutput()
         {
             // init vars
@@ -31,16 +28,16 @@ namespace FoodDehydrator3000
             //Debug.Print("Actual: " + ActualInput.ToString("N1") + ", Error: " + error.ToString("N1"));
 
             // calculate the proportional term
-            var proportional = ProportionalGain * error;
+            var proportional = ProportionalComponent * error;
             //Debug.Print("Proportional: " + proportional.ToString("N2"));
 
             // calculate the integral
             _integral += error * seconds; // add to the integral history
-            var integral = IntegralGain * _integral; // calcuate the integral action
+            var integral = IntegralComponent * _integral; // calcuate the integral action
 
             // calculate the derivative (rate of change, slop of line) term
             var diff = error - _lastError / seconds;
-            var derivative = DerivativeGain * diff;
+            var derivative = DerivativeComponent * diff;
 
             // add the appropriate corrections
             control = proportional + integral + derivative;
