@@ -36,10 +36,6 @@
   <ItemGroup>
     <Compile Include="App.cs" />
     <Compile Include="DehydratorController.cs" />
-    <Compile Include="IPidController.cs" />
-    <Compile Include="StandardPidController.cs" />
-    <Compile Include="IdealPidController.cs" />
-    <Compile Include="PidControllerBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="RoslynHackFix.cs" />
@@ -51,8 +47,8 @@
     <Reference Include="Microsoft.SPOT.IO" />
     <Reference Include="Microsoft.SPOT.Native" />
     <Reference Include="Microsoft.SPOT.TinyCore" />
-    <Reference Include="Netduino.Foundation, Version=0.13.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Netduino.Foundation.0.13.602\lib\netmf43\Netduino.Foundation.dll</HintPath>
+    <Reference Include="Netduino.Foundation, Version=0.14.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Netduino.Foundation.0.14.611\lib\netmf43\Netduino.Foundation.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Netduino.Foundation.Displays.SerialLCD, Version=0.16.0.0, Culture=neutral, processorArchitecture=x86">
