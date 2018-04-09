@@ -145,7 +145,14 @@ namespace FoodDehydrator3000
 
         private float Handler_GetStatus()
         {
-            return _currentTemp;
+            if (_dehydrator.Running)
+            {
+                return _currentTemp;
+            }
+            else
+            {
+                return -1;
+            }
         }
 
         private void Handler_TurnOn(int targetTemp)
