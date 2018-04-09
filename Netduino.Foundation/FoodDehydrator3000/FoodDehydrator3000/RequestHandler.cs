@@ -18,8 +18,15 @@ namespace FoodDehydrator3000
         {
             try
             {
+                // if the status is less than 0 then the dehydrator is not running
                 var currentTemp = GetStatus();
-                Hashtable result = new Hashtable { { "currentTemp", currentTemp } };
+                bool isRunning = currentTemp >= 0;
+
+                Hashtable result = new Hashtable
+                {
+                    { "isRunning", isRunning },
+                    { "currentTemp", currentTemp >= 0 ? currentTemp : 0 }
+                };
                 StatusResponse(ContentTypes.Application_Json, 200, result);
             }
             catch(Exception ex)
@@ -37,19 +44,21 @@ namespace FoodDehydrator3000
             try
             {
                 int targetTemp = 0;
+                var prm = "targetTemp";
 
-                if (this.Body == null || this.Body["targetTemp"] == null)
+                if (this.Body[prm] == null && this.Form[prm] == null && this.QueryString[prm] == null)
                 {
-                    StatusResponse(ContentTypes.Application_Text, 400, "targetTemp is required");
+                    StatusResponse(ContentTypes.Application_Text, 400, prm + " is required");
                     return;
                 }
                 try
                 {
-                    targetTemp = int.Parse(this.Body["targetTemp"].ToString());
+                    var temp = this.Body[prm] ?? this.Form[prm] ?? this.QueryString[prm];
+                    targetTemp = int.Parse(temp.ToString());
                 }
                 catch(Exception ex)
                 {
-                    StatusResponse(ContentTypes.Application_Text, 400, "Invalid targetTemp value");
+                    StatusResponse(ContentTypes.Application_Text, 400, "Invalid " + prm + " value");
                 }
                 
                 TurnOn(targetTemp);
@@ -70,20 +79,20 @@ namespace FoodDehydrator3000
         {
             try
             {
+                var prm = "coolDownDelay";
                 int coolDownDelay = 0;
-
-                if (this.Body == null || this.Body["coolDownDelay"] == null)
-                {
-                    StatusResponse(ContentTypes.Application_Text, 400, "coolDownDelay is required");
-                    return;
-                }
+                var coolDownDelayValue = this.Body[prm] ?? this.Form[prm] ?? this.QueryString[prm] ?? null;
+               
                 try
                 {
-                    coolDownDelay = int.Parse(this.Body["coolDownDelay"].ToString());
+                    if(coolDownDelayValue != null)
+                    {
+                        coolDownDelay = int.Parse(coolDownDelayValue.ToString());
+                    }
                 }
                 catch (Exception ex)
                 {
-                    StatusResponse(ContentTypes.Application_Text, 400, "Invalid coolDownDelay value");
+                    StatusResponse(ContentTypes.Application_Text, 400, "Invalid " + prm + " value");
                 }
 
                 TurnOff(coolDownDelay);
