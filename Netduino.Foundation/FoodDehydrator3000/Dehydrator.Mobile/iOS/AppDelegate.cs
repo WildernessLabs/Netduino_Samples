@@ -5,18 +5,18 @@ using System.Linq;
 using Foundation;
 using UIKit;
 
-namespace Dehydrator.Mobile.iOS
+namespace DehydratorRemote.iOS
 {
-	[Register("AppDelegate")]
-	public partial class AppDelegate : global::Xamarin.Forms.Platform.iOS.FormsApplicationDelegate
-	{
-		public override bool FinishedLaunching(UIApplication app, NSDictionary options)
-		{
-			global::Xamarin.Forms.Forms.Init();
+    [Register("AppDelegate")]
+    public partial class AppDelegate : global::Xamarin.Forms.Platform.iOS.FormsApplicationDelegate
+    {
+        public override bool FinishedLaunching(UIApplication app, NSDictionary options)
+        {
+            global::Xamarin.Forms.Forms.Init();
 
-			LoadApplication(new FormsApp());
+            LoadApplication(new App());
 
-			return base.FinishedLaunching(app, options);
-		}
-	}
+            return base.FinishedLaunching(app, options);
+        }
+    }
 }

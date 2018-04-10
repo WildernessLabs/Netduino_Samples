@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:local="clr-namespace:DehydratorRemote" x:Class="DehydratorRemote.DehydratorRemotePage">
+    <TableView Intent="Menu" x:Name="MenuView">
+        <TableRoot>
+            <TableSection Title="Menu">
+                <SwitchCell Text="Power" x:Name="PowerToggle" OnChanged="Handle_OnChanged" />
+                <EntryCell Label="Host Address" Placeholder="0.0.0.0" HorizontalTextAlignment="End" Keyboard="Numeric" x:Name="HostAddress" />
+                <ViewCell Tapped="Handle_Tapped">
+                    <ViewCell.View>
+                        <StackLayout Orientation="Horizontal" Padding="13, 0">
+                            <Label Text="Temperature" VerticalOptions="Center"></Label>
+                            <Label x:Name="SelectedTemperature" HorizontalOptions="EndAndExpand" VerticalTextAlignment="Center"></Label>
+                        </StackLayout>
+                    </ViewCell.View>
+                </ViewCell>
+            </TableSection>
+        </TableRoot>
+    </TableView>
+</ContentPage>
