@@ -116,22 +116,10 @@ namespace FoodDehydrator3000
 
         public void Run()
         {
-            bool networkInit = false;
-            try
-            {
-                networkInit = InitializeNetwork();
-            }
-            catch (Exception e)
-            {
-                Debug.Print(e.Message);
-            }
+            bool networkInit = Netduino.Foundation.Network.Initializer.InitializeNetwork("http://google.com");
 
             if (networkInit)
             {
-                MakeWebRequest("http://google.com");
-
-                //
-                Debug.Print("Network done.");
                 server.Start();
                 Debug.Print("Maple server started.");
             }
