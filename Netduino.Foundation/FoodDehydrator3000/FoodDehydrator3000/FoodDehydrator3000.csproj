@@ -65,6 +65,10 @@
       <HintPath>..\packages\Netduino.Foundation.SerialLCD.0.17.612\lib\netmf43\Netduino.Foundation.Displays.SerialLCD.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Netduino.Foundation.Network, Version=0.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Netduino.Foundation.Network.0.1.621\lib\netmf43\Netduino.Foundation.Network.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="SecretLabs.NETMF.Hardware.Netduino, Version=4.3.1.0, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Http" />
