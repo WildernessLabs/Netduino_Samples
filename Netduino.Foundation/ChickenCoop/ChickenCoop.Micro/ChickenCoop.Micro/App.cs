@@ -18,7 +18,7 @@ namespace ChickenCoop.Micro
         {
             // initialize our peripherals
             _heatLampRelay = new SoftPwm(N.Pins.GPIO_PIN_D2, 0, 1 / 60);
-            _tempSensor = new AnalogTemperature(N.AnalogChannels.ANALOG_PIN_A2, AnalogTemperature.KnownSensorType.TMP36, updateInterval: 5000, temperatureChangeNotificationThreshold = 1.0);
+            _tempSensor = new AnalogTemperature(N.AnalogChannels.ANALOG_PIN_A2, AnalogTemperature.KnownSensorType.LM35, updateInterval: 5000, temperatureChangeNotificationThreshold: 1.0f);
 
             // initialize our temp controller
             _tempController = new TemperatureController(_heatLampRelay, _tempSensor);
