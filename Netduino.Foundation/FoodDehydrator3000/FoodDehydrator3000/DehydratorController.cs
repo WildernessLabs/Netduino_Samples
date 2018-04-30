@@ -40,9 +40,22 @@ namespace FoodDehydrator3000
 
         public TimeSpan RunningTimeLeft
         {
-            get { return _runningTimeLeft; }
+            get
+            {
+                if(_isTimerSet && _startTime != DateTime.MinValue)
+                {
+                    return _timerStartValue - ((TimeSpan)(DateTime.Now - _startTime));
+                }
+                else
+                {
+                    return TimeSpan.Zero;
+                }
+            }
         }
-        protected TimeSpan _runningTimeLeft = TimeSpan.MinValue;
+
+        protected bool _isTimerSet = false;
+        protected TimeSpan _timerStartValue = TimeSpan.Zero;
+        protected DateTime _startTime = DateTime.MinValue;
 
         public DehydratorController(AnalogTemperature tempSensor, SoftPwm heater, Relay fan, SerialLCD display)
         {
@@ -73,20 +86,22 @@ namespace FoodDehydrator3000
             Thread.Sleep(delay * 1000);
             this._fanRelay.IsOn = false;
             this._running = false;
-            this._runningTimeLeft = TimeSpan.MinValue;
+            this._timerStartValue = TimeSpan.Zero;
         }
 
-        public void TurnOn(int temp)
+        public void TurnOn(float temp)
         {
-            TurnOn(temp, TimeSpan.MaxValue);
+            TurnOn(temp, TimeSpan.Zero);
         }
 
-        public void TurnOn(int temp, TimeSpan runningTime)
+        public void TurnOn(float temp, TimeSpan runningTime)
         {
             // set our state vars
             TargetTemperature = (float)temp;
             Debug.Print("Turning on.");
-            this._runningTimeLeft = runningTime;
+            this._timerStartValue = runningTime;
+            this._startTime = DateTime.Now;
+            this._isTimerSet = _timerStartValue != TimeSpan.Zero;
             this._running = true;
 
             Debug.Print("Here");
@@ -124,7 +139,6 @@ namespace FoodDehydrator3000
 
                     // set our PWM appropriately
                     //Debug.Print("Setting duty cycle to: " + (powerLevel * 100).ToString("N0") + "%");
-                    _display.WriteLine("Power: " + (powerLevel * 100).ToString("N0") + "%", 0);
 
                     this._heaterRelayPwm.DutyCycle = powerLevel;
 

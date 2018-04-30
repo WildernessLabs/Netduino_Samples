@@ -1,0 +1,40 @@
+{
+  "menu": [
+    {
+      "text": "Current: {value}",
+      "id": "displayCurrentTemp",
+      "value": 0
+    },
+    {
+      "text": "Target: {value}",
+      "id": "displayTargetTemp",
+      "value": 0
+    },
+    {
+      "text": "Remaining: {value}",
+      "id": "displayRemainingTime",
+      "value": "00:00"
+    },
+    {
+      "text": "Settings",
+      "sub": [
+        {
+          "text": "Set Temperature",
+          "id": "temperature",
+          "type": "Temperature",
+          "value": "100"
+        },
+        {
+          "text": "Set Timer",
+          "id": "timer",
+          "type": "Time",
+          "value": "01:00"
+        },
+        {
+          "text": "Toggle Power",
+          "command": "power"
+        }
+      ]
+    }
+  ]
+}

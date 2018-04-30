@@ -13,6 +13,11 @@ using Microsoft.SPOT.Net.NetworkInformation;
 using System.Net;
 using Maple;
 using System.IO;
+using Netduino.Foundation.Displays.TextDisplayMenu;
+using Netduino.Foundation.Sensors.Rotary;
+using FoodDehydrator3000.Properties;
+using System.Text;
+using System.Collections;
 
 namespace FoodDehydrator3000
 {
@@ -22,8 +27,10 @@ namespace FoodDehydrator3000
         protected AnalogTemperature _tempSensor = null;
         protected SoftPwm _heaterRelayPwm = null;
         protected Relay _fanRelay = null;
-        protected PushButton _button = null;
+        //protected PushButton _button = null;
         protected SerialLCD _display = null;
+
+        RotaryEncoderWithButton _encoder = null;
 
         // controllers
         protected DehydratorController _dehydrator = null;
@@ -32,9 +39,18 @@ namespace FoodDehydrator3000
         protected NetworkInterface[] _interfaces;
         protected float _currentTemp;
         MapleServer server;
+        Menu _menu;
+        private DateTime _tempUpdated;
+        private float _targetTemp;
+        private TimeSpan _runTime;
 
         public App()
         {
+            // Rotary Encoder
+            _encoder = new RotaryEncoderWithButton(
+                N.Pins.GPIO_PIN_D5, N.Pins.GPIO_PIN_D6, N.Pins.GPIO_PIN_D7,
+                Netduino.Foundation.CircuitTerminationType.CommonGround);
+
             // LCD
             _display = new SerialLCD(new TextDisplayConfig() { Width = 20, Height = 4 });
             _display.Clear();
@@ -62,21 +78,14 @@ namespace FoodDehydrator3000
             Debug.Print("Fan up.");
             _display.WriteLine("Fan up!", 1);
 
-
-            // Button
-            _button = new PushButton(N.Pins.GPIO_PIN_D8, Netduino.Foundation.CircuitTerminationType.CommonGround, 100);
-            //_button = new PushButton((H.Cpu.Pin)0x15, Netduino.Foundation.CircuitTerminationType.Floating);
-            Debug.Print("Button up.");
-            _display.WriteLine("Button up!", 0);
-
-
             Debug.Print("Peripherals up");
             _display.WriteLine("All systems up!", 1);
 
+            _menu = new Menu(_display, _encoder, Resources.GetBytes(Resources.BinaryResources.menu));
+            _menu.ValueChanged += HandleMenuValueChange;
+            _menu.Selected += HandleMenuSelected;
 
             _dehydrator = new DehydratorController(_tempSensor, _heaterRelayPwm, _fanRelay, _display);
-            //_button.Clicked += (s,e) => { TogglePower(); };
-            _button.LongPressClicked += (s, e) => { TogglePower(); };
 
             RequestHandler handler = new RequestHandler();
             handler.TurnOff += Handler_TurnOff;
@@ -87,15 +96,47 @@ namespace FoodDehydrator3000
             server.AddHandler(handler);
         }
 
-        protected void HandleTempChanged(object sender, Netduino.Foundation.Sensors.SensorFloatEventArgs e)
+        private void HandleMenuSelected(object sender, MenuSelectedEventArgs e)
         {
-            _currentTemp = e.CurrentValue;
-            UpdateTemp(e.CurrentValue);
+            if(e.Command == "power")
+            {
+                TogglePower();
+            }
+        }
+
+        private void HandleMenuValueChange(object sender, ValueChangedEventArgs e)
+        {
+            if(e.ItemID == "temperature")
+            {
+                _targetTemp = (float)(double)e.Value; //smh
+                _dehydrator.TargetTemperature = _targetTemp;
+                _menu.UpdateItemValue("displayTargetTemp", e.Value);
+            }
+            else if(e.ItemID == "timer")
+            {
+                _runTime = (TimeSpan)e.Value;
+            }
         }
 
         protected void UpdateTemp(float temp)
         {
-            _display.WriteLine("Temp: " + temp.ToString("N1") + (char)223 + "C", 1);
+            int updateInterval = 5;
+
+            if(_menu != null)
+            {
+                if(DateTime.Now > _tempUpdated.AddSeconds(updateInterval))
+                {
+                    Debug.Print("Update display");
+                    TimeSpan remainingTime = _dehydrator.RunningTimeLeft;
+
+                    Hashtable values = new Hashtable();
+                    values.Add("displayCurrentTemp", temp);
+                    values.Add("temperature", _targetTemp);
+                    values.Add("displayRemainingTime", PadLeft(remainingTime.Hours.ToString(), '0', 2) + ":" + PadLeft(remainingTime.Minutes.ToString(), '0', 2));
+                    _menu.UpdateItemValue(values);
+                    _tempUpdated = DateTime.Now;
+                }
+            }
         }
 
         protected void TogglePower()
@@ -103,15 +144,13 @@ namespace FoodDehydrator3000
             if (_dehydrator.Running)
             {
                 Debug.Print("PowerButtonClicked, _running == true, turning off.");
-                _display.WriteLine("Power OFF.", 0);
-                _dehydrator.TurnOff(45);
+                _dehydrator.TurnOff(10);
             }
             else
             {
                 Debug.Print("PowerButtonClicked, _running == false, turning on.");
-                _dehydrator.TurnOn(50); // set to 35C to start
+                _dehydrator.TurnOn(_targetTemp, _runTime); // set to 35C to start
             }
-
         }
 
         public void Run()
@@ -153,180 +192,14 @@ namespace FoodDehydrator3000
             _dehydrator.TurnOff(coolDownDelay);
         }
 
-        protected void MakeWebRequest(string url)
+        public static string PadLeft(string text, char filler, int size)
         {
-            var httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
-            httpWebRequest.Method = "GET";
-
-            var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-            using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+            string padded = string.Empty;
+            for (int i = text.Length; i < size; i++)
             {
-                var result = streamReader.ReadToEnd();
-                Debug.Print("this is what we got from " + url + ": " + result);
+                padded += filler;
             }
-        }
-
-        protected bool InitializeNetwork()
-        {
-            if (Microsoft.SPOT.Hardware.SystemInfo.SystemID.SKU == 3)
-            {
-                Debug.Print("Wireless tests run only on Device");
-                return false;
-            }
-
-            Debug.Print("Getting all the network interfaces.");
-            _interfaces = NetworkInterface.GetAllNetworkInterfaces();
-
-            // debug output
-            ListNetworkInterfaces();
-
-            // loop through each network interface
-            foreach (var net in _interfaces)
-            {
-                // debug out
-                ListNetworkInfo(net);
-
-                switch (net.NetworkInterfaceType)
-                {
-                    case (NetworkInterfaceType.Ethernet):
-                        Debug.Print("Found Ethernet Interface");
-                        break;
-                    case (NetworkInterfaceType.Wireless80211):
-                        Debug.Print("Found 802.11 WiFi Interface");
-                        break;
-                    case (NetworkInterfaceType.Unknown):
-                        Debug.Print("Found Unknown Interface");
-                        break;
-                }
-
-                // check for an IP address, try to get one if it's empty
-                return CheckIPAddress(net);
-            }
-
-            // if we got here, should be false.
-            return false;
-        }
-
-        protected void ListNetworkInterfaces()
-        {
-            foreach (var net in _interfaces)
-            {
-                switch (net.NetworkInterfaceType)
-                {
-                    case (NetworkInterfaceType.Ethernet):
-                        Debug.Print("Found Ethernet Interface");
-                        break;
-                    case (NetworkInterfaceType.Wireless80211):
-                        Debug.Print("Found 802.11 WiFi Interface");
-                        break;
-                    case (NetworkInterfaceType.Unknown):
-                        Debug.Print("Found Unknown Interface");
-                        break;
-                }
-            }
-        }
-
-        protected void ListNetworkInfo(NetworkInterface net)
-        {
-            try
-            {
-                Debug.Print("MAC Address: " + BytesToHexString(net.PhysicalAddress));
-                Debug.Print("DHCP enabled: " + net.IsDhcpEnabled.ToString());
-                Debug.Print("Dynamic DNS enabled: " + net.IsDynamicDnsEnabled.ToString());
-                Debug.Print("IP Address: " + net.IPAddress.ToString());
-                Debug.Print("Subnet Mask: " + net.SubnetMask.ToString());
-                Debug.Print("Gateway: " + net.GatewayAddress.ToString());
-
-                if (net is Wireless80211)
-                {
-                    var wifi = net as Wireless80211;
-                    Debug.Print("SSID:" + wifi.Ssid.ToString());
-                }
-            }
-            catch (Exception e)
-            {
-                Debug.Print("ListNetworkInfo exception:  " + e.Message);
-            }
-
-        }
-
-        protected bool CheckIPAddress(NetworkInterface net)
-        {
-            int timeout = 10000; // timeout, in milliseconds to wait for an IP. 10,000 = 10 seconds
-
-            // check to see if the IP address is empty (0.0.0.0). IPAddress.Any is 0.0.0.0.
-            if (net.IPAddress == IPAddress.Any.ToString())
-            {
-                Debug.Print("No IP Address");
-
-                if (net.IsDhcpEnabled)
-                {
-                    Debug.Print("DHCP is enabled, attempting to get an IP Address");
-
-                    // ask for an IP address from DHCP [note this is a static, not sure which network interface it would act on]
-                    int sleepInterval = 10;
-                    int maxIntervalCount = timeout / sleepInterval;
-                    int count = 0;
-                    while (IPAddress.GetDefaultLocalAddress() == IPAddress.Any && count < maxIntervalCount)
-                    {
-                        Debug.Print("Sleep while obtaining an IP");
-                        Thread.Sleep(10);
-                        count++;
-                    };
-
-                    // if we got here, we either timed out or got an address, so let's find out.
-                    if (net.IPAddress == IPAddress.Any.ToString())
-                    {
-                        Debug.Print("Failed to get an IP Address in the alotted time.");
-                        return false;
-                    }
-
-                    Debug.Print("Got IP Address: " + net.IPAddress.ToString());
-                    return true;
-
-                    //NOTE: this does not work, even though it's on the actual network device. [shrug]
-                    // try to renew the DHCP lease and get a new IP Address
-                    //net.RenewDhcpLease ();
-                    //while (net.IPAddress == "0.0.0.0") {
-                    //    Thread.Sleep (10);
-                    //}
-
-                }
-                else
-                {
-                    Debug.Print("DHCP is not enabled, and no IP address is configured, bailing out.");
-                    return false;
-                }
-            }
-            else
-            {
-                Debug.Print("Already had IP Address: " + net.IPAddress.ToString());
-                return true;
-            }
-
-        }
-
-        private static string BytesToHexString(byte[] bytes)
-        {
-            string hexString = string.Empty;
-
-            // Create a character array for hexadecimal conversion.
-            const string hexChars = "0123456789ABCDEF";
-
-            // Loop through the bytes.
-            for (byte b = 0; b < bytes.Length; b++)
-            {
-                if (b > 0)
-                    hexString += "-";
-
-                // Grab the top 4 bits and append the hex equivalent to the return string.        
-                hexString += hexChars[bytes[b] >> 4];
-
-                // Mask off the upper 4 bits to get the rest of it.
-                hexString += hexChars[bytes[b] & 0x0F];
-            }
-
-            return hexString;
+            return padded + text;
         }
     }
 }

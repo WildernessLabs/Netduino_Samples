@@ -38,6 +38,11 @@
     <Compile Include="DehydratorController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="RequestHandler.cs" />
     <Compile Include="RoslynHackFix.cs" />
   </ItemGroup>
@@ -50,6 +55,7 @@
       <HintPath>..\packages\Maple.0.0.7\lib\netmf43\Maple.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.SPOT.Graphics" />
     <Reference Include="Microsoft.SPOT.Hardware" />
     <Reference Include="Microsoft.SPOT.Hardware.PWM" />
     <Reference Include="Microsoft.SPOT.Hardware.SerialPort" />
@@ -57,25 +63,37 @@
     <Reference Include="Microsoft.SPOT.Native" />
     <Reference Include="Microsoft.SPOT.Net" />
     <Reference Include="Microsoft.SPOT.TinyCore" />
-    <Reference Include="Netduino.Foundation, Version=0.14.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Netduino.Foundation.0.14.611\lib\netmf43\Netduino.Foundation.dll</HintPath>
+    <Reference Include="Netduino.Foundation, Version=0.15.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Netduino.Foundation.0.15.630\lib\netmf43\Netduino.Foundation.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Netduino.Foundation.Displays.SerialLCD, Version=0.17.0.0, Culture=neutral, processorArchitecture=x86">
-      <HintPath>..\packages\Netduino.Foundation.SerialLCD.0.17.612\lib\netmf43\Netduino.Foundation.Displays.SerialLCD.dll</HintPath>
+    <Reference Include="Netduino.Foundation.Displays.SerialLCD, Version=0.18.0.0, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\packages\Netduino.Foundation.SerialLCD.0.18.644\lib\netmf43\Netduino.Foundation.Displays.SerialLCD.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Netduino.Foundation.Network, Version=0.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Netduino.Foundation.Network.0.1.621\lib\netmf43\Netduino.Foundation.Network.dll</HintPath>
+    <Reference Include="Netduino.Foundation.Displays.TextDisplayMenu, Version=0.7.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Netduino.Foundation.TextDisplayMenu.0.7.645\lib\netmf43\Netduino.Foundation.Displays.TextDisplayMenu.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Netduino.Foundation.Network, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Netduino.Foundation.Network.0.2.644\lib\netmf43\Netduino.Foundation.Network.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="SecretLabs.NETMF.Hardware.Netduino, Version=4.3.1.0, Culture=neutral, processorArchitecture=MSIL" />
+    <Reference Include="SecretLabs.NETMF.IO, Version=4.3.1.0, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Http" />
     <Reference Include="System.IO" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="menu.json" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Condition="EXISTS('$(NetMfTargetsBaseDir)$(TargetFrameworkVersion)\CSharp.Targets')" Project="$(NetMfTargetsBaseDir)$(TargetFrameworkVersion)\CSharp.Targets" />
   <Import Condition="!EXISTS('$(NetMfTargetsBaseDir)$(TargetFrameworkVersion)\CSharp.Targets')" Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
