@@ -13,20 +13,36 @@ namespace ChickenCoop.DoorTest
         protected IContinuousRotationServo _doorServo = null;
         protected PushButton _button = null;
         protected bool _operatingDoor = false;
-        protected int _servoTurnsToOperateDoor = 10;
         protected double _totalOpenServoAngle;
-        protected DoorOperationDirection _doorState = DoorOperationDirection.Close;
+        protected DoorState _doorState = DoorState.Unknown;
         protected RotationDirection _openDirection = RotationDirection.Clockwise;
         protected RotationDirection _closeDirection = RotationDirection.CounterClockwise;
+        protected PushButton _openEndStopSwitch = null;
+        protected PushButton _closeEndStopSwitch = null;
+        protected bool _openEndStopTriggered = false;
+        protected bool _closeEndStopTriggered = false;
 
         public App()
         {
+            // instantiate all of our peripherals
             _doorServo = new ContinuousRotationServo(N.PWMChannels.PWM_PIN_D9, NamedServoConfigs.IdealContinuousRotationServo);
             _button = new PushButton((H.Cpu.Pin)0x15, CircuitTerminationType.Floating);
+            _openEndStopSwitch = new PushButton(N.Pins.GPIO_PIN_D2, CircuitTerminationType.CommonGround);
+            _closeEndStopSwitch = new PushButton(N.Pins.GPIO_PIN_D3, CircuitTerminationType.CommonGround);
 
-            _totalOpenServoAngle = _servoTurnsToOperateDoor * 360;
+            // set our end stop trigger events
+            _openEndStopSwitch.PressStarted += (s, e) => {
+                _openEndStopTriggered = true; _doorState = DoorState.Open;
+                Debug.Print("open end stop triggered");
+            };
+            _openEndStopSwitch.PressEnded += (s, e) => { _openEndStopTriggered = false; };
+            _closeEndStopSwitch.PressStarted += (s, e) => {
+                _closeEndStopTriggered = true; _doorState = DoorState.Closed;
+                Debug.Print("close end stop triggered");
+            };
+            _closeEndStopSwitch.PressEnded += (s, e) => { _closeEndStopTriggered = false; };
 
-
+            // wire up our button click for door open/close
             _button.Clicked += (object sender, EventArgs e) => {
                 Debug.Print("Button Clicked");
                 ToggleDoor();
@@ -41,10 +57,11 @@ namespace ChickenCoop.DoorTest
             // if we're already in process
             if (_operatingDoor) return;
 
-            if (_doorState == DoorOperationDirection.Close)
+            if (_doorState == DoorState.Closed || _doorState == DoorState.Unknown)
             {
                 OperateDoor(DoorOperationDirection.Open);
-            } else
+            }
+            else
             {
                 OperateDoor(DoorOperationDirection.Close);
             }
@@ -53,43 +70,52 @@ namespace ChickenCoop.DoorTest
         protected void OperateDoor(DoorOperationDirection direction)
         {
             // if we're already in process
+            // TODO: maybe we make this cancellable
             if (_operatingDoor) return;
-
             _operatingDoor = true;
 
-            Debug.Print("OperateDoor: " + (direction == DoorOperationDirection.Open ? "open" : "close"));
-
-            // open the door
-            if (direction == DoorOperationDirection.Open)
+            Thread th = new Thread(() =>
             {
-                // rotate the winch servo in the open direction
-                _doorServo.Rotate(_openDirection, 1.0f);
+                Debug.Print("OperateDoor: " + (direction == DoorOperationDirection.Open ? "open" : "close"));
 
-                // TODO: Rotate until the stop is hit
-                Thread.Sleep(3000);
+                // open the door
+                if (direction == DoorOperationDirection.Open)
+                {
+                    // rotate the winch servo until the end stop is triggered
+                    while (!_openEndStopTriggered)
+                    {
 
-                // stop the winch
-                _doorServo.Stop();
+                        // rotate the winch servo in the open direction
+                        _doorServo.Rotate(_openDirection, 1.0f);
+                    }
+                    // stop the winch
+                    _doorServo.Stop();
+                    Debug.Print("Open end stop hit.");
 
-                // update our door state
-                _doorState = DoorOperationDirection.Open;
-                
-            } else {
-                // rotate the winch servo in the open direction
-                _doorServo.Rotate(_closeDirection, 1.0f);
+                    // update our door state
+                    _doorState = DoorState.Open;
 
-                // TODO: Rotate until the stop is hit
-                Thread.Sleep(3000);
+                }
+                else
+                { // close the door
+                  // rotate the winch servo until the end stop is triggered
+                    while (!_closeEndStopTriggered)
+                    {
+                        // close
+                        _doorServo.Rotate(_closeDirection, 1.0f);
+                    }
+                    // stop the winch
+                    _doorServo.Stop();
+                    Debug.Print("Open end stop hit.");
 
-                // stop the winch
-                _doorServo.Stop();
+                    // update our door state
+                    _doorState = DoorState.Closed;
+                }
 
-                // update our door state
-                _doorState = DoorOperationDirection.Close;
-            }
-
-            //
-            _operatingDoor = false;
+                //
+                _operatingDoor = false;
+            });
+            th.Start();
         }
     }
 
@@ -97,5 +123,12 @@ namespace ChickenCoop.DoorTest
     {
         Open,
         Close
+    }
+
+    public enum DoorState
+    {
+        Open,
+        Closed,
+        Unknown
     }
 }
