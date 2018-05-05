@@ -59,32 +59,34 @@ namespace ChickenCoop.DoorTest
 
             if (_doorState == DoorState.Closed || _doorState == DoorState.Unknown)
             {
-                OperateDoor(DoorOperationDirection.Open);
+                OperateDoor(true);
             }
             else
             {
-                OperateDoor(DoorOperationDirection.Close);
+                OperateDoor(false);
             }
         }
 
-        protected void OperateDoor(DoorOperationDirection direction)
+        protected void OperateDoor(bool open)
         {
             // if we're already in process
             // TODO: maybe we make this cancellable
             if (_operatingDoor) return;
             _operatingDoor = true;
 
+            // spin up a new thread so we don't block anything.
+            // this is especially important with the end stops. 
+            // without a new thread, we don't get those events. :D
             Thread th = new Thread(() =>
             {
-                Debug.Print("OperateDoor: " + (direction == DoorOperationDirection.Open ? "open" : "close"));
+                Debug.Print("OperateDoor: " + (open ? "open" : "close"));
 
                 // open the door
-                if (direction == DoorOperationDirection.Open)
+                if (open)
                 {
                     // rotate the winch servo until the end stop is triggered
                     while (!_openEndStopTriggered)
                     {
-
                         // rotate the winch servo in the open direction
                         _doorServo.Rotate(_openDirection, 1.0f);
                     }
@@ -117,12 +119,6 @@ namespace ChickenCoop.DoorTest
             });
             th.Start();
         }
-    }
-
-    public enum DoorOperationDirection
-    {
-        Open,
-        Close
     }
 
     public enum DoorState
