@@ -1,6 +1,6 @@
 using System;
 
-namespace ChickenCoop.SunsetSunrise
+namespace ChickenCoop.Micro.SunsetSunrise
 {
     public class SunriseData
     {

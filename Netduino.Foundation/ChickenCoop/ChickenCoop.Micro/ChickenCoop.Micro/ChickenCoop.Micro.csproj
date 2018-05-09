@@ -35,9 +35,17 @@
     <Compile Include="..\ChickenCoop.DoorTest\RoslynHackFix.cs">
       <Link>RoslynHackFix.cs</Link>
     </Compile>
+    <Compile Include="..\ChickenCoop.SunsetSunriseTest\SunriseData.cs">
+      <Link>SunsetSunrise\SunriseData.cs</Link>
+    </Compile>
+    <Compile Include="..\ChickenCoop.SunsetSunriseTest\SunriseService.cs">
+      <Link>SunsetSunrise\SunriseService.cs</Link>
+    </Compile>
     <Compile Include="App.cs" />
+    <Compile Include="AppConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="SunsetSunrise\SunsetManager.cs" />
     <Compile Include="TemperatureController.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -48,12 +56,18 @@
     <Reference Include="Microsoft.SPOT.Native" />
     <Reference Include="Microsoft.SPOT.Net" />
     <Reference Include="Microsoft.SPOT.TinyCore" />
-    <Reference Include="Netduino.Foundation, Version=0.14.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Netduino.Foundation.0.14.611\lib\netmf43\Netduino.Foundation.dll</HintPath>
+    <Reference Include="Netduino.Foundation, Version=0.15.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Netduino.Foundation.0.15.630\lib\netmf43\Netduino.Foundation.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Netduino.Foundation.Network, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Netduino.Foundation.Network.0.2.644\lib\netmf43\Netduino.Foundation.Network.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="SecretLabs.NETMF.Hardware.Netduino" />
     <Reference Include="System" />
+    <Reference Include="System.Http" />
+    <Reference Include="System.IO" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

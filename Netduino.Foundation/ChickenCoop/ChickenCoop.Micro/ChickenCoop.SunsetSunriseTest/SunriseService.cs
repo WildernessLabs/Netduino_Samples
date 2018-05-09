@@ -9,7 +9,7 @@ using System.Net;
  * 
  * https://api.sunrise-sunset.org
  */
-namespace ChickenCoop.SunsetSunrise
+namespace ChickenCoop.Micro.SunsetSunrise
 {
     public class SunriseService
     {
