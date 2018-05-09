@@ -21,7 +21,7 @@ namespace FoodDehydrator3000
         protected AnalogTemperature _tempSensor = null;
         protected SoftPwm _heaterRelayPwm = null;
         protected Relay _fanRelay = null;
-        protected SerialLCD _display = null;
+        protected ITextDisplay _display = null;
 
         // controllers
         IPidController _pidController = null;
@@ -57,7 +57,7 @@ namespace FoodDehydrator3000
         protected TimeSpan _timerStartValue = TimeSpan.Zero;
         protected DateTime _startTime = DateTime.MinValue;
 
-        public DehydratorController(AnalogTemperature tempSensor, SoftPwm heater, Relay fan, SerialLCD display)
+        public DehydratorController(AnalogTemperature tempSensor, SoftPwm heater, Relay fan, ITextDisplay display)
         {
             _tempSensor = tempSensor;
             _heaterRelayPwm = heater;

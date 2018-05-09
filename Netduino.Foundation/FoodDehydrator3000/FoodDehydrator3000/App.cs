@@ -1,23 +1,19 @@
-using System;
-using System.Threading;
+using FoodDehydrator3000.Properties;
+using Maple;
 using Microsoft.SPOT;
-using H = Microsoft.SPOT.Hardware;
-using N = SecretLabs.NETMF.Hardware.Netduino;
-using Netduino.Foundation.Sensors.Temperature;
+using Microsoft.SPOT.Net.NetworkInformation;
+using Netduino.Foundation.Displays;
+using Netduino.Foundation.Displays.LCD;
+using Netduino.Foundation.Displays.TextDisplayMenu;
+using Netduino.Foundation.Generators;
 using Netduino.Foundation.Relays;
 using Netduino.Foundation.Sensors;
-using Netduino.Foundation.Sensors.Buttons;
-using Netduino.Foundation.Generators;
-using Netduino.Foundation.Displays;
-using Microsoft.SPOT.Net.NetworkInformation;
-using System.Net;
-using Maple;
-using System.IO;
-using Netduino.Foundation.Displays.TextDisplayMenu;
 using Netduino.Foundation.Sensors.Rotary;
-using FoodDehydrator3000.Properties;
-using System.Text;
+using Netduino.Foundation.Sensors.Temperature;
+using Netduino.Foundation.ICs.IOExpanders.MCP23008;
+using System;
 using System.Collections;
+using N = SecretLabs.NETMF.Hardware.Netduino;
 
 namespace FoodDehydrator3000
 {
@@ -28,7 +24,7 @@ namespace FoodDehydrator3000
         protected SoftPwm _heaterRelayPwm = null;
         protected Relay _fanRelay = null;
         //protected PushButton _button = null;
-        protected SerialLCD _display = null;
+        protected ITextDisplay _display = null;
 
         RotaryEncoderWithButton _encoder = null;
 
@@ -48,11 +44,12 @@ namespace FoodDehydrator3000
         {
             // Rotary Encoder
             _encoder = new RotaryEncoderWithButton(
-                N.Pins.GPIO_PIN_D5, N.Pins.GPIO_PIN_D6, N.Pins.GPIO_PIN_D7,
+                N.Pins.GPIO_PIN_D7, N.Pins.GPIO_PIN_D6, N.Pins.GPIO_PIN_D5,
                 Netduino.Foundation.CircuitTerminationType.CommonGround);
 
             // LCD
-            _display = new SerialLCD(new TextDisplayConfig() { Width = 20, Height = 4 });
+            //_display = new Lcd2004(new MCP23008());
+            _display = new Lcd2004(N.Pins.GPIO_PIN_D8, N.Pins.GPIO_PIN_D9, N.Pins.GPIO_PIN_D10, N.Pins.GPIO_PIN_D11, N.Pins.GPIO_PIN_D12, N.Pins.GPIO_PIN_D13);
             _display.Clear();
             Debug.Print("Display up.");
             _display.WriteLine("Display up!", 0);
