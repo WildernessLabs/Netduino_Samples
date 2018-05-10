@@ -181,7 +181,6 @@ namespace FoodDehydrator3000
         protected void CloseMenu()
         {
             this._menu.Disable();
-            this.DisplayInfoScreen();
             this._inMenu = false;
         }
 
@@ -211,7 +210,6 @@ namespace FoodDehydrator3000
             {
                 _targetTemp = (float)(double)e.Value; //smh
                 _dehydrator.TargetTemperature = _targetTemp;
-                _menu.UpdateItemValue("displayTargetTemp", e.Value);
             }
             else if(e.ItemID == "timer")
             {
