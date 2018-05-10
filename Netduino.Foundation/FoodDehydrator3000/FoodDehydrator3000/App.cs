@@ -138,6 +138,10 @@ namespace FoodDehydrator3000
             _menu = new Menu(_display, _encoder, Resources.GetBytes(Resources.BinaryResources.menu), true);
             _menu.ValueChanged += HandleMenuValueChange;
             _menu.Selected += HandleMenuSelected;
+            _menu.Exited += (s, e) => {
+                this._inMenu = false;
+                this.DisplayInfoScreen();
+            };
         }
 
         protected void InitializeWebServer()
@@ -183,6 +187,7 @@ namespace FoodDehydrator3000
         {
             this._menu.Disable();
             this._inMenu = false;
+            this.DisplayInfoScreen();
         }
 
         /// <summary>
@@ -207,14 +212,15 @@ namespace FoodDehydrator3000
         /// </summary>
         protected void HandleMenuValueChange(object sender, ValueChangedEventArgs e)
         {
-            if(e.ItemID == "temperature")
-            {
-                _targetTemp = (float)(double)e.Value; //smh
-                _dehydrator.TargetTemperature = _targetTemp;
-            }
-            else if(e.ItemID == "timer")
-            {
-                _runTime = (TimeSpan)e.Value;
+            switch (e.ItemID) {
+                case "temperature":
+                    _targetTemp = (float)(double)e.Value; //smh
+                    _dehydrator.TargetTemperature = _targetTemp;
+                    break;
+                case "timer":
+                    //TODO: shouldn't this get updated on the dehydrator controller?
+                    _runTime = (TimeSpan)e.Value;
+                    break;
             }
         }
 
@@ -231,22 +237,6 @@ namespace FoodDehydrator3000
             {
                 DisplayInfoScreen();
             }
-
-            //if(_menu != null)
-            //{
-            //    if(DateTime.Now > _tempUpdated.AddSeconds(updateInterval))
-            //    {
-            //        Debug.Print("Update display");
-            //        TimeSpan remainingTime = _dehydrator.RunningTimeLeft;
-
-            //        Hashtable values = new Hashtable();
-            //        values.Add("displayCurrentTemp", temp);
-            //        values.Add("temperature", _targetTemp);
-            //        values.Add("displayRemainingTime", PadLeft(remainingTime.Hours.ToString(), '0', 2) + ":" + PadLeft(remainingTime.Minutes.ToString(), '0', 2));
-            //        _menu.UpdateItemValue(values);
-            //        _tempUpdated = DateTime.Now;
-            //    }
-            //}
         }
 
         protected void TogglePower()

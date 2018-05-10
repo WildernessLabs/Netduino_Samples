@@ -1,25 +1,19 @@
 {
   "menu": [
     {
-      "text": "Settings",
-      "sub": [
-        {
-          "text": "Set Temperature",
-          "id": "temperature",
-          "type": "Temperature",
-          "value": "100"
-        },
-        {
-          "text": "Set Timer",
-          "id": "timer",
-          "type": "Time",
-          "value": "01:00"
-        },
-        {
-          "text": "Toggle Power",
-          "command": "power"
-        }
-      ]
-    }
-  ]
+      "text": "Set Temperature",
+      "id": "temperature",
+      "type": "ShortTempEditMenuItem",
+      "value": "35"
+    },
+    {
+      "text": "Set Timer",
+      "id": "timer",
+      "type": "Time",
+      "value": "01:00"
+    },
+    {
+      "text": "Toggle Power",
+      "command": "power"
+    }]
 }

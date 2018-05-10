@@ -45,6 +45,7 @@
     </Compile>
     <Compile Include="RequestHandler.cs" />
     <Compile Include="RoslynHackFix.cs" />
+    <Compile Include="ShortTempEditMenuItem.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Json.NetMF, Version=1.3.0.0, Culture=neutral, processorArchitecture=MSIL">
