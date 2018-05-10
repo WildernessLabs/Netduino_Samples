@@ -134,7 +134,7 @@ namespace FoodDehydrator3000
         protected void InitializeMenu()
         {
             // initialize menu
-            _menu = new Menu(_display, _encoder, _encoder.Button, Resources.GetBytes(Resources.BinaryResources.menu));
+            _menu = new Menu(_display, _encoder, Resources.GetBytes(Resources.BinaryResources.menu));
             _menu.ValueChanged += HandleMenuValueChange;
             _menu.Selected += HandleMenuSelected;
         }
@@ -149,7 +149,6 @@ namespace FoodDehydrator3000
 
             _server = new MapleServer();
             _server.AddHandler(handler);
-
         }
 
         /// <summary>
@@ -160,9 +159,6 @@ namespace FoodDehydrator3000
         {
             if(_inMenu) CloseMenu();
             
-            //TEMP
-            _display.Clear();
-
             _display.WriteLine("Current Temp: " + _tempSensor.Temperature.ToString("F1") + "C", 0);
             _display.WriteLine("Target:" + _targetTemp.ToString("F0") + "C", 1);
             var remainingTime = _dehydrator.RunningTimeLeft;
@@ -170,15 +166,22 @@ namespace FoodDehydrator3000
             _display.WriteLine("Click for more.", 3);
         }
 
+        /// <summary>
+        /// Displays the menu.
+        /// </summary>
         protected void DisplayMenu()
         {
             this._inMenu = true;
             this._menu.Enable();
         }
 
+        /// <summary>
+        /// Closes the menu and displays the info screen.
+        /// </summary>
         protected void CloseMenu()
         {
             this._menu.Disable();
+            this.DisplayInfoScreen();
             this._inMenu = false;
         }
 
@@ -187,10 +190,15 @@ namespace FoodDehydrator3000
         /// </summary>
         protected void HandleMenuSelected(object sender, MenuSelectedEventArgs e)
         {
-            if(e.Command == "power")
+            switch (e.Command)
             {
-                Debug.Print("menu power");
-                TogglePower();
+                case "returnToInfo":
+                    this.DisplayInfoScreen();
+                    break;
+                case "power":
+                    Debug.Print("menu power");
+                    TogglePower();
+                    break;
             }
         }
 

@@ -1,19 +1,10 @@
 {
   "menu": [
     {
-      "text": "Current: {value}",
-      "id": "displayCurrentTemp",
+      "text": "Back to info screen",
+      "id": "returnToInfo",
+      "command":  "returnToInfo",
       "value": 0
-    },
-    {
-      "text": "Target: {value}",
-      "id": "displayTargetTemp",
-      "value": 0
-    },
-    {
-      "text": "Remaining: {value}",
-      "id": "displayRemainingTime",
-      "value": "00:00"
     },
     {
       "text": "Settings",
