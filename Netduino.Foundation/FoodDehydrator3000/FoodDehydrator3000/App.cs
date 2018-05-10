@@ -81,6 +81,7 @@ namespace FoodDehydrator3000
 
             // LCD
             //_display = new Lcd2004(new MCP23008());
+            //_display = new Lcd2004(N.Pins.GPIO_PIN_D13, N.Pins.GPIO_PIN_D12, N.Pins.GPIO_PIN_D11, N.Pins.GPIO_PIN_D10, N.Pins.GPIO_PIN_D9, N.Pins.GPIO_PIN_D8);
             _display = new Lcd2004(N.Pins.GPIO_PIN_D8, N.Pins.GPIO_PIN_D9, N.Pins.GPIO_PIN_D10, N.Pins.GPIO_PIN_D11, N.Pins.GPIO_PIN_D12, N.Pins.GPIO_PIN_D13);
             _display.Clear();
             Debug.Print("Display up.");
@@ -134,7 +135,7 @@ namespace FoodDehydrator3000
         protected void InitializeMenu()
         {
             // initialize menu
-            _menu = new Menu(_display, _encoder, Resources.GetBytes(Resources.BinaryResources.menu));
+            _menu = new Menu(_display, _encoder, Resources.GetBytes(Resources.BinaryResources.menu), true);
             _menu.ValueChanged += HandleMenuValueChange;
             _menu.Selected += HandleMenuSelected;
         }
@@ -191,12 +192,12 @@ namespace FoodDehydrator3000
         {
             switch (e.Command)
             {
-                case "returnToInfo":
-                    this.DisplayInfoScreen();
-                    break;
                 case "power":
                     Debug.Print("menu power");
                     TogglePower();
+                    break;
+                case "Exit":
+                    this.DisplayInfoScreen();
                     break;
             }
         }

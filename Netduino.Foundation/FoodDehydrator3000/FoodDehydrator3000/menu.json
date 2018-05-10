@@ -1,12 +1,6 @@
 {
   "menu": [
     {
-      "text": "Back to info screen",
-      "id": "returnToInfo",
-      "command":  "returnToInfo",
-      "value": 0
-    },
-    {
       "text": "Settings",
       "sub": [
         {
