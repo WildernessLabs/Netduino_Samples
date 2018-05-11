@@ -16,6 +16,7 @@ namespace FoodDehydrator3000
     {
         // events
         public event EventHandler RunTimeElapsed = delegate { };
+        public event EventHandler RelayToggle = delegate { };
 
         // peripherals
         protected AnalogTemperature _tempSensor = null;

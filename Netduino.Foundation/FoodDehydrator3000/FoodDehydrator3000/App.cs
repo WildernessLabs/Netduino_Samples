@@ -18,6 +18,7 @@ using N = SecretLabs.NETMF.Hardware.Netduino;
 using Netduino.Foundation;
 using Netduino.Foundation.Sensors.Buttons;
 using Netduino.Foundation.Network;
+using System.Threading;
 
 namespace FoodDehydrator3000
 {
@@ -50,6 +51,8 @@ namespace FoodDehydrator3000
             // initialze
             this.InitializePeripherals();
             this.InitializeMenu();
+            //TODO: remove this when we get rid of reinitialize display
+            _menu.UpdateItemValue("power", "Turn on");
 
             // initilaize our dehydrator controller
             _dehydrator = new DehydratorController(_tempSensor, _heaterRelayPwm, _fanRelay, _display);
@@ -80,10 +83,7 @@ namespace FoodDehydrator3000
                 CircuitTerminationType.CommonGround);
 
             // LCD
-            //_display = new Lcd2004(new MCP23008());
-            //_display = new Lcd2004(N.Pins.GPIO_PIN_D13, N.Pins.GPIO_PIN_D12, N.Pins.GPIO_PIN_D11, N.Pins.GPIO_PIN_D10, N.Pins.GPIO_PIN_D9, N.Pins.GPIO_PIN_D8);
-            _display = new Lcd2004(N.Pins.GPIO_PIN_D8, N.Pins.GPIO_PIN_D9, N.Pins.GPIO_PIN_D10, N.Pins.GPIO_PIN_D11, N.Pins.GPIO_PIN_D12, N.Pins.GPIO_PIN_D13);
-            _display.Clear();
+            InitializeDisplay();
             Debug.Print("Display up.");
             _display.WriteLine("Display up!", 0);
 
@@ -108,12 +108,23 @@ namespace FoodDehydrator3000
             _display.WriteLine("Peripherals online!", 0);
         }
 
+        /// <summary>
+        /// HACK: 
+        /// </summary>
+        protected void InitializeDisplay()
+        {
+            //_display = new Lcd2004(new MCP23008());
+            _display = new Lcd2004(N.Pins.GPIO_PIN_D8, N.Pins.GPIO_PIN_D9, N.Pins.GPIO_PIN_D10, N.Pins.GPIO_PIN_D11, N.Pins.GPIO_PIN_D12, N.Pins.GPIO_PIN_D13);
+            _display.Clear();
+        }
+
         //
         protected void WireUpPeripheralEvents()
         {
             // Analog Temp Sensor. Setup to notify at half a degree changes
             _tempSensor.TemperatureChanged += (object sender, SensorFloatEventArgs e) => {
-                UpdateTemp(e.CurrentValue);
+                _currentTemp = e.CurrentValue;
+                UpdateInfoScreen();
             };
 
             _pushButton.LongPressClicked += (s, e) => {
@@ -142,8 +153,22 @@ namespace FoodDehydrator3000
                 this._inMenu = false;
                 this.DisplayInfoScreen();
             };
-            _menu.UpdateItemValue("power", "Turn on");
-           
+            // TODO: uncomment when we get rid of ReinitializeDisplay
+            //_menu.UpdateItemValue("power", "Turn on");
+        }
+
+        /// <summary>
+        /// HACK: 
+        /// </summary>
+        protected void ReinitializeDisplay()
+        {
+            Thread th = new Thread(() => {
+                Thread.Sleep(1500);
+                InitializeDisplay();
+                InitializeMenu();
+                DisplayInfoScreen();
+            });
+            th.Start();
         }
 
         protected void InitializeWebServer()
@@ -165,9 +190,16 @@ namespace FoodDehydrator3000
         protected void DisplayInfoScreen()
         {
             if(_inMenu) CloseMenu();
-            
+            UpdateInfoScreen();
+        }
+
+        protected void UpdateInfoScreen()
+        {
+            // if we're in the menu, get out. 
+            if (_inMenu) return;
+
             _display.WriteLine("Current Temp: " + _tempSensor.Temperature.ToString("F1") + "C", 0);
-            _display.WriteLine("Target:" + _targetTemp.ToString("F0") + "C", 1);
+            _display.WriteLine("Target Temp: " + _targetTemp.ToString("F0") + "C", 1);
             var remainingTime = _dehydrator.RunningTimeLeft;
             _display.WriteLine("Time: " + PadLeft(remainingTime.Hours.ToString(), '0', 2) + ":" + PadLeft(remainingTime.Minutes.ToString(), '0', 2), 2);
             _display.WriteLine("Click for more.", 3);
@@ -225,36 +257,29 @@ namespace FoodDehydrator3000
                     break;
             }
         }
-
-        /// <summary>
-        /// Called when the temperature data has changed. 
-        /// Updates the display and menu data.
-        /// </summary>
-        /// <param name="temp"></param>
-        protected void UpdateTemp(float temp)
-        {
-            int updateInterval = 5;
-
-            if (!_inMenu)
-            {
-                DisplayInfoScreen();
-            }
-        }
+       
 
         protected void TogglePower()
         {
-            if (_dehydrator.Running)
+            if (_dehydrator.Running) TogglePower(false);
+            else TogglePower(true);
+        }
+
+        protected void TogglePower(bool turnOn)
+        {
+            if (turnOn)
             {
-                Debug.Print("PowerButtonClicked, _running == true, turning off.");
-                _dehydrator.TurnOff(10);
+                Debug.Print("TogglePower, turning on.");
+                _dehydrator.TurnOn(_targetTemp, _runTime); // set to 35C to start
             }
             else
             {
-                Debug.Print("PowerButtonClicked, _running == false, turning on.");
-                _dehydrator.TurnOn(_targetTemp, _runTime); // set to 35C to start
+                Debug.Print("TogglePower, turning off.");
+                _dehydrator.TurnOff(10);
             }
             // update our menu state
             _menu.UpdateItemValue("power", (_dehydrator.Running) ? "Turn off" : "Turn on");
+            UpdateInfoScreen();
         }
 
         public void Run()
@@ -289,12 +314,14 @@ namespace FoodDehydrator3000
 
         private void Handler_TurnOn(int targetTemp)
         {
-            _dehydrator.TurnOn(targetTemp);
+            _targetTemp = targetTemp;
+            TogglePower(true);
         }
 
         private void Handler_TurnOff(int coolDownDelay)
         {
-            _dehydrator.TurnOff(coolDownDelay);
+            _targetTemp = 0.0f;
+            TogglePower(false);
         }
 
         public static string PadLeft(string text, char filler, int size)
