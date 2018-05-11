@@ -17,6 +17,7 @@ using System.Collections;
 using N = SecretLabs.NETMF.Hardware.Netduino;
 using Netduino.Foundation;
 using Netduino.Foundation.Sensors.Buttons;
+using Netduino.Foundation.Network;
 
 namespace FoodDehydrator3000
 {
@@ -36,7 +37,6 @@ namespace FoodDehydrator3000
         protected DehydratorController _dehydrator = null;
 
         // vars
-        protected NetworkInterface[] _interfaces;
         protected float _currentTemp;
         protected MapleServer _server;
         protected Menu _menu;
@@ -142,6 +142,8 @@ namespace FoodDehydrator3000
                 this._inMenu = false;
                 this.DisplayInfoScreen();
             };
+            _menu.UpdateItemValue("power", "Turn on");
+           
         }
 
         protected void InitializeWebServer()
@@ -251,14 +253,17 @@ namespace FoodDehydrator3000
                 Debug.Print("PowerButtonClicked, _running == false, turning on.");
                 _dehydrator.TurnOn(_targetTemp, _runTime); // set to 35C to start
             }
+            // update our menu state
+            _menu.UpdateItemValue("power", (_dehydrator.Running) ? "Turn off" : "Turn on");
         }
 
         public void Run()
         {
-            bool networkInit = Netduino.Foundation.Network.Initializer.InitializeNetwork("http://google.com");
+            bool networkInit = Initializer.InitializeNetwork("http://google.com");
 
             if (networkInit)
             {
+                _menu.UpdateItemValue("IP", "IP: " + Initializer.CurrentNetworkInterface.IPAddress.ToString());
                 _server.Start();
                 Debug.Print("Maple server started.");
             }

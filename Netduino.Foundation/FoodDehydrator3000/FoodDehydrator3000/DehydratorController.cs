@@ -70,7 +70,7 @@ namespace FoodDehydrator3000
             _pidController.DerivativeComponent = 0f; // derivative time in minutes
             _pidController.OutputMin = 0.0f; // 0% power minimum
             _pidController.OutputMax = 1.0f; // 100% power max
-            _pidController.OutputTuningInformation = true;
+            _pidController.OutputTuningInformation = false;
 
         }
 
@@ -103,8 +103,6 @@ namespace FoodDehydrator3000
             this._startTime = DateTime.Now;
             this._isTimerSet = _timerStartValue != TimeSpan.Zero;
             this._running = true;
-
-            Debug.Print("Here");
 
             // keeping fan off, to get temp to rise.
             this._fanRelay.IsOn = true;
