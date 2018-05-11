@@ -1,9 +1,9 @@
 {
   "menu": [
     {
-      "text": "{value}",
+      "text": "IP: {value}",
       "id": "IP",
-      "value": "IP: unknown"
+      "value": "unknown"
     }
     {
       "text": "Set Temperature",

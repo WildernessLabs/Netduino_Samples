@@ -74,21 +74,6 @@ namespace FoodDehydrator3000
 
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="delay">in seconds</param>
-        public void TurnOff(int delay)
-        {
-            Debug.Print("Turning off.");
-            this._heaterRelayPwm.Stop();
-            Debug.Print("Cooldown delay, " + delay.ToString() + "secs");
-            Thread.Sleep(delay * 1000);
-            this._fanRelay.IsOn = false;
-            this._running = false;
-            this._timerStartValue = TimeSpan.Zero;
-        }
-
         public void TurnOn(float temp)
         {
             TurnOn(temp, TimeSpan.Zero);
@@ -116,6 +101,41 @@ namespace FoodDehydrator3000
 
             // start our temp regulation thread. might want to change this to notify.
             StartRegulatingTemperatureThread();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="delay">in seconds</param>
+        public void TurnOff(int delay)
+        {
+            Debug.Print("Turning off.");
+            this._heaterRelayPwm.Stop();
+            this._running = false;
+            this._timerStartValue = TimeSpan.Zero;
+            this.Cooldown(delay);
+        }
+
+        /// <summary>
+        /// Runs the fan for a specified cooldown period.
+        /// When the cooldown period elapses, it checks to see
+        /// that the dehydrator hasn't been turned back on before
+        /// turning fan off.
+        /// </summary>
+        /// <param name="delay"></param>
+        protected void Cooldown(int delay)
+        {
+            Thread th = new Thread(() =>
+            {
+                Debug.Print("Cooldown delay, " + delay.ToString() + "secs");
+                Thread.Sleep(delay * 1000);
+                if (!this._running)
+                {
+                    Debug.Print("Cooldown elapsed, turning fan off.");
+                    this._fanRelay.IsOn = false;
+                }
+            });
+            th.Start();
         }
 
         protected void StartRegulatingTemperatureThread()

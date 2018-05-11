@@ -263,7 +263,7 @@ namespace FoodDehydrator3000
 
             if (networkInit)
             {
-                _menu.UpdateItemValue("IP", "IP: " + Initializer.CurrentNetworkInterface.IPAddress.ToString());
+                _menu.UpdateItemValue("IP", Initializer.CurrentNetworkInterface.IPAddress.ToString());
                 _server.Start();
                 Debug.Print("Maple server started.");
             }
