@@ -46,14 +46,14 @@ namespace FoodDehydrator3000
                 int targetTemp = 0;
                 var prm = "targetTemp";
 
-                if (this.Body[prm] == null && this.Form[prm] == null && this.QueryString[prm] == null)
+                if (this.Body?[prm] == null && this.Form?[prm] == null && this.QueryString?[prm] == null)
                 {
                     StatusResponse(ContentTypes.Application_Text, 400, prm + " is required");
                     return;
                 }
                 try
                 {
-                    var temp = this.Body[prm] ?? this.Form[prm] ?? this.QueryString[prm];
+                    var temp = this.Body?[prm] ?? this.Form?[prm] ?? this.QueryString?[prm];
                     targetTemp = int.Parse(temp.ToString());
                 }
                 catch(Exception ex)
@@ -81,7 +81,7 @@ namespace FoodDehydrator3000
             {
                 var prm = "coolDownDelay";
                 int coolDownDelay = 0;
-                var coolDownDelayValue = this.Body[prm] ?? this.Form[prm] ?? this.QueryString[prm] ?? null;
+                var coolDownDelayValue = this.Body?[prm] ?? this.Form?[prm] ?? this.QueryString?[prm] ?? null;
                
                 try
                 {
