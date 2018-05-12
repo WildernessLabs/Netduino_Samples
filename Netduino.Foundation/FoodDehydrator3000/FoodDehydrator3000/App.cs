@@ -51,8 +51,6 @@ namespace FoodDehydrator3000
             // initialze
             this.InitializePeripherals();
             this.InitializeMenu();
-            //TODO: remove this when we get rid of reinitialize display
-            _menu.UpdateItemValue("power", "Turn on");
 
             // initilaize our dehydrator controller
             _dehydrator = new DehydratorController(_tempSensor, _heaterRelayPwm, _fanRelay, _display);
@@ -83,7 +81,9 @@ namespace FoodDehydrator3000
                 CircuitTerminationType.CommonGround);
 
             // LCD
-            InitializeDisplay();
+            //_display = new Lcd2004(new MCP23008());
+            _display = new Lcd2004(N.Pins.GPIO_PIN_D8, N.Pins.GPIO_PIN_D9, N.Pins.GPIO_PIN_D10, N.Pins.GPIO_PIN_D11, N.Pins.GPIO_PIN_D12, N.Pins.GPIO_PIN_D13);
+            _display.Clear();
             Debug.Print("Display up.");
             _display.WriteLine("Display up!", 0);
 
@@ -106,16 +106,6 @@ namespace FoodDehydrator3000
             // output status
             Debug.Print("Peripherals up");
             _display.WriteLine("Peripherals online!", 0);
-        }
-
-        /// <summary>
-        /// HACK: 
-        /// </summary>
-        protected void InitializeDisplay()
-        {
-            //_display = new Lcd2004(new MCP23008());
-            _display = new Lcd2004(N.Pins.GPIO_PIN_D8, N.Pins.GPIO_PIN_D9, N.Pins.GPIO_PIN_D10, N.Pins.GPIO_PIN_D11, N.Pins.GPIO_PIN_D12, N.Pins.GPIO_PIN_D13);
-            _display.Clear();
         }
 
         //
@@ -153,22 +143,7 @@ namespace FoodDehydrator3000
                 this._inMenu = false;
                 this.DisplayInfoScreen();
             };
-            // TODO: uncomment when we get rid of ReinitializeDisplay
-            //_menu.UpdateItemValue("power", "Turn on");
-        }
-
-        /// <summary>
-        /// HACK: 
-        /// </summary>
-        protected void ReinitializeDisplay()
-        {
-            Thread th = new Thread(() => {
-                Thread.Sleep(1500);
-                InitializeDisplay();
-                InitializeMenu();
-                DisplayInfoScreen();
-            });
-            th.Start();
+            _menu.UpdateItemValue("power", "Turn on");
         }
 
         protected void InitializeWebServer()

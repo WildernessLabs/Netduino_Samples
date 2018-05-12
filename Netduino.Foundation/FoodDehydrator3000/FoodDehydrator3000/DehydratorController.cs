@@ -16,7 +16,7 @@ namespace FoodDehydrator3000
     {
         // events
         public event EventHandler RunTimeElapsed = delegate { };
-        public event EventHandler RelayToggle = delegate { };
+        public event EventHandler CooldownElapsed = delegate { };
 
         // peripherals
         protected AnalogTemperature _tempSensor = null;
@@ -134,6 +134,7 @@ namespace FoodDehydrator3000
                 {
                     Debug.Print("Cooldown elapsed, turning fan off.");
                     this._fanRelay.IsOn = false;
+                    this.CooldownElapsed(this, new EventArgs());
                 }
             });
             th.Start();
