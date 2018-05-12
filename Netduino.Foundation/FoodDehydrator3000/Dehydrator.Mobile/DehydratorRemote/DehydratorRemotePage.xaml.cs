@@ -11,25 +11,47 @@ namespace DehydratorRemote
         {
             InitializeComponent();
             this.Title = "Dehydrator3000";
-            this.MyTemp = new Temperature { DisplayName = "125°F(52°C)", Description = "Vegetables & Herbs", Degrees = 125 };
+            this.MyTemp = new Temperature { DisplayName = "125°F (52°C)", Description = "Vegetables & Herbs", Degrees = 52 };
         }
 
-        public Temperature MyTemp 
+		async protected override void OnAppearing()
+		{
+			base.OnAppearing();
+
+            ApiHelper helper = new ApiHelper(HostAddress.Text);
+            var isConnected = await helper.Connect();
+            if (isConnected)
+            {
+                PowerToggle.On = await helper.CheckStatus();
+            }
+		}
+
+		public Temperature MyTemp
         {
             get
             {
                 return _temperature;
-            } 
+            }
             set
             {
                 _temperature = value;
                 this.SelectedTemperature.Text = _temperature.DisplayName;
-            } 
+            }
         }
 
 		async void Handle_Tapped(object sender, System.EventArgs e)
         {
             await Navigation.PushAsync(new TemperatureSelectionPage());
+        }
+
+        async void Handle_Completed(object sender, System.EventArgs e)
+        {
+            ApiHelper helper = new ApiHelper(HostAddress.Text);
+            var isConnected = await helper.Connect();
+            if (isConnected)
+            {
+                PowerToggle.On = await helper.CheckStatus();
+            }
         }
 
         async void Handle_OnChanged(object sender, Xamarin.Forms.ToggledEventArgs e)
