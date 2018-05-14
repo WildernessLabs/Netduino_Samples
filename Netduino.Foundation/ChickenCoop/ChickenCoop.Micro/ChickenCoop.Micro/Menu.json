@@ -1,0 +1,14 @@
+{
+  "menu": [
+    {
+      "text": "IP: {value}",
+      "id": "IP",
+      "value": "unknown"
+    },
+    {
+      "text": "{value} door",
+      "id": "toggle",
+      "command":  "toggleDoor",
+      "value": "Toggle"
+    }]
+}
