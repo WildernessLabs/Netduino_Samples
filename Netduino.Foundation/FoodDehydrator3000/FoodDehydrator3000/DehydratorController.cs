@@ -16,12 +16,13 @@ namespace FoodDehydrator3000
     {
         // events
         public event EventHandler RunTimeElapsed = delegate { };
+        public event EventHandler CooldownElapsed = delegate { };
 
         // peripherals
         protected AnalogTemperature _tempSensor = null;
         protected SoftPwm _heaterRelayPwm = null;
         protected Relay _fanRelay = null;
-        protected SerialLCD _display = null;
+        protected ITextDisplay _display = null;
 
         // controllers
         IPidController _pidController = null;
@@ -40,11 +41,24 @@ namespace FoodDehydrator3000
 
         public TimeSpan RunningTimeLeft
         {
-            get { return _runningTimeLeft; }
+            get
+            {
+                if(_isTimerSet && _startTime != DateTime.MinValue)
+                {
+                    return _timerStartValue - ((TimeSpan)(DateTime.Now - _startTime));
+                }
+                else
+                {
+                    return TimeSpan.Zero;
+                }
+            }
         }
-        protected TimeSpan _runningTimeLeft = TimeSpan.MinValue;
 
-        public DehydratorController(AnalogTemperature tempSensor, SoftPwm heater, Relay fan, SerialLCD display)
+        protected bool _isTimerSet = false;
+        protected TimeSpan _timerStartValue = TimeSpan.Zero;
+        protected DateTime _startTime = DateTime.MinValue;
+
+        public DehydratorController(AnalogTemperature tempSensor, SoftPwm heater, Relay fan, ITextDisplay display)
         {
             _tempSensor = tempSensor;
             _heaterRelayPwm = heater;
@@ -57,39 +71,24 @@ namespace FoodDehydrator3000
             _pidController.DerivativeComponent = 0f; // derivative time in minutes
             _pidController.OutputMin = 0.0f; // 0% power minimum
             _pidController.OutputMax = 1.0f; // 100% power max
-            _pidController.OutputTuningInformation = true;
+            _pidController.OutputTuningInformation = false;
 
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="delay">in seconds</param>
-        public void TurnOff(int delay)
+        public void TurnOn(float temp)
         {
-            Debug.Print("Turning off.");
-            this._heaterRelayPwm.Stop();
-            Debug.Print("Cooldown delay, " + delay.ToString() + "secs");
-            Thread.Sleep(delay * 1000);
-            this._fanRelay.IsOn = false;
-            this._running = false;
-            this._runningTimeLeft = TimeSpan.MinValue;
+            TurnOn(temp, TimeSpan.Zero);
         }
 
-        public void TurnOn(int temp)
-        {
-            TurnOn(temp, TimeSpan.MaxValue);
-        }
-
-        public void TurnOn(int temp, TimeSpan runningTime)
+        public void TurnOn(float temp, TimeSpan runningTime)
         {
             // set our state vars
             TargetTemperature = (float)temp;
             Debug.Print("Turning on.");
-            this._runningTimeLeft = runningTime;
+            this._timerStartValue = runningTime;
+            this._startTime = DateTime.Now;
+            this._isTimerSet = _timerStartValue != TimeSpan.Zero;
             this._running = true;
-
-            Debug.Print("Here");
 
             // keeping fan off, to get temp to rise.
             this._fanRelay.IsOn = true;
@@ -103,6 +102,42 @@ namespace FoodDehydrator3000
 
             // start our temp regulation thread. might want to change this to notify.
             StartRegulatingTemperatureThread();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="delay">in seconds</param>
+        public void TurnOff(int delay)
+        {
+            Debug.Print("Turning off.");
+            this._heaterRelayPwm.Stop();
+            this._running = false;
+            this._timerStartValue = TimeSpan.Zero;
+            this.Cooldown(delay);
+        }
+
+        /// <summary>
+        /// Runs the fan for a specified cooldown period.
+        /// When the cooldown period elapses, it checks to see
+        /// that the dehydrator hasn't been turned back on before
+        /// turning fan off.
+        /// </summary>
+        /// <param name="delay"></param>
+        protected void Cooldown(int delay)
+        {
+            Thread th = new Thread(() =>
+            {
+                Debug.Print("Cooldown delay, " + delay.ToString() + "secs");
+                Thread.Sleep(delay * 1000);
+                if (!this._running)
+                {
+                    Debug.Print("Cooldown elapsed, turning fan off.");
+                    this._fanRelay.IsOn = false;
+                    this.CooldownElapsed(this, new EventArgs());
+                }
+            });
+            th.Start();
         }
 
         protected void StartRegulatingTemperatureThread()
@@ -124,7 +159,6 @@ namespace FoodDehydrator3000
 
                     // set our PWM appropriately
                     //Debug.Print("Setting duty cycle to: " + (powerLevel * 100).ToString("N0") + "%");
-                    _display.WriteLine("Power: " + (powerLevel * 100).ToString("N0") + "%", 0);
 
                     this._heaterRelayPwm.DutyCycle = powerLevel;
 

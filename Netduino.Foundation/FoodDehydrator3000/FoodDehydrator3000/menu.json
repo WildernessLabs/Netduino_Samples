@@ -1,0 +1,26 @@
+{
+  "menu": [
+    {
+      "text": "IP: {value}",
+      "id": "IP",
+      "value": "unknown"
+    }
+    {
+      "text": "Set Temperature",
+      "id": "temperature",
+      "type": "ShortTempEditMenuItem",
+      "value": "35"
+    },
+    {
+      "text": "Set Timer",
+      "id": "timer",
+      "type": "Time",
+      "value": "01:00"
+    },
+    {
+      "text": "{value}",
+      "command": "power",
+      "id": "power",
+      "value": "Toggle Power"
+    }]
+}

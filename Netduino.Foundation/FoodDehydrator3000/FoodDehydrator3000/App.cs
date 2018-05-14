@@ -1,133 +1,277 @@
-using System;
-using System.Threading;
+using FoodDehydrator3000.Properties;
+using Maple;
 using Microsoft.SPOT;
 using H = Microsoft.SPOT.Hardware;
-using N = SecretLabs.NETMF.Hardware.Netduino;
-using Netduino.Foundation.Sensors.Temperature;
+using Microsoft.SPOT.Net.NetworkInformation;
+using Netduino.Foundation.Displays;
+using Netduino.Foundation.Displays.LCD;
+using Netduino.Foundation.Displays.TextDisplayMenu;
+using Netduino.Foundation.Generators;
 using Netduino.Foundation.Relays;
 using Netduino.Foundation.Sensors;
+using Netduino.Foundation.Sensors.Rotary;
+using Netduino.Foundation.Sensors.Temperature;
+using Netduino.Foundation.ICs.IOExpanders.MCP23008;
+using System;
+using System.Collections;
+using N = SecretLabs.NETMF.Hardware.Netduino;
+using Netduino.Foundation;
 using Netduino.Foundation.Sensors.Buttons;
-using Netduino.Foundation.Generators;
-using Netduino.Foundation.Displays;
-using Microsoft.SPOT.Net.NetworkInformation;
-using System.Net;
-using Maple;
-using System.IO;
+using Netduino.Foundation.Network;
+using System.Threading;
 
 namespace FoodDehydrator3000
 {
     public class App
     {
         // peripherals
+        protected PushButton _pushButton = null;
         protected AnalogTemperature _tempSensor = null;
         protected SoftPwm _heaterRelayPwm = null;
         protected Relay _fanRelay = null;
         protected PushButton _button = null;
-        protected SerialLCD _display = null;
+        protected ITextDisplay _display = null;
+
+        RotaryEncoderWithButton _encoder = null;
 
         // controllers
         protected DehydratorController _dehydrator = null;
 
         // vars
-        protected NetworkInterface[] _interfaces;
         protected float _currentTemp;
-        MapleServer server;
+        protected MapleServer _server;
+        protected Menu _menu;
+        protected DateTime _tempUpdated;
+        protected float _targetTemp;
+        protected TimeSpan _runTime;
+        protected bool _inMenu = false;
 
         public App()
         {
+            // initialze
+            this.InitializePeripherals();
+            this.InitializeMenu();
+
+            // initilaize our dehydrator controller
+            _dehydrator = new DehydratorController(_tempSensor, _heaterRelayPwm, _fanRelay, _display);
+
+            // show our info screen
+            this.DisplayInfoScreen();
+
+            // 
+            this.WireUpPeripheralEvents();
+
+            // setup our web server
+            this.InitializeWebServer();
+        }
+
+        /// <summary>
+        /// Configures the hardware perihperals (LCD, temp sensor, relays, etc.) 
+        /// so they can be used by the application.
+        /// </summary>
+        protected void InitializePeripherals()
+        {
+            // pushbutton (for testing)
+            _pushButton = new PushButton(
+                (H.Cpu.Pin)0x15, CircuitTerminationType.Floating);
+
+            // Rotary Encoder
+            _encoder = new RotaryEncoderWithButton(
+                N.Pins.GPIO_PIN_D7, N.Pins.GPIO_PIN_D6, N.Pins.GPIO_PIN_D5,
+                CircuitTerminationType.CommonGround);
+
             // LCD
-            _display = new SerialLCD(new TextDisplayConfig() { Width = 20, Height = 4 });
+            //_display = new Lcd2004(new MCP23008());
+            _display = new Lcd2004(N.Pins.GPIO_PIN_D8, N.Pins.GPIO_PIN_D9, N.Pins.GPIO_PIN_D10, N.Pins.GPIO_PIN_D11, N.Pins.GPIO_PIN_D12, N.Pins.GPIO_PIN_D13);
             _display.Clear();
             Debug.Print("Display up.");
             _display.WriteLine("Display up!", 0);
 
             // Analog Temp Sensor. Setup to notify at half a degree changes
-            _tempSensor = new AnalogTemperature(N.AnalogChannels.ANALOG_PIN_A3,
+            _tempSensor = new AnalogTemperature(N.AnalogChannels.ANALOG_PIN_A0,
                 AnalogTemperature.KnownSensorType.LM35, temperatureChangeNotificationThreshold: 0.5F);
-            _tempSensor.TemperatureChanged += (object sender, SensorFloatEventArgs e) => {
-                UpdateTemp(e.CurrentValue);
-            };
-            // display our initial temp
-            UpdateTemp(_tempSensor.Temperature);
             Debug.Print("TempSensor up.");
             _display.WriteLine("Temp Sensor up!", 1);
 
             // Heater driven by Software PWM
-            _heaterRelayPwm = new SoftPwm(N.Pins.GPIO_PIN_D3, 0.5f, 1.0f / 30.0f);
+            _heaterRelayPwm = new SoftPwm(N.Pins.GPIO_PIN_D2, 0.5f, 1.0f / 30.0f);
             Debug.Print("Heater PWM up.");
-            _display.WriteLine("Heater PWM up!", 0);
+            _display.WriteLine("Heater PWM up!", 2);
 
             // Fan Relay
-            _fanRelay = new Relay(N.Pins.GPIO_PIN_D2);
+            _fanRelay = new Relay(N.Pins.GPIO_PIN_D3);
             Debug.Print("Fan up.");
-            _display.WriteLine("Fan up!", 1);
+            _display.WriteLine("Fan up!", 3);
 
-
-            // Button
-            _button = new PushButton(N.Pins.GPIO_PIN_D8, Netduino.Foundation.CircuitTerminationType.CommonGround, 100);
-            //_button = new PushButton((H.Cpu.Pin)0x15, Netduino.Foundation.CircuitTerminationType.Floating);
-            Debug.Print("Button up.");
-            _display.WriteLine("Button up!", 0);
-
-
+            // output status
             Debug.Print("Peripherals up");
-            _display.WriteLine("All systems up!", 1);
+            _display.WriteLine("Peripherals online!", 0);
+        }
 
+        //
+        protected void WireUpPeripheralEvents()
+        {
+            // Analog Temp Sensor. Setup to notify at half a degree changes
+            _tempSensor.TemperatureChanged += (object sender, SensorFloatEventArgs e) => {
+                _currentTemp = e.CurrentValue;
+                UpdateInfoScreen();
+            };
 
-            _dehydrator = new DehydratorController(_tempSensor, _heaterRelayPwm, _fanRelay, _display);
-            //_button.Clicked += (s,e) => { TogglePower(); };
-            _button.LongPressClicked += (s, e) => { TogglePower(); };
+            _pushButton.LongPressClicked += (s, e) => {
+                Debug.Print("Long press.");
+                _targetTemp = 40;
+                TogglePower();
+            };
 
+            _encoder.Clicked += (s, e) =>
+            {
+                // if the menu isn't displayed, display it. otherwise
+                // encoder click events are handled by menu
+                if (!_inMenu) {
+                    this.DisplayMenu();
+                }
+            };
+        }
+
+        protected void InitializeMenu()
+        {
+            // initialize menu
+            _menu = new Menu(_display, _encoder, Resources.GetBytes(Resources.BinaryResources.menu), true);
+            _menu.ValueChanged += HandleMenuValueChange;
+            _menu.Selected += HandleMenuSelected;
+            _menu.Exited += (s, e) => {
+                this._inMenu = false;
+                this.DisplayInfoScreen();
+            };
+            _menu.UpdateItemValue("power", "Turn on");
+        }
+
+        protected void InitializeWebServer()
+        {
+            // configure our web server
             RequestHandler handler = new RequestHandler();
             handler.TurnOff += Handler_TurnOff;
             handler.TurnOn += Handler_TurnOn;
             handler.GetStatus += Handler_GetStatus;
 
-            server = new MapleServer();
-            server.AddHandler(handler);
+            _server = new MapleServer();
+            _server.AddHandler(handler);
         }
 
-        protected void HandleTempChanged(object sender, Netduino.Foundation.Sensors.SensorFloatEventArgs e)
+        /// <summary>
+        /// Closes the menu (if open), and displays the info screen which 
+        /// has temp and such on it.
+        /// </summary>
+        protected void DisplayInfoScreen()
         {
-            _currentTemp = e.CurrentValue;
-            UpdateTemp(e.CurrentValue);
+            if(_inMenu) CloseMenu();
+            UpdateInfoScreen();
         }
 
-        protected void UpdateTemp(float temp)
+        protected void UpdateInfoScreen()
         {
-            _display.WriteLine("Temp: " + temp.ToString("N1") + (char)223 + "C", 1);
+            // if we're in the menu, get out. 
+            if (_inMenu) return;
+
+            _display.WriteLine("Current Temp: " + _tempSensor.Temperature.ToString("F1") + "C", 0);
+            _display.WriteLine("Target Temp: " + _targetTemp.ToString("F0") + "C", 1);
+            var remainingTime = _dehydrator.RunningTimeLeft;
+            _display.WriteLine("Time: " + PadLeft(remainingTime.Hours.ToString(), '0', 2) + ":" + PadLeft(remainingTime.Minutes.ToString(), '0', 2), 2);
+            _display.WriteLine("Click for more.", 3);
         }
+
+        /// <summary>
+        /// Displays the menu.
+        /// </summary>
+        protected void DisplayMenu()
+        {
+            this._inMenu = true;
+            this._menu.Enable();
+        }
+
+        /// <summary>
+        /// Closes the menu and displays the info screen.
+        /// </summary>
+        protected void CloseMenu()
+        {
+            this._menu.Disable();
+            this._inMenu = false;
+            this.DisplayInfoScreen();
+        }
+
+        /// <summary>
+        /// Called when an item in the menu is selected.
+        /// </summary>
+        protected void HandleMenuSelected(object sender, MenuSelectedEventArgs e)
+        {
+            switch (e.Command)
+            {
+                case "power":
+                    Debug.Print("menu power");
+                    TogglePower();
+                    break;
+                case "Exit":
+                    this.DisplayInfoScreen();
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Called when an item in the menu changes.
+        /// </summary>
+        protected void HandleMenuValueChange(object sender, ValueChangedEventArgs e)
+        {
+            switch (e.ItemID) {
+                case "temperature":
+                    _targetTemp = (float)(double)e.Value; //smh
+                    _dehydrator.TargetTemperature = _targetTemp;
+                    break;
+                case "timer":
+                    //TODO: shouldn't this get updated on the dehydrator controller?
+                    _runTime = (TimeSpan)e.Value;
+                    break;
+            }
+        }
+       
 
         protected void TogglePower()
         {
-            if (_dehydrator.Running)
+            if (_dehydrator.Running) TogglePower(false);
+            else TogglePower(true);
+        }
+
+        protected void TogglePower(bool turnOn)
+        {
+            if (turnOn)
             {
-                Debug.Print("PowerButtonClicked, _running == true, turning off.");
-                _display.WriteLine("Power OFF.", 0);
-                _dehydrator.TurnOff(45);
+                Debug.Print("TogglePower, turning on.");
+                _dehydrator.TurnOn(_targetTemp, _runTime); // set to 35C to start
             }
             else
             {
-                Debug.Print("PowerButtonClicked, _running == false, turning on.");
-                _dehydrator.TurnOn(50); // set to 35C to start
+                Debug.Print("TogglePower, turning off.");
+                _dehydrator.TurnOff(10);
             }
-
+            // update our menu state
+            _menu.UpdateItemValue("power", (_dehydrator.Running) ? "Turn off" : "Turn on");
+            UpdateInfoScreen();
         }
 
         public void Run()
         {
-            bool networkInit = Netduino.Foundation.Network.Initializer.InitializeNetwork("http://google.com");
+            bool networkInit = Initializer.InitializeNetwork("http://google.com");
 
             if (networkInit)
             {
-                server.Start();
+                _menu.UpdateItemValue("IP", Initializer.CurrentNetworkInterface.IPAddress.ToString());
+                _server.Start();
                 Debug.Print("Maple server started.");
             }
         }
 
         public void Stop()
         {
-            server.Stop();
+            _server.Stop();
             Debug.Print("Maple server stopped.");
         }
 
@@ -145,188 +289,24 @@ namespace FoodDehydrator3000
 
         private void Handler_TurnOn(int targetTemp)
         {
-            _dehydrator.TurnOn(targetTemp);
+            _targetTemp = targetTemp;
+            TogglePower(true);
         }
 
         private void Handler_TurnOff(int coolDownDelay)
         {
-            _dehydrator.TurnOff(coolDownDelay);
+            _targetTemp = 0.0f;
+            TogglePower(false);
         }
 
-        protected void MakeWebRequest(string url)
+        public static string PadLeft(string text, char filler, int size)
         {
-            var httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
-            httpWebRequest.Method = "GET";
-
-            var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-            using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+            string padded = string.Empty;
+            for (int i = text.Length; i < size; i++)
             {
-                var result = streamReader.ReadToEnd();
-                Debug.Print("this is what we got from " + url + ": " + result);
+                padded += filler;
             }
-        }
-
-        protected bool InitializeNetwork()
-        {
-            if (Microsoft.SPOT.Hardware.SystemInfo.SystemID.SKU == 3)
-            {
-                Debug.Print("Wireless tests run only on Device");
-                return false;
-            }
-
-            Debug.Print("Getting all the network interfaces.");
-            _interfaces = NetworkInterface.GetAllNetworkInterfaces();
-
-            // debug output
-            ListNetworkInterfaces();
-
-            // loop through each network interface
-            foreach (var net in _interfaces)
-            {
-                // debug out
-                ListNetworkInfo(net);
-
-                switch (net.NetworkInterfaceType)
-                {
-                    case (NetworkInterfaceType.Ethernet):
-                        Debug.Print("Found Ethernet Interface");
-                        break;
-                    case (NetworkInterfaceType.Wireless80211):
-                        Debug.Print("Found 802.11 WiFi Interface");
-                        break;
-                    case (NetworkInterfaceType.Unknown):
-                        Debug.Print("Found Unknown Interface");
-                        break;
-                }
-
-                // check for an IP address, try to get one if it's empty
-                return CheckIPAddress(net);
-            }
-
-            // if we got here, should be false.
-            return false;
-        }
-
-        protected void ListNetworkInterfaces()
-        {
-            foreach (var net in _interfaces)
-            {
-                switch (net.NetworkInterfaceType)
-                {
-                    case (NetworkInterfaceType.Ethernet):
-                        Debug.Print("Found Ethernet Interface");
-                        break;
-                    case (NetworkInterfaceType.Wireless80211):
-                        Debug.Print("Found 802.11 WiFi Interface");
-                        break;
-                    case (NetworkInterfaceType.Unknown):
-                        Debug.Print("Found Unknown Interface");
-                        break;
-                }
-            }
-        }
-
-        protected void ListNetworkInfo(NetworkInterface net)
-        {
-            try
-            {
-                Debug.Print("MAC Address: " + BytesToHexString(net.PhysicalAddress));
-                Debug.Print("DHCP enabled: " + net.IsDhcpEnabled.ToString());
-                Debug.Print("Dynamic DNS enabled: " + net.IsDynamicDnsEnabled.ToString());
-                Debug.Print("IP Address: " + net.IPAddress.ToString());
-                Debug.Print("Subnet Mask: " + net.SubnetMask.ToString());
-                Debug.Print("Gateway: " + net.GatewayAddress.ToString());
-
-                if (net is Wireless80211)
-                {
-                    var wifi = net as Wireless80211;
-                    Debug.Print("SSID:" + wifi.Ssid.ToString());
-                }
-            }
-            catch (Exception e)
-            {
-                Debug.Print("ListNetworkInfo exception:  " + e.Message);
-            }
-
-        }
-
-        protected bool CheckIPAddress(NetworkInterface net)
-        {
-            int timeout = 10000; // timeout, in milliseconds to wait for an IP. 10,000 = 10 seconds
-
-            // check to see if the IP address is empty (0.0.0.0). IPAddress.Any is 0.0.0.0.
-            if (net.IPAddress == IPAddress.Any.ToString())
-            {
-                Debug.Print("No IP Address");
-
-                if (net.IsDhcpEnabled)
-                {
-                    Debug.Print("DHCP is enabled, attempting to get an IP Address");
-
-                    // ask for an IP address from DHCP [note this is a static, not sure which network interface it would act on]
-                    int sleepInterval = 10;
-                    int maxIntervalCount = timeout / sleepInterval;
-                    int count = 0;
-                    while (IPAddress.GetDefaultLocalAddress() == IPAddress.Any && count < maxIntervalCount)
-                    {
-                        Debug.Print("Sleep while obtaining an IP");
-                        Thread.Sleep(10);
-                        count++;
-                    };
-
-                    // if we got here, we either timed out or got an address, so let's find out.
-                    if (net.IPAddress == IPAddress.Any.ToString())
-                    {
-                        Debug.Print("Failed to get an IP Address in the alotted time.");
-                        return false;
-                    }
-
-                    Debug.Print("Got IP Address: " + net.IPAddress.ToString());
-                    return true;
-
-                    //NOTE: this does not work, even though it's on the actual network device. [shrug]
-                    // try to renew the DHCP lease and get a new IP Address
-                    //net.RenewDhcpLease ();
-                    //while (net.IPAddress == "0.0.0.0") {
-                    //    Thread.Sleep (10);
-                    //}
-
-                }
-                else
-                {
-                    Debug.Print("DHCP is not enabled, and no IP address is configured, bailing out.");
-                    return false;
-                }
-            }
-            else
-            {
-                Debug.Print("Already had IP Address: " + net.IPAddress.ToString());
-                return true;
-            }
-
-        }
-
-        private static string BytesToHexString(byte[] bytes)
-        {
-            string hexString = string.Empty;
-
-            // Create a character array for hexadecimal conversion.
-            const string hexChars = "0123456789ABCDEF";
-
-            // Loop through the bytes.
-            for (byte b = 0; b < bytes.Length; b++)
-            {
-                if (b > 0)
-                    hexString += "-";
-
-                // Grab the top 4 bits and append the hex equivalent to the return string.        
-                hexString += hexChars[bytes[b] >> 4];
-
-                // Mask off the upper 4 bits to get the rest of it.
-                hexString += hexChars[bytes[b] & 0x0F];
-            }
-
-            return hexString;
+            return padded + text;
         }
     }
 }
