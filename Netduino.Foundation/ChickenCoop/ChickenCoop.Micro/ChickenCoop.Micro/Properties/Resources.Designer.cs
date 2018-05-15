@@ -32,7 +32,7 @@ namespace ChickenCoop.Micro.Properties
         [System.SerializableAttribute()]
         internal enum BinaryResources : short
         {
-            Menu = -2554,
+            menu = 2535,
         }
     }
 }

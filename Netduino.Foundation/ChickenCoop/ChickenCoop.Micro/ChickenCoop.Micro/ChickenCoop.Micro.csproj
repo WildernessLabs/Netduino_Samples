@@ -43,9 +43,9 @@
     </Compile>
     <Compile Include="App.cs" />
     <Compile Include="AppConfig.cs" />
-    <None Include="Menu.json" />
     <Compile Include="Door\DoorController.cs" />
     <Compile Include="Door\DoorStateType.cs" />
+    <None Include="menu.json" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -74,6 +74,10 @@
     </Reference>
     <Reference Include="Netduino.Foundation.Displays.TextDisplayMenu">
       <HintPath>..\..\..\..\..\Netduino.Foundation\Source\Peripheral_Libs\Displays.TextDisplayMenu\Driver\bin\Debug\Netduino.Foundation.Displays.TextDisplayMenu.dll</HintPath>
+    </Reference>
+    <Reference Include="Netduino.Foundation.ICs.IOExpanders.MCP23008, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Netduino.Foundation\Source\Peripheral_Libs\ICs.MCP23008\Driver\ICs.MCP23008\bin\Debug\Netduino.Foundation.ICs.IOExpanders.MCP23008.dll</HintPath>
     </Reference>
     <Reference Include="Netduino.Foundation.Network">
       <HintPath>..\..\..\..\..\Netduino.Foundation\Source\Netduino.Foundation.Network\bin\Debug\Netduino.Foundation.Network.dll</HintPath>

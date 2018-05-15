@@ -16,8 +16,8 @@ namespace ChickenCoop.Micro.Door
 
         // peripherals
         protected IContinuousRotationServo _doorServo = null;
-        protected RotationDirection _openDirection = RotationDirection.Clockwise;
-        protected RotationDirection _closeDirection = RotationDirection.CounterClockwise;
+        protected RotationDirection _openDirection = RotationDirection.CounterClockwise;
+        protected RotationDirection _closeDirection = RotationDirection.Clockwise;
         protected PushButton _openEndStopSwitch = null;
         protected PushButton _closeEndStopSwitch = null;
 

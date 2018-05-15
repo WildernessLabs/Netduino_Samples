@@ -15,8 +15,8 @@ namespace ChickenCoop.DoorTest
         protected bool _operatingDoor = false;
         protected double _totalOpenServoAngle;
         protected DoorState _doorState = DoorState.Unknown;
-        protected RotationDirection _openDirection = RotationDirection.Clockwise;
-        protected RotationDirection _closeDirection = RotationDirection.CounterClockwise;
+        protected RotationDirection _openDirection = RotationDirection.CounterClockwise;
+        protected RotationDirection _closeDirection = RotationDirection.Clockwise;
         protected PushButton _openEndStopSwitch = null;
         protected PushButton _closeEndStopSwitch = null;
         protected bool _openEndStopTriggered = false;
@@ -25,7 +25,7 @@ namespace ChickenCoop.DoorTest
         public App()
         {
             // instantiate all of our peripherals
-            _doorServo = new ContinuousRotationServo(N.PWMChannels.PWM_PIN_D9, NamedServoConfigs.IdealContinuousRotationServo);
+            _doorServo = new ContinuousRotationServo(N.PWMChannels.PWM_PIN_D6, NamedServoConfigs.IdealContinuousRotationServo);
             _button = new PushButton((H.Cpu.Pin)0x15, CircuitTerminationType.Floating);
             _openEndStopSwitch = new PushButton(N.Pins.GPIO_PIN_D2, CircuitTerminationType.CommonGround);
             _closeEndStopSwitch = new PushButton(N.Pins.GPIO_PIN_D3, CircuitTerminationType.CommonGround);

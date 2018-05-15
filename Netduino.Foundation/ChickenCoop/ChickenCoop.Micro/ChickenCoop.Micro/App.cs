@@ -12,7 +12,8 @@ using ChickenCoop.Micro.Door;
 using Netduino.Foundation.Servos;
 using Netduino.Foundation.Sensors.Buttons;
 using Netduino.Foundation.Displays.TextDisplayMenu;
-using ChickenCoop.Micro.Properties;
+using Netduino.Foundation.ICs.IOExpanders.MCP23008;
+using Netduino.Foundation.Sensors;
 
 namespace ChickenCoop.Micro
 {
@@ -22,7 +23,11 @@ namespace ChickenCoop.Micro
 
         // stuff
         protected Menu _menu;
+
+        // state
         protected bool _inMenu = false;
+        protected float _currentTemp;
+        protected bool _networkUp = false;
 
         // peripherals
         protected IContinuousRotationServo _doorServo = null;
@@ -49,14 +54,20 @@ namespace ChickenCoop.Micro
             // initialize our app configuration
             this._config = new AppConfig();
 
-            // setup network
-            InitializeNetworkAndTime();
-
             // setup peripherals
             InitializePeripherals();
 
+            // setup the menu
+            InitializeMenu();
+
             // initialize our controllers
             InitializeControllers();
+
+            // setup network
+            InitializeNetworkAndTime();
+
+            // show our main home screen
+            DisplayInfoScreen();
         }
 
         public void Run()
@@ -65,55 +76,107 @@ namespace ChickenCoop.Micro
             //_tempController.Run();
         }
 
-        protected void InitializeNetworkAndTime()
-        {
-            // initialize our network interfaces
-            Netduino.Foundation.Network.Initializer.InitializeNetwork();
-
-            // get the current date time from the server
-            var dateTime = Netduino.Foundation.NetworkTime.GetNetworkTime((int)App.Current.Config.UtcOffset);
-
-            Debug.Print("Current DateTime: " + dateTime.ToString());
-
-            // save the date time
-            H.Utility.SetLocalTime(dateTime);
-        }
-
         protected void InitializePeripherals()
         {
+            // display
+            //_display = new Lcd2004(new MCP23008());
+            _display = new Lcd2004(N.Pins.GPIO_PIN_D8, N.Pins.GPIO_PIN_D9, N.Pins.GPIO_PIN_D10, N.Pins.GPIO_PIN_D11, N.Pins.GPIO_PIN_D12, N.Pins.GPIO_PIN_D13);
+            _display.Clear();
+            _display.WriteLine("Display up!", 0);
+
+            // rotary encoder
+            _encoder = new RotaryEncoderWithButton(N.Pins.GPIO_PIN_D4, N.Pins.GPIO_PIN_D5, N.Pins.GPIO_PIN_D7, CircuitTerminationType.CommonGround);
+
             // door stuff
-            _doorServo = new ContinuousRotationServo(N.PWMChannels.PWM_PIN_D9, NamedServoConfigs.IdealContinuousRotationServo);
+            _doorServo = new ContinuousRotationServo(N.PWMChannels.PWM_PIN_D6, NamedServoConfigs.IdealContinuousRotationServo);
             _openEndStopSwitch = new PushButton(N.Pins.GPIO_PIN_D2, CircuitTerminationType.CommonGround);
             _closeEndStopSwitch = new PushButton(N.Pins.GPIO_PIN_D3, CircuitTerminationType.CommonGround);
+            _display.WriteLine("Door stuff up!", 1);
 
             // temp stuff
-            _heatLampRelay = new SoftPwm(N.Pins.GPIO_PIN_D2, 0, 1 / 60);
-            _tempSensor = new AnalogTemperature(N.AnalogChannels.ANALOG_PIN_A2, AnalogTemperature.KnownSensorType.LM35, updateInterval: 5000, temperatureChangeNotificationThreshold: 1.0f);
+            _heatLampRelay = new SoftPwm(N.Pins.GPIO_PIN_D0, 0, 1f / 60f);
+            _tempSensor = new AnalogTemperature(N.AnalogChannels.ANALOG_PIN_A0, AnalogTemperature.KnownSensorType.LM35, updateInterval: 5000, temperatureChangeNotificationThreshold: 1.0f);
+            _display.WriteLine("Temp stuff up!", 2);
 
+            //==== now wire up all the peripheral events
+            // Analog Temp Sensor. Setup to notify at half a degree changes
+            _tempSensor.TemperatureChanged += (object sender, SensorFloatEventArgs e) => {
+                _currentTemp = e.CurrentValue;
+                UpdateInfoScreen();
+            };
+
+            _encoder.Clicked += (s, e) =>
+            {
+                // if the menu isn't displayed, display it. otherwise
+                // encoder click events are handled by menu
+                if (!_inMenu)
+                {
+                    this.DisplayMenu();
+                }
+            };
+
+
+            Debug.Print("Peripherals initialized.");
         }
 
         protected void InitializeControllers()
         {
             _doorController = new DoorController(_doorServo, _openEndStopSwitch, _closeEndStopSwitch);
             _doorController.DoorOpened += (s, e) => {
+                Debug.Print("Door opened.");
                 _menu.UpdateItemValue("toggle", "Close");
             };
-            _doorController.DoorOpened += (s, e) => {
+            _doorController.DoorClosed += (s, e) => {
+                Debug.Print("Door closed.");
                 _menu.UpdateItemValue("toggle", "Open");
             };
             _tempController = new TemperatureController(_heatLampRelay, _tempSensor);
+
+            Debug.Print("Controllers initialized.");
         }
 
         protected void InitializeMenu()
         {
             // initialize menu
-            _menu = new Menu(_display, _encoder, Resources.GetBytes(Resources.BinaryResources.menu), true);
+            _menu = new Menu(_display, _encoder, Properties.Resources.GetBytes(Properties.Resources.BinaryResources.menu), true);
             //_menu.ValueChanged += HandleMenuValueChange;
             _menu.Selected += HandleMenuSelected;
             _menu.Exited += (s, e) => {
                 this._inMenu = false;
                 this.DisplayInfoScreen();
             };
+
+            Debug.Print("Menu initialized.");
+        }
+
+        protected void InitializeNetworkAndTime()
+        {
+            // initialize our network interfaces
+            _networkUp = Netduino.Foundation.Network.Initializer.InitializeNetwork();
+
+            if (_networkUp)
+            {
+                // update the IP in the menu
+                if (Netduino.Foundation.Network.Initializer.CurrentNetworkInterface != null)
+                {
+                    _menu.UpdateItemValue("IP", Netduino.Foundation.Network.Initializer.CurrentNetworkInterface.IPAddress.ToString());
+                }
+
+                // get the current date time from the server
+                var dateTime = Netduino.Foundation.NetworkTime.GetNetworkTime((int)App.Current.Config.UtcOffset);
+
+                Debug.Print("Current DateTime: " + dateTime.ToString());
+
+                // save the date time
+                H.Utility.SetLocalTime(dateTime);
+
+
+                Debug.Print("Network initialized.");
+            }
+            else
+            {
+                Debug.Print("Network failed to initialize.");
+            }
         }
 
         /// <summary>
@@ -131,6 +194,7 @@ namespace ChickenCoop.Micro
             // if we're in the menu, get out. 
             if (_inMenu) return;
 
+            _display.Clear();
             //_display.WriteLine("Current Temp: " + _tempSensor.Temperature.ToString("F1") + "C", 0);
             //_display.WriteLine("Target Temp: " + _targetTemp.ToString("F0") + "C", 1);
             _display.WriteLine("Click for more.", 3);
