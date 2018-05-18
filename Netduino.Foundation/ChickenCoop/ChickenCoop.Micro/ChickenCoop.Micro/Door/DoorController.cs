@@ -32,6 +32,26 @@ namespace ChickenCoop.Micro.Door
         }
         protected DoorStateType _doorState = DoorStateType.Unknown;
 
+        /// <summary>
+        /// The physical state of the door, based on the end stop switches
+        /// </summary>
+        public DoorStateType PhysicalState
+        {
+            get
+            {
+                if (_openEndStopSwitch.State == _closeEndStopSwitch.State)
+                {
+                    return DoorStateType.Unknown;
+                } else if (_openEndStopSwitch.State) {
+                    return DoorStateType.Open;
+                } else
+                {
+                    return DoorStateType.Closed;
+                }
+
+            }
+        }
+
         public DoorController(IContinuousRotationServo doorServo, PushButton openEndStopSwitch, PushButton closeEndStopSwitch)
         {
             // instantiate all of our peripherals
@@ -51,12 +71,20 @@ namespace ChickenCoop.Micro.Door
             };
             _closeEndStopSwitch.PressEnded += (s, e) => { _closeEndStopTriggered = false; };
 
+            // load our initial state from the physical state
+            this._doorState = PhysicalState;
+
         }
 
         public void ToggleDoor()
         {
             // if we're already in process
             if (_operatingDoor) return;
+
+            // update from physical so we don't break things
+            _doorState = PhysicalState;
+
+            Debug.Print("DoorController.ToggleDoor, current state: " + _doorState.ToString());
 
             if (_doorState == DoorStateType.Closed || _doorState == DoorStateType.Unknown)
             {
@@ -89,7 +117,7 @@ namespace ChickenCoop.Micro.Door
                     while (!_openEndStopTriggered)
                     {
                         // rotate the winch servo in the open direction
-                        _doorServo.Rotate(_openDirection, 1.0f);
+                        _doorServo.Rotate(_openDirection, 0.9f);
                     }
                     // stop the winch
                     _doorServo.Stop();
@@ -108,7 +136,7 @@ namespace ChickenCoop.Micro.Door
                     while (!_closeEndStopTriggered)
                     {
                         // close
-                        _doorServo.Rotate(_closeDirection, 1.0f);
+                        _doorServo.Rotate(_closeDirection, 0.75f);
                     }
                     // stop the winch
                     _doorServo.Stop();

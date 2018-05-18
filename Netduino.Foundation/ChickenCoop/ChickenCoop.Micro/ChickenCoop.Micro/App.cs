@@ -102,6 +102,7 @@ namespace ChickenCoop.Micro
             // Analog Temp Sensor. Setup to notify at half a degree changes
             _tempSensor.TemperatureChanged += (object sender, SensorFloatEventArgs e) => {
                 _currentTemp = e.CurrentValue;
+                Debug.Print("Current Temp: " + _currentTemp.ToString("N1"));
                 UpdateInfoScreen();
             };
 
@@ -131,6 +132,16 @@ namespace ChickenCoop.Micro
                 _menu.UpdateItemValue("toggle", "Open");
             };
             _tempController = new TemperatureController(_heatLampRelay, _tempSensor);
+
+            switch (_doorController.State)
+            {
+                case DoorStateType.Closed:
+                    _menu.UpdateItemValue("toggle", "Open");
+                    break;
+                case DoorStateType.Open:
+                    _menu.UpdateItemValue("toggle", "Close");
+                    break;
+            }
 
             Debug.Print("Controllers initialized.");
         }
@@ -195,8 +206,9 @@ namespace ChickenCoop.Micro
             if (_inMenu) return;
 
             _display.Clear();
-            //_display.WriteLine("Current Temp: " + _tempSensor.Temperature.ToString("F1") + "C", 0);
-            //_display.WriteLine("Target Temp: " + _targetTemp.ToString("F0") + "C", 1);
+            _display.WriteLine("Super Coop 3000!", 0);
+            _display.WriteLine("Current Temp: " + _tempSensor.Temperature.ToString("F1") + "C", 1);
+            //_display.WriteLine("Target Temp: " + _targetTemp.ToString("F0") + "C", 2);
             _display.WriteLine("Click for more.", 3);
         }
 
