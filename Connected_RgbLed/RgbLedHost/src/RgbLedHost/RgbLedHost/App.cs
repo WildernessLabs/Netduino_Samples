@@ -41,7 +41,6 @@ namespace RgbLedHost
             // configure our web server
             RequestHandler handler = new RequestHandler();
             handler.TurnOn += HandlerTurnOn;
-            handler.TurnOff += HandlerTurnOff;
             handler.StartBlink += HandlerStartBlink;
             handler.StartPulse += HandlerStartPulse;
             handler.StartRunningColors += HandlerStartRunningColors;
@@ -54,11 +53,6 @@ namespace RgbLedHost
         {
             rgbPwmLed.Stop();
             rgbPwmLed.SetColor(Netduino.Foundation.Color.Blue);
-        }
-
-        void HandlerTurnOff()
-        {
-            rgbPwmLed.Stop();
         }
 
         void HandlerStartBlink()

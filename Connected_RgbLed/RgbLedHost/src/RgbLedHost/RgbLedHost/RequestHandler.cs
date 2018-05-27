@@ -38,14 +38,6 @@ namespace RgbLedHost
         public delegate void RunningColorsHandler();
         public event RunningColorsHandler StartRunningColors = delegate { };
 
-        public void getTurnOff()
-        {
-            TurnOff();
-            StatusResponse();
-        }
-        public delegate void TurnOffHandler();
-        public event TurnOffHandler TurnOff = delegate { };
-
         private void StatusResponse()
         {
             Context.Response.ContentType = "application/json";
