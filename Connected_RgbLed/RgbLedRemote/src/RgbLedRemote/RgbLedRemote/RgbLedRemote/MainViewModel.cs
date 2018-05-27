@@ -6,7 +6,7 @@ using Xamarin.Forms;
 
 namespace RgbLedRemote
 {
-    public class MainViewModel
+    public class MainViewModel : INotifyPropertyChanged
     {
         ApiHelper apiHelper;
 
@@ -95,8 +95,8 @@ namespace RgbLedRemote
             Status = "Connecting...";
             ShowConfig = false;
 
-            App.IsConnected = await apiHelper.Connect();
-            if (App.IsConnected)
+            bool isConnected = await apiHelper.Connect();
+            if (isConnected)
             {
                 IsBusy = false;
                 IsOn = true;
@@ -118,19 +118,19 @@ namespace RgbLedRemote
             {
                 switch (option)
                 {
-                    case "on":
+                    case "TurnOn":
                         IsOn = true;
                         break;
 
-                    case "blink":
+                    case "Blink":
                         IsStartBlink = true;
                         break;
 
-                    case "pulse":
+                    case "Pulse":
                         IsStartPulse = true;
                         break;
 
-                    case "runningcolors":
+                    case "RunningColors":
                         IsStartRunningColors = true;
                         break;
                 }

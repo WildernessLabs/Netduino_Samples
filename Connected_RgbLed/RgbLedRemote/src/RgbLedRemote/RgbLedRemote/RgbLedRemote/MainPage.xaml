@@ -12,7 +12,7 @@
                 <Label Text="Choose a command:" TextColor="Black" Margin="0,10,0,10" />
 
                 <Grid>
-                    <Button Command="{Binding StartCommand}" CommandParameter="on" BackgroundColor="Green" BorderRadius="10">
+                    <Button Command="{Binding StartCommand}" CommandParameter="TurnOn" BackgroundColor="Green" BorderRadius="10">
                         <Button.Triggers>
                             <DataTrigger TargetType="Button" Binding="{Binding IsOn}" Value="true">
                                 <Setter Property="BackgroundColor" Value="Green" />
@@ -27,7 +27,7 @@
                 </Grid>
 
                 <Grid>
-                    <Button Command="{Binding StartCommand}" CommandParameter="blink" BackgroundColor="Green" BorderRadius="10">
+                    <Button Command="{Binding StartCommand}" CommandParameter="Blink" BackgroundColor="Green" BorderRadius="10">
                         <Button.Triggers>
                             <DataTrigger TargetType="Button" Binding="{Binding IsStartBlink}" Value="true">
                                 <Setter Property="BackgroundColor" Value="Green" />
@@ -42,7 +42,7 @@
                 </Grid>
 
                 <Grid>
-                    <Button Command="{Binding StartCommand}" CommandParameter="pulse" BackgroundColor="Green" BorderRadius="10">
+                    <Button Command="{Binding StartCommand}" CommandParameter="Pulse" BackgroundColor="Green" BorderRadius="10">
                         <Button.Triggers>
                             <DataTrigger TargetType="Button" Binding="{Binding IsStartPulse}" Value="true">
                                 <Setter Property="BackgroundColor" Value="Green" />
@@ -57,7 +57,7 @@
                 </Grid>
 
                 <Grid>
-                    <Button Command="{Binding StartCommand}" CommandParameter="runningcolors" BackgroundColor="Green" BorderRadius="10">
+                    <Button Command="{Binding StartCommand}" CommandParameter="RunningColors" BackgroundColor="Green" BorderRadius="10">
                         <Button.Triggers>
                             <DataTrigger TargetType="Button" Binding="{Binding IsStartRunningColors}" Value="true">
                                 <Setter Property="BackgroundColor" Value="Green" />
