@@ -11,7 +11,6 @@ namespace RgbLedHost
     public class App
     {
         static int BlinkRate = 100;
-        protected LedStatus ledStatus;
         protected RgbPwmLed rgbPwmLed;
         protected MapleServer server;
 
@@ -34,8 +33,7 @@ namespace RgbLedHost
                 false
             );
 
-            ledStatus = LedStatus.On;
-            rgbPwmLed.StartBlink(Netduino.Foundation.Color.Red);
+            rgbPwmLed.SetColor(Netduino.Foundation.Color.Red);
         }
 
         protected void InitializeWebServer()
@@ -55,7 +53,7 @@ namespace RgbLedHost
         void HandlerTurnOn()
         {
             rgbPwmLed.Stop();
-            rgbPwmLed.SetColor(Netduino.Foundation.Color.Red);
+            rgbPwmLed.SetColor(Netduino.Foundation.Color.Blue);
         }
 
         void HandlerTurnOff()
@@ -66,13 +64,13 @@ namespace RgbLedHost
         void HandlerStartBlink()
         {
             rgbPwmLed.Stop();
-            rgbPwmLed.StartBlink(Netduino.Foundation.Color.Green);
+            rgbPwmLed.StartBlink(Netduino.Foundation.Color.Purple);
         }
 
         void HandlerStartPulse()
         {
             rgbPwmLed.Stop();
-            rgbPwmLed.StartPulse(Netduino.Foundation.Color.Blue);
+            rgbPwmLed.StartPulse(Netduino.Foundation.Color.White);
         }
 
         void HandlerStartRunningColors()
@@ -119,11 +117,6 @@ namespace RgbLedHost
             server.Start();
             rgbPwmLed.Stop();
             rgbPwmLed.SetColor(Netduino.Foundation.Color.Green);
-        }
-
-        public void Stop()
-        {
-
         }
     }
 }

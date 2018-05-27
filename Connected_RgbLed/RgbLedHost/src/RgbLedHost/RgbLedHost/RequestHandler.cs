@@ -1,19 +1,10 @@
 using Maple;
-using System.Collections;
 
 namespace RgbLedHost
 {
     public class RequestHandler : RequestHandlerBase
     {
         public RequestHandler() { }
-
-        public void getStatus()
-        {
-            var status = GetStatus();
-            StatusResponse();
-        }
-        public delegate LedStatus StatusHandler();
-        public event StatusHandler GetStatus = delegate { return LedStatus.Off; };
 
         public void getTurnOn()
         {
@@ -59,7 +50,6 @@ namespace RgbLedHost
         {
             Context.Response.ContentType = "application/json";
             Context.Response.StatusCode = 200;
-            //Hashtable result = new Hashtable { { "status", ledStatus.ToString().ToLower() } };
             Send();
         }
     }

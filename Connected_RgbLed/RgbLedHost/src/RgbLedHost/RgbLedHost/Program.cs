@@ -1,6 +1,7 @@
-using System;
 using Microsoft.SPOT;
+using Netduino.Foundation;
 using System.Threading;
+using N = SecretLabs.NETMF.Hardware.Netduino;
 
 namespace RgbLedHost
 {
