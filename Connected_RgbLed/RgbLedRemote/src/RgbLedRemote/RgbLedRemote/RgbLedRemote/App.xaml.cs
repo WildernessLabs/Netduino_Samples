@@ -9,7 +9,6 @@ namespace RgbLedRemote
 	{
         public static string HostAddress = string.Empty;
         public static bool IsConnected = false;
-        public static LedStatus LedStatus = LedStatus.Off;
 
         public App ()
 		{

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Xamarin.Forms;
@@ -135,26 +134,6 @@ namespace RgbLedRemote
                         IsStartRunningColors = true;
                         break;
                 }
-            }
-        }
-
-        async Task SendRequest(string option)
-        {
-            if (IsBusy)
-                return;
-            IsBusy = true;
-
-            try
-            {
-
-            }
-            catch (Exception ex)
-            {
-                Debug.Print(ex.Message);
-            }
-            finally
-            {
-                IsBusy = false;
             }
         }
 
