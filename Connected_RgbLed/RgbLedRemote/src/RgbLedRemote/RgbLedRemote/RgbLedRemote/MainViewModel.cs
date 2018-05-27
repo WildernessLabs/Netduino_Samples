@@ -112,10 +112,14 @@ namespace RgbLedRemote
         {
             IsOn = IsStartBlink = IsStartPulse = IsStartRunningColors = false;
 
-            bool isResponseOk = await apiHelper.SendCommand(option);
+            IsBusy = true;
+            Status = "Sending '" + option + "' Command...";
 
+            bool isResponseOk = await apiHelper.SendCommand(option);
             if (isResponseOk)
             {
+                IsBusy = false;
+
                 switch (option)
                 {
                     case "TurnOn":
@@ -134,6 +138,11 @@ namespace RgbLedRemote
                         IsStartRunningColors = true;
                         break;
                 }
+            }
+            else
+            {
+                Status = "Enter IP Address:";
+                ShowConfig = true;
             }
         }
 

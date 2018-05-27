@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -31,6 +30,7 @@ namespace RgbLedRemote
         {
             HttpClient client = new HttpClient();
             client.BaseAddress = new Uri("http://" + App.HostAddress + "/");
+            client.Timeout = TimeSpan.FromSeconds(5);
 
             try
             {
