@@ -38,36 +38,36 @@ namespace RgbLedHost
 
         protected void InitializeWebServer()
         {
-            // configure our web server
             RequestHandler handler = new RequestHandler();
-            handler.TurnOn += HandlerTurnOn;
-            handler.StartBlink += HandlerStartBlink;
-            handler.StartPulse += HandlerStartPulse;
-            handler.StartRunningColors += HandlerStartRunningColors;
+
+            handler.LightOn += OnLightOn;
+            handler.StartBlink += OnBlink;
+            handler.StartPulse += OnPulse;
+            handler.StartRunningColors += OnSweepColors;
 
             server = new MapleServer();
             server.AddHandler(handler);
         }
 
-        void HandlerTurnOn()
+        void OnLightOn()
         {
             rgbPwmLed.Stop();
             rgbPwmLed.SetColor(Netduino.Foundation.Color.Blue);
         }
 
-        void HandlerStartBlink()
+        void OnBlink()
         {
             rgbPwmLed.Stop();
             rgbPwmLed.StartBlink(Netduino.Foundation.Color.Purple);
         }
 
-        void HandlerStartPulse()
+        void OnPulse()
         {
             rgbPwmLed.Stop();
             rgbPwmLed.StartPulse(Netduino.Foundation.Color.White);
         }
 
-        void HandlerStartRunningColors()
+        void OnSweepColors()
         {
             var arrayColors = new ArrayList();
             for (int i = 0; i < 360; i = i + 5)

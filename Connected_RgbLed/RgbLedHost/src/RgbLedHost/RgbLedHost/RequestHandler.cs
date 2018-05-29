@@ -8,35 +8,35 @@ namespace RgbLedHost
 
         public void getTurnOn()
         {
-            TurnOn();
+            LightOn();
             StatusResponse();
         }
-        public delegate void TurnOnHandler();
-        public event TurnOnHandler TurnOn = delegate { };
+        public delegate void OnLightOn();
+        public event OnLightOn LightOn = delegate { };
 
         public void getBlink()
         {
             StartBlink();
             StatusResponse();
         }
-        public delegate void BlinkHandler();
-        public event BlinkHandler StartBlink = delegate { };
+        public delegate void OnBlink();
+        public event OnBlink StartBlink = delegate { };
 
         public void getPulse()
         {
             StartPulse();
             StatusResponse();
         }
-        public delegate void PulseHandler();
-        public event PulseHandler StartPulse = delegate { };
+        public delegate void OnPulse();
+        public event OnPulse StartPulse = delegate { };
 
         public void getRunningColors()
         {
             StartRunningColors();
             StatusResponse();
         }
-        public delegate void RunningColorsHandler();
-        public event RunningColorsHandler StartRunningColors = delegate { };
+        public delegate void OnSweepColors();
+        public event OnSweepColors StartRunningColors = delegate { };
 
         private void StatusResponse()
         {
