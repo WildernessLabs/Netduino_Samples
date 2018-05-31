@@ -8,24 +8,6 @@ namespace RgbLedRemote
     {
         public ApiHelper() { }
 
-        async public Task<bool> Connect()
-        {
-            HttpClient client = new HttpClient();
-            client.Timeout = new TimeSpan(0, 0, 0, 3, 0);
-            client.BaseAddress = new Uri("http://" + App.HostAddress + "/");
-
-            try
-            {
-                var response = await client.GetAsync("TurnOn");
-                return response.IsSuccessStatusCode;
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.Print(ex.Message);
-                return false;
-            }
-        }
-
         public async Task<bool> SendCommand(string command)
         {
             HttpClient client = new HttpClient();
