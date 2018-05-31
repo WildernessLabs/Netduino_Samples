@@ -74,9 +74,9 @@ namespace RgbLedRemote
             IsOn = IsStartBlink = IsStartPulse = IsStartRunningColors = false;
             apiHelper = new ApiHelper();
 
-            StartCommand = new Command((s) =>
+            StartCommand = new Command(async (s) =>
             {
-                StartCommandExecute((String)s);
+                await StartCommandExecute((String)s);
             });
 
             ConnectCommand = new Command(async () =>
@@ -108,7 +108,7 @@ namespace RgbLedRemote
             }
         }
 
-        async void StartCommandExecute(string option)
+        async Task StartCommandExecute(string option)
         {
             IsOn = IsStartBlink = IsStartPulse = IsStartRunningColors = false;
 
