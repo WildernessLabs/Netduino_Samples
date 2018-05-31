@@ -82,30 +82,17 @@ namespace RgbLedRemote
             ConnectCommand = new Command(async () =>
             {
                 if (!string.IsNullOrEmpty(HostAddress))
-                    await ConnectAsync();
+                {
+                    Status = "Connecting...";
+                    ShowConfig = false;
+                    
+                    await StartCommandExecute("TurnOn");
+                }
             });
 
             IsBusy = true;
             ShowConfig = true;
             Status = "Enter IP Address:";
-        }
-
-        async Task ConnectAsync()
-        {
-            Status = "Connecting...";
-            ShowConfig = false;
-
-            bool isConnected = await apiHelper.Connect();
-            if (isConnected)
-            {
-                IsBusy = false;
-                IsOn = true;
-            }
-            else
-            {
-                Status = "Enter IP Address:";
-                ShowConfig = true;
-            }
         }
 
         async Task StartCommandExecute(string option)
