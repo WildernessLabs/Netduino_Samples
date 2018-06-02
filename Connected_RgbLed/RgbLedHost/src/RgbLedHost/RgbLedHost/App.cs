@@ -1,15 +1,17 @@
 using Maple;
 using Microsoft.SPOT;
 using Microsoft.SPOT.Hardware;
+using Netduino.Foundation.LEDs;
 using System.Threading;
+using N = SecretLabs.NETMF.Hardware.Netduino;
 
 namespace RgbLedHost
 {
     public class App
     {
-        static int BlinkRate = 100;
-        protected MapleServer server;
-        protected RgbLedController controller;
+        static int _blinkDuration = 100;
+        protected MapleServer _server;
+        protected RgbLedController _rgbController;
 
         public App()
         {
@@ -19,46 +21,32 @@ namespace RgbLedHost
 
         protected void InitializePeripherals()
         {
-            controller = new RgbLedController();
+            var rgbPwmLed = new RgbPwmLed
+            (
+                N.PWMChannels.PWM_PIN_D11,
+                N.PWMChannels.PWM_PIN_D10,
+                N.PWMChannels.PWM_PIN_D9,
+                1.05f,
+                1.5f,
+                1.5f,
+                false
+            );
+
+            _rgbController = new RgbLedController(rgbPwmLed);
         }
 
         protected void InitializeWebServer()
         {
-            RequestHandler handler = new RequestHandler();
+            var handler = new RequestHandler();
 
-            handler.LightOn += OnLightOn;
-            handler.LightOff += OnLightOff;
-            handler.StartBlink += OnBlink;
-            handler.StartPulse += OnPulse;
-            handler.StartRunningColors += OnRunningColors;
+            handler.TurnOn += _rgbController.TurnOn;
+            handler.TurnOff += _rgbController.TurnOff;
+            handler.StartBlink += _rgbController.Blink;
+            handler.StartPulse += _rgbController.Pulse;
+            handler.StartRunningColors += _rgbController.RunningColors;
 
-            server = new MapleServer();
-            server.AddHandler(handler);
-        }
-
-        void OnLightOn()
-        {
-            controller.LightOn();
-        }
-
-        void OnLightOff()
-        {
-            controller.LightOff();
-        }
-
-        void OnBlink()
-        {
-            controller.Blink();
-        }
-
-        void OnPulse()
-        {
-            controller.Pulse();
-        }
-
-        void OnRunningColors()
-        {
-            controller.RunningColors();
+            _server = new MapleServer();
+            _server.AddHandler(handler);
         }
 
         public void Run()
@@ -72,19 +60,19 @@ namespace RgbLedHost
             while (true)
             {
                 led.Write(true);
-                Thread.Sleep(BlinkRate);
+                Thread.Sleep(_blinkDuration);
                 led.Write(false);
-                Thread.Sleep(BlinkRate);
+                Thread.Sleep(_blinkDuration);
             }
         }
 
         void InitializerNetworkConnected(object sender, EventArgs e)
         {
             Debug.Print("Connected! (do work)");
-            BlinkRate = 1000;
+            _blinkDuration = 1000;
 
-            server.Start();
-            controller.NetworkConnected();
+            _server.Start();
+            _rgbController.NetworkConnected();
         }
     }
 }

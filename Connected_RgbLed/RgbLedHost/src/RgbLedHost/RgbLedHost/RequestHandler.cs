@@ -6,21 +6,21 @@ namespace RgbLedHost
     {
         public RequestHandler() { }
 
-        public void postLightOn()
+        public void postTurnOn()
         {
-            LightOn();
+            TurnOn();
             StatusResponse();
         }
-        public delegate void OnLightOn();
-        public event OnLightOn LightOn = delegate { };
+        public delegate void OnTurnOn();
+        public event OnTurnOn TurnOn = delegate { };
 
-        public void postLightOff()
+        public void postTurnOff()
         {
-            LightOff();
+            TurnOff();
             StatusResponse();
         }
-        public delegate void OnLightOff();
-        public event OnLightOff LightOff = delegate { };
+        public delegate void OnTurnOff();
+        public event OnTurnOff TurnOff = delegate { };
 
         public void postBlink()
         {

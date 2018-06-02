@@ -93,7 +93,7 @@ namespace RgbLedRemote
                     Status = "Connecting...";
                     ShowConfig = false;
                     
-                    await StartCommandExecute("LightOn");
+                    await StartCommandExecute("TurnOn");
                 }
             });
 
@@ -106,8 +106,8 @@ namespace RgbLedRemote
         {
             IsOn = IsOff = IsStartBlink = IsStartPulse = IsStartRunningColors = false;
 
-            IsBusy = true;
             Status = "Sending '" + option + "' Command...";
+            IsBusy = true;
 
             bool isResponseOk = await apiHelper.SendCommand(option);
             if (isResponseOk)
@@ -116,11 +116,11 @@ namespace RgbLedRemote
 
                 switch (option)
                 {
-                    case "LightOn":
+                    case "TurnOn":
                         IsOn = true;
                         break;
 
-                    case "LightOff":
+                    case "TurnOff":
                         IsOff = true;
                         break;
 

@@ -1,52 +1,41 @@
 using Netduino.Foundation.LEDs;
 using System;
 using System.Collections;
-using N = SecretLabs.NETMF.Hardware.Netduino;
 
 namespace RgbLedHost
 {
     public class RgbLedController
     {
-        protected RgbPwmLed rgbPwmLed;
+        protected RgbPwmLed _rgbPwmLed;
 
-        public RgbLedController()
+        public RgbLedController(RgbPwmLed rgbPwmLed)
         {
-            rgbPwmLed = new RgbPwmLed
-            (
-                N.PWMChannels.PWM_PIN_D11,
-                N.PWMChannels.PWM_PIN_D10,
-                N.PWMChannels.PWM_PIN_D9,
-                1.05f,
-                1.5f,
-                1.5f,
-                false
-            );
-
-            rgbPwmLed.SetColor(Netduino.Foundation.Color.Red);
+            _rgbPwmLed = rgbPwmLed;
+            _rgbPwmLed.SetColor(Netduino.Foundation.Color.Red);
         }
 
-        public void LightOn()
+        public void TurnOn()
         {
-            rgbPwmLed.Stop();
-            rgbPwmLed.SetColor(GetRandomColor());
+            _rgbPwmLed.Stop();
+            _rgbPwmLed.SetColor(GetRandomColor());
         }
 
-        public void LightOff()
+        public void TurnOff()
         {
-            rgbPwmLed.Stop();
-            rgbPwmLed.SetColor(Netduino.Foundation.Color.FromHsba(0, 0, 0));
+            _rgbPwmLed.Stop();
+            _rgbPwmLed.SetColor(Netduino.Foundation.Color.FromHsba(0, 0, 0));
         }
 
         public void Blink()
         {
-            rgbPwmLed.Stop();
-            rgbPwmLed.StartBlink(GetRandomColor());
+            _rgbPwmLed.Stop();
+            _rgbPwmLed.StartBlink(GetRandomColor());
         }
 
         public void Pulse()
         {
-            rgbPwmLed.Stop();
-            rgbPwmLed.StartPulse(GetRandomColor());
+            _rgbPwmLed.Stop();
+            _rgbPwmLed.StartPulse(GetRandomColor());
         }
 
         public void RunningColors()
@@ -64,20 +53,19 @@ namespace RgbLedHost
                 intervals[i] = 100;
             }
 
-            rgbPwmLed.Stop();
-            rgbPwmLed.StartRunningColors(arrayColors, intervals);
+            _rgbPwmLed.Stop();
+            _rgbPwmLed.StartRunningColors(arrayColors, intervals);
         }
 
         public void NetworkConnected()
         {
-            rgbPwmLed.Stop();
-            rgbPwmLed.SetColor(Netduino.Foundation.Color.Green);
+            _rgbPwmLed.Stop();
+            _rgbPwmLed.SetColor(Netduino.Foundation.Color.Green);
         }
 
         protected Netduino.Foundation.Color GetRandomColor()
         {
             var random = new Random();
-
             return Netduino.Foundation.Color.FromHsba(random.NextDouble(), 1, 1);
         }
     }
