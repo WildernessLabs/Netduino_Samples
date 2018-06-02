@@ -16,7 +16,7 @@ namespace RgbLedRemote
 
             try
             {
-                var response = await client.GetAsync(command);
+                var response = await client.PostAsync(command, null);
                 return response.IsSuccessStatusCode;
             }
             catch (Exception ex)

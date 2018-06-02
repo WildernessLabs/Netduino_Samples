@@ -31,6 +31,13 @@ namespace RgbLedRemote
             set { isOn = value; OnPropertyChanged("IsOn"); }
         }
 
+        bool isOff;
+        public bool IsOff
+        {
+            get { return isOff; }
+            set { isOff = value; OnPropertyChanged("IsOff"); }
+        }
+
         bool isStartBlink;
         public bool IsStartBlink
         {
@@ -86,7 +93,7 @@ namespace RgbLedRemote
                     Status = "Connecting...";
                     ShowConfig = false;
                     
-                    await StartCommandExecute("TurnOn");
+                    await StartCommandExecute("LightOn");
                 }
             });
 
@@ -97,7 +104,7 @@ namespace RgbLedRemote
 
         async Task StartCommandExecute(string option)
         {
-            IsOn = IsStartBlink = IsStartPulse = IsStartRunningColors = false;
+            IsOn = IsOff = IsStartBlink = IsStartPulse = IsStartRunningColors = false;
 
             IsBusy = true;
             Status = "Sending '" + option + "' Command...";
@@ -109,8 +116,12 @@ namespace RgbLedRemote
 
                 switch (option)
                 {
-                    case "TurnOn":
+                    case "LightOn":
                         IsOn = true;
+                        break;
+
+                    case "LightOff":
+                        IsOff = true;
                         break;
 
                     case "Blink":
