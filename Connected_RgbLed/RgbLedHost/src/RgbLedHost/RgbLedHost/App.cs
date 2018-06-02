@@ -1,18 +1,15 @@
 using Maple;
 using Microsoft.SPOT;
 using Microsoft.SPOT.Hardware;
-using Netduino.Foundation.LEDs;
-using System.Collections;
 using System.Threading;
-using N = SecretLabs.NETMF.Hardware.Netduino;
 
 namespace RgbLedHost
 {
     public class App
     {
         static int BlinkRate = 100;
-        protected RgbPwmLed rgbPwmLed;
         protected MapleServer server;
+        protected RgbLedController controller;
 
         public App()
         {
@@ -22,18 +19,7 @@ namespace RgbLedHost
 
         protected void InitializePeripherals()
         {
-            rgbPwmLed = new RgbPwmLed
-            (
-                N.PWMChannels.PWM_PIN_D11,
-                N.PWMChannels.PWM_PIN_D10,
-                N.PWMChannels.PWM_PIN_D9,
-                1.05f,
-                1.5f,
-                1.5f,
-                false
-            );
-
-            rgbPwmLed.SetColor(Netduino.Foundation.Color.Red);
+            controller = new RgbLedController();
         }
 
         protected void InitializeWebServer()
@@ -41,9 +27,10 @@ namespace RgbLedHost
             RequestHandler handler = new RequestHandler();
 
             handler.LightOn += OnLightOn;
+            handler.LightOff += OnLightOff;
             handler.StartBlink += OnBlink;
             handler.StartPulse += OnPulse;
-            handler.StartRunningColors += OnSweepColors;
+            handler.StartRunningColors += OnRunningColors;
 
             server = new MapleServer();
             server.AddHandler(handler);
@@ -51,39 +38,27 @@ namespace RgbLedHost
 
         void OnLightOn()
         {
-            rgbPwmLed.Stop();
-            rgbPwmLed.SetColor(Netduino.Foundation.Color.Blue);
+            controller.LightOn();
+        }
+
+        void OnLightOff()
+        {
+            controller.LightOff();
         }
 
         void OnBlink()
         {
-            rgbPwmLed.Stop();
-            rgbPwmLed.StartBlink(Netduino.Foundation.Color.Purple);
+            controller.Blink();
         }
 
         void OnPulse()
         {
-            rgbPwmLed.Stop();
-            rgbPwmLed.StartPulse(Netduino.Foundation.Color.White);
+            controller.Pulse();
         }
 
-        void OnSweepColors()
+        void OnRunningColors()
         {
-            var arrayColors = new ArrayList();
-            for (int i = 0; i < 360; i = i + 5)
-            {
-                var hue = ((double)i / 360F);
-                arrayColors.Add(Netduino.Foundation.Color.FromHsba(((double)i / 360F), 1, 1));
-            }
-
-            int[] intervals = new int[arrayColors.Count];
-            for (int i = 0; i < intervals.Length; i++)
-            {
-                intervals[i] = 1000;
-            }
-
-            rgbPwmLed.Stop();
-            rgbPwmLed.StartRunningColors(arrayColors, intervals);
+            controller.RunningColors();
         }
 
         public void Run()
@@ -91,7 +66,7 @@ namespace RgbLedHost
             Netduino.Foundation.Network.Initializer.NetworkConnected += InitializerNetworkConnected;
             Netduino.Foundation.Network.Initializer.InitializeNetwork();
 
-            var led = new OutputPort(N.Pins.ONBOARD_LED, false);
+            var led = new OutputPort(SecretLabs.NETMF.Hardware.Netduino.Pins.ONBOARD_LED, false);
             Debug.Print("InitializeNetwork()");
 
             while (true)
@@ -109,8 +84,7 @@ namespace RgbLedHost
             BlinkRate = 1000;
 
             server.Start();
-            rgbPwmLed.Stop();
-            rgbPwmLed.SetColor(Netduino.Foundation.Color.Green);
+            controller.NetworkConnected();
         }
     }
 }

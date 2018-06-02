@@ -6,7 +6,7 @@ namespace RgbLedHost
     {
         public RequestHandler() { }
 
-        public void getTurnOn()
+        public void postLightOn()
         {
             LightOn();
             StatusResponse();
@@ -14,7 +14,15 @@ namespace RgbLedHost
         public delegate void OnLightOn();
         public event OnLightOn LightOn = delegate { };
 
-        public void getBlink()
+        public void postLightOff()
+        {
+            LightOff();
+            StatusResponse();
+        }
+        public delegate void OnLightOff();
+        public event OnLightOff LightOff = delegate { };
+
+        public void postBlink()
         {
             StartBlink();
             StatusResponse();
@@ -22,7 +30,7 @@ namespace RgbLedHost
         public delegate void OnBlink();
         public event OnBlink StartBlink = delegate { };
 
-        public void getPulse()
+        public void postPulse()
         {
             StartPulse();
             StatusResponse();
@@ -30,7 +38,7 @@ namespace RgbLedHost
         public delegate void OnPulse();
         public event OnPulse StartPulse = delegate { };
 
-        public void getRunningColors()
+        public void postRunningColors()
         {
             StartRunningColors();
             StatusResponse();
