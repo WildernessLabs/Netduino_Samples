@@ -26,19 +26,19 @@ namespace RgbLedHost
             _rgbPwmLed.SetColor(Netduino.Foundation.Color.FromHsba(0, 0, 0));
         }
 
-        public void Blink()
+        public void StartBlink()
         {
             _rgbPwmLed.Stop();
             _rgbPwmLed.StartBlink(GetRandomColor());
         }
 
-        public void Pulse()
+        public void StartPulse()
         {
             _rgbPwmLed.Stop();
             _rgbPwmLed.StartPulse(GetRandomColor());
         }
 
-        public void RunningColors()
+        public void StartRunningColors()
         {
             var arrayColors = new ArrayList();
             for (int i = 0; i < 360; i = i + 5)

@@ -39,11 +39,11 @@ namespace RgbLedHost
         {
             var handler = new RequestHandler();
 
-            handler.TurnOn += _rgbController.TurnOn;
-            handler.TurnOff += _rgbController.TurnOff;
-            handler.StartBlink += _rgbController.Blink;
-            handler.StartPulse += _rgbController.Pulse;
-            handler.StartRunningColors += _rgbController.RunningColors;
+            handler.TurnOn += (objects, args) => { _rgbController.TurnOn(); };
+            handler.TurnOff += (objects, args) => { _rgbController.TurnOff(); };
+            handler.StartBlink += (objects, args) => { _rgbController.StartBlink(); };
+            handler.StartPulse += (objects, args) => { _rgbController.StartPulse(); };
+            handler.StartRunningColors += (objects, args) => { _rgbController.StartRunningColors(); };
 
             _server = new MapleServer();
             _server.AddHandler(handler);
@@ -54,7 +54,7 @@ namespace RgbLedHost
             Netduino.Foundation.Network.Initializer.NetworkConnected += InitializerNetworkConnected;
             Netduino.Foundation.Network.Initializer.InitializeNetwork();
 
-            var led = new OutputPort(SecretLabs.NETMF.Hardware.Netduino.Pins.ONBOARD_LED, false);
+            var led = new OutputPort(N.Pins.ONBOARD_LED, false);
             Debug.Print("InitializeNetwork()");
 
             while (true)

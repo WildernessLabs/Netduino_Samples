@@ -1,50 +1,47 @@
 using Maple;
+using Microsoft.SPOT;
 
 namespace RgbLedHost
 {
     public class RequestHandler : RequestHandlerBase
     {
+        public event EventHandler TurnOn = delegate { };
+        public event EventHandler TurnOff = delegate { };
+        public event EventHandler StartBlink = delegate { };
+        public event EventHandler StartPulse = delegate { };
+        public event EventHandler StartRunningColors = delegate { };
+
         public RequestHandler() { }
 
         public void postTurnOn()
         {
-            TurnOn();
+            TurnOn(this, EventArgs.Empty);
             StatusResponse();
         }
-        public delegate void OnTurnOn();
-        public event OnTurnOn TurnOn = delegate { };
 
         public void postTurnOff()
         {
-            TurnOff();
+            TurnOff(this, EventArgs.Empty);
             StatusResponse();
         }
-        public delegate void OnTurnOff();
-        public event OnTurnOff TurnOff = delegate { };
 
-        public void postBlink()
+        public void postStartBlink()
         {
-            StartBlink();
+            StartBlink(this, EventArgs.Empty);
             StatusResponse();
         }
-        public delegate void OnBlink();
-        public event OnBlink StartBlink = delegate { };
 
-        public void postPulse()
+        public void postStartPulse()
         {
-            StartPulse();
+            StartPulse(this, EventArgs.Empty);
             StatusResponse();
         }
-        public delegate void OnPulse();
-        public event OnPulse StartPulse = delegate { };
 
-        public void postRunningColors()
+        public void postStartRunningColors()
         {
-            StartRunningColors();
+            this.StartRunningColors(this, EventArgs.Empty);
             StatusResponse();
         }
-        public delegate void OnSweepColors();
-        public event OnSweepColors StartRunningColors = delegate { };
 
         private void StatusResponse()
         {
