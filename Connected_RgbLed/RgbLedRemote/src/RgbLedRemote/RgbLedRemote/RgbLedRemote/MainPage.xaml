@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage 
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
@@ -42,7 +42,7 @@
                 </Grid>
                 
                 <Grid>
-                    <Button Command="{Binding StartCommand}" CommandParameter="Blink" BackgroundColor="Green" BorderRadius="10">
+                    <Button Command="{Binding StartCommand}" CommandParameter="StartBlink" BackgroundColor="Green" BorderRadius="10">
                         <Button.Triggers>
                             <DataTrigger TargetType="Button" Binding="{Binding IsStartBlink}" Value="true">
                                 <Setter Property="BackgroundColor" Value="Green" />
@@ -57,7 +57,7 @@
                 </Grid>
 
                 <Grid>
-                    <Button Command="{Binding StartCommand}" CommandParameter="Pulse" BackgroundColor="Green" BorderRadius="10">
+                    <Button Command="{Binding StartCommand}" CommandParameter="StartPulse" BackgroundColor="Green" BorderRadius="10">
                         <Button.Triggers>
                             <DataTrigger TargetType="Button" Binding="{Binding IsStartPulse}" Value="true">
                                 <Setter Property="BackgroundColor" Value="Green" />
@@ -72,7 +72,7 @@
                 </Grid>
 
                 <Grid>
-                    <Button Command="{Binding StartCommand}" CommandParameter="RunningColors" BackgroundColor="Green" BorderRadius="10">
+                    <Button Command="{Binding StartCommand}" CommandParameter="StartRunningColors" BackgroundColor="Green" BorderRadius="10">
                         <Button.Triggers>
                             <DataTrigger TargetType="Button" Binding="{Binding IsStartRunningColors}" Value="true">
                                 <Setter Property="BackgroundColor" Value="Green" />
