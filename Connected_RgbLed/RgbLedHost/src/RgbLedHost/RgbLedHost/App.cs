@@ -39,11 +39,11 @@ namespace RgbLedHost
         {
             var handler = new RequestHandler();
 
-            handler.TurnOn += (objects, args) => { _rgbController.TurnOn(); };
-            handler.TurnOff += (objects, args) => { _rgbController.TurnOff(); };
-            handler.StartBlink += (objects, args) => { _rgbController.StartBlink(); };
-            handler.StartPulse += (objects, args) => { _rgbController.StartPulse(); };
-            handler.StartRunningColors += (objects, args) => { _rgbController.StartRunningColors(); };
+            handler.TurnOn += (s, e) => { _rgbController.TurnOn(); };
+            handler.TurnOff += (s, e) => { _rgbController.TurnOff(); };
+            handler.StartBlink += (s, e) => { _rgbController.StartBlink(); };
+            handler.StartPulse += (s, e) => { _rgbController.StartPulse(); };
+            handler.StartRunningColors += (s, e) => { _rgbController.StartRunningColors(); };
 
             _server = new MapleServer();
             _server.AddHandler(handler);
