@@ -124,15 +124,15 @@ namespace RgbLedRemote
                         IsOff = true;
                         break;
 
-                    case "Blink":
+                    case "StartBlink":
                         IsStartBlink = true;
                         break;
 
-                    case "Pulse":
+                    case "StartPulse":
                         IsStartPulse = true;
                         break;
 
-                    case "RunningColors":
+                    case "StartRunningColors":
                         IsStartRunningColors = true;
                         break;
                 }
