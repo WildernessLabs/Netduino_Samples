@@ -2,6 +2,7 @@ using Maple;
 using Microsoft.SPOT;
 using Microsoft.SPOT.Hardware;
 using Netduino.Foundation.LEDs;
+using Netduino.Foundation.Network;
 using System.Threading;
 using N = SecretLabs.NETMF.Hardware.Netduino;
 
@@ -51,8 +52,8 @@ namespace RgbLedHost
 
         public void Run()
         {
-            Netduino.Foundation.Network.Initializer.NetworkConnected += InitializerNetworkConnected;
-            Netduino.Foundation.Network.Initializer.InitializeNetwork();
+            Initializer.NetworkConnected += InitializerNetworkConnected;
+            Initializer.InitializeNetwork();
 
             var led = new OutputPort(N.Pins.ONBOARD_LED, false);
             Debug.Print("InitializeNetwork()");
