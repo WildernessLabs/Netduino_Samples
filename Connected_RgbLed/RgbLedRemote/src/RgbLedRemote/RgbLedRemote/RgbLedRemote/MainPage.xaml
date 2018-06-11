@@ -107,7 +107,7 @@
                         </Grid>
                     </Frame>
 
-                    <Button IsVisible="{Binding IsEmpty}" Text="Retry" TextColor="White" FontAttributes="Bold" FontSize="Large" BackgroundColor="#23ABE3" />
+                    <Button IsVisible="{Binding IsEmpty}" Command="{Binding SearchServersCommand}" Text="Retry" TextColor="White" FontAttributes="Bold" FontSize="Large" BackgroundColor="#23ABE3" />
                 </StackLayout>
             </Grid>
         </Grid>

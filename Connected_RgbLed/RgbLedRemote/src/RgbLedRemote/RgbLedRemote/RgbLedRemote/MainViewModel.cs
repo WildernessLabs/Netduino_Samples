@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
@@ -112,6 +113,8 @@ namespace RgbLedRemote
 
         public Command ConnectCommand { private set; get; }
 
+        public Command SearchServersCommand { private set; get; }
+
         public MainViewModel()
         {
             IsOn = IsStartBlink = IsStartPulse = IsStartRunningColors = false;
@@ -134,30 +137,33 @@ namespace RgbLedRemote
                 }
             });
 
+            SearchServersCommand = new Command(async () =>
+            {
+                await SearchMapleServers();
+            });
+
             SearchMapleServers();
         }
 
         async Task SearchMapleServers()
         {
             IsBusy = true;
+            IsEmpty = false;
             IsLoading = true;
+            ShowConfig = false;
             Status = "Looking for servers...";
 
             int listenPort = 17756;
-            bool searching = true;
 
             UdpClient listener = new UdpClient(listenPort);  
             IPEndPoint groupEP = new IPEndPoint(IPAddress.Any, listenPort);  
 
             try   
             {
-                Device.StartTimer(TimeSpan.FromSeconds(10), () =>
-                {
-                    searching = false;
-                    return false;
-                });
+                CancellationTokenSource cts = new CancellationTokenSource();
+                cts.CancelAfter(5000);
 
-                while (searching)   
+                while (!cts.IsCancellationRequested)   
                 {
                     Console.WriteLine("Waiting for broadcast");
                     var bytes = await listener.ReceiveAsync();
@@ -176,17 +182,16 @@ namespace RgbLedRemote
                     if (!HostList.Any(server => server.IpAddress == HostIp))
                     {
                         HostList.Add(serverItem);
+                    }
 
+                    IsEmpty = (HostList.Count == 0);
+                    if (HostList.Count > 0)
+                    {
                         SelectedServer = HostList[0];
                         Status = "Select a server:";
                         IsLoading = false;
                         ShowConfig = true;
                     }
-                }
-
-                if (HostList.Count == 0)
-                {
-                    IsEmpty = true;
                 }
             }   
             catch (Exception e)   
@@ -238,6 +243,7 @@ namespace RgbLedRemote
             }
             else
             {
+                //HostList.Clear();
                 await SearchMapleServers();
             }
         }
