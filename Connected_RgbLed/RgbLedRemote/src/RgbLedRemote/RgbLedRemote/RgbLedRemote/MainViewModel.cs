@@ -1,6 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
@@ -17,6 +23,27 @@ namespace RgbLedRemote
             set { isBusy = value; OnPropertyChanged("IsBusy"); }
         }
 
+        bool isLoading;
+        public bool IsLoading
+        {
+            get { return isLoading; }
+            set { isLoading = value; OnPropertyChanged("IsLoading"); }
+        }
+
+        bool isEmpty;
+        public bool IsEmpty
+        {
+            get { return isEmpty; }
+            set { isEmpty = value; OnPropertyChanged("IsEmpty"); }
+        }
+
+        string status;
+        public string Status
+        {
+            get { return status; }
+            set { status = value; OnPropertyChanged("Status"); }
+        }
+
         bool showConfig;
         public bool ShowConfig
         {
@@ -24,6 +51,7 @@ namespace RgbLedRemote
             set { showConfig = value; OnPropertyChanged("ShowConfig"); }
         }
 
+        #region Toggle Buttons Flags
         bool isOn;
         public bool IsOn
         {
@@ -58,19 +86,27 @@ namespace RgbLedRemote
             get { return isStartRunningColors; }
             set { isStartRunningColors = value; OnPropertyChanged("IsStartRunningColors"); }
         }
-
-        string status;
-        public string Status
-        {
-            get { return status; }
-            set { status = value; OnPropertyChanged("Status"); }
-        }
+        #endregion
 
         public string HostAddress
         {
             get { return App.HostAddress; }
             set { App.HostAddress = value; OnPropertyChanged("HostAddress"); }
         }
+
+        MapleServerItem selectedServer;
+        public MapleServerItem SelectedServer
+        {
+            get { return selectedServer; }
+            set 
+            { 
+                selectedServer = value;
+                App.HostAddress = selectedServer.IpAddress;
+                OnPropertyChanged("SelectedServer"); 
+            }
+        }
+
+        public ObservableCollection<MapleServerItem> HostList { get; set; }
 
         public Command StartCommand { private set; get; }
 
@@ -80,6 +116,7 @@ namespace RgbLedRemote
         {
             IsOn = IsStartBlink = IsStartPulse = IsStartRunningColors = false;
             apiHelper = new ApiHelper();
+            HostList = new ObservableCollection<MapleServerItem>();
 
             StartCommand = new Command(async (s) =>
             {
@@ -97,9 +134,69 @@ namespace RgbLedRemote
                 }
             });
 
+            SearchMapleServers();
+        }
+
+        async Task SearchMapleServers()
+        {
             IsBusy = true;
-            ShowConfig = true;
-            Status = "Enter IP Address:";
+            IsLoading = true;
+            Status = "Looking for servers...";
+
+            int listenPort = 17756;
+            bool searching = true;
+
+            UdpClient listener = new UdpClient(listenPort);  
+            IPEndPoint groupEP = new IPEndPoint(IPAddress.Any, listenPort);  
+
+            try   
+            {
+                Device.StartTimer(TimeSpan.FromSeconds(10), () =>
+                {
+                    searching = false;
+                    return false;
+                });
+
+                while (searching)   
+                {
+                    Console.WriteLine("Waiting for broadcast");
+                    var bytes = await listener.ReceiveAsync();
+
+                    string Host = Encoding.UTF8.GetString(bytes.Buffer, 0, bytes.Buffer.Length);
+                    string HostIp = Host.Split('=')[1];
+
+                    Console.WriteLine("Received broadcast from {0} :\n {1}\n", HostIp, Host);
+
+                    var serverItem = new MapleServerItem()
+                    {
+                        Name = Host.Split('=')[0] + " (" + Host.Split('=')[1] + ") ",
+                        IpAddress = Host.Split('=')[1]
+                    };
+
+                    if (!HostList.Any(server => server.IpAddress == HostIp))
+                    {
+                        HostList.Add(serverItem);
+
+                        SelectedServer = HostList[0];
+                        Status = "Select a server:";
+                        IsLoading = false;
+                        ShowConfig = true;
+                    }
+                }
+
+                if (HostList.Count == 0)
+                {
+                    IsEmpty = true;
+                }
+            }   
+            catch (Exception e)   
+            {  
+                Console.WriteLine(e.Message);  
+            }  
+            finally  
+            {  
+                listener.Close();  
+            }  
         }
 
         async Task StartCommandExecute(string option)
@@ -108,11 +205,13 @@ namespace RgbLedRemote
 
             Status = "Sending '" + option + "' Command...";
             IsBusy = true;
+            IsLoading = true;
 
             bool isResponseOk = await apiHelper.SendCommand(option);
             if (isResponseOk)
             {
                 IsBusy = false;
+                IsLoading = false;
 
                 switch (option)
                 {
@@ -139,8 +238,7 @@ namespace RgbLedRemote
             }
             else
             {
-                Status = "Enter IP Address:";
-                ShowConfig = true;
+                await SearchMapleServers();
             }
         }
 
@@ -154,5 +252,11 @@ namespace RgbLedRemote
             changed.Invoke(this, new PropertyChangedEventArgs(name));
         }
         #endregion
+    }
+
+    public class MapleServerItem
+    {
+        public string Name { get; set; }
+        public string IpAddress { get; set; }
     }
 }
