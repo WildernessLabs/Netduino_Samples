@@ -86,6 +86,9 @@
                 </Button>
             </StackLayout>
 
+            <Button Text="Change Servers" Style="{StaticResource ButtonStyle}" VerticalOptions="End" Margin="30"
+                Command="{Binding SwitchServersCommand}" BackgroundColor="#B09679" />
+
             <Grid IsVisible="{Binding IsBusy}" BackgroundColor="#AA000000" Padding="60">
                 <StackLayout Spacing="10" VerticalOptions="Center">
                     <ActivityIndicator Color="White" IsVisible="{Binding IsLoading}" IsRunning="True" />

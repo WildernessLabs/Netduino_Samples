@@ -113,11 +113,12 @@ namespace RgbLedRemote
 
         public Command ConnectCommand { private set; get; }
 
+        public Command SwitchServersCommand { private set; get; }
+
         public Command SearchServersCommand { private set; get; }
 
         public MainViewModel()
-        {
-            IsOn = IsStartBlink = IsStartPulse = IsStartRunningColors = false;
+        {            
             apiHelper = new ApiHelper();
             HostList = new ObservableCollection<MapleServerItem>();
 
@@ -137,6 +138,13 @@ namespace RgbLedRemote
                 }
             });
 
+            SwitchServersCommand = new Command(() =>
+            {
+                IsBusy = true;
+                Status = "Select a server:";
+                ShowConfig = true;
+            });
+
             SearchServersCommand = new Command(async () =>
             {
                 await SearchMapleServers();
@@ -154,19 +162,26 @@ namespace RgbLedRemote
             Status = "Looking for servers...";
 
             int listenPort = 17756;
+            bool isSearching = true;
 
             UdpClient listener = new UdpClient(listenPort);  
             IPEndPoint groupEP = new IPEndPoint(IPAddress.Any, listenPort);  
 
             try   
             {
-                CancellationTokenSource cts = new CancellationTokenSource();
-                cts.CancelAfter(5000);
-
-                while (!cts.IsCancellationRequested)   
+                HostList.Clear();
+                while (isSearching)
                 {
                     Console.WriteLine("Waiting for broadcast");
-                    var bytes = await listener.ReceiveAsync();
+
+                    var bytes = await Task.Run(() =>
+                    {
+                        var task = listener.ReceiveAsync();
+                        task.Wait(5000);
+                        if (task.IsCompleted)
+                        { return task.Result; }
+                        throw new TimeoutException();
+                    });
 
                     string Host = Encoding.UTF8.GetString(bytes.Buffer, 0, bytes.Buffer.Length);
                     string HostIp = Host.Split('=')[1];
@@ -184,8 +199,7 @@ namespace RgbLedRemote
                         HostList.Add(serverItem);
                     }
 
-                    IsEmpty = (HostList.Count == 0);
-                    if (HostList.Count > 0)
+                    if(HostList.Count > 0)
                     {
                         SelectedServer = HostList[0];
                         Status = "Select a server:";
@@ -196,10 +210,18 @@ namespace RgbLedRemote
             }   
             catch (Exception e)   
             {  
+                if(HostList.Count==0)
+                {
+                    IsLoading = false;
+                    Status = "Servers not found";
+                    IsEmpty = true;
+                }
+
                 Console.WriteLine(e.Message);  
             }  
             finally  
-            {  
+            {
+                isSearching = false;
                 listener.Close();  
             }  
         }
@@ -243,7 +265,6 @@ namespace RgbLedRemote
             }
             else
             {
-                //HostList.Clear();
                 await SearchMapleServers();
             }
         }
