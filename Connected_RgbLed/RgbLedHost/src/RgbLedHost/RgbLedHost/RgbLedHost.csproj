@@ -45,8 +45,8 @@
       <HintPath>..\packages\Json.NetMF.1.3.0.0\lib\netmf43\Json.NetMF.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Maple, Version=0.0.7.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Maple.0.0.8\lib\netmf43\Maple.dll</HintPath>
+    <Reference Include="Maple, Version=0.0.9.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Maple.0.0.9\lib\netmf43\Maple.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.SPOT.Graphics" />

@@ -52,27 +52,13 @@ namespace RgbLedHost
 
         public void Run()
         {
-            Initializer.NetworkConnected += InitializerNetworkConnected;
             Initializer.InitializeNetwork();
-
-            var led = new OutputPort(N.Pins.ONBOARD_LED, false);
+            
             Debug.Print("InitializeNetwork()");
 
-            while (true)
-            {
-                led.Write(true);
-                Thread.Sleep(_blinkDuration);
-                led.Write(false);
-                Thread.Sleep(_blinkDuration);
-            }
-        }
+            while (Initializer.CurrentNetworkInterface == null) { }
 
-        void InitializerNetworkConnected(object sender, EventArgs e)
-        {
-            Debug.Print("Connected! (do work)");
-            _blinkDuration = 1000;
-
-            _server.Start();
+            _server.Start("RgbLedHost", Initializer.CurrentNetworkInterface.IPAddress);
             _rgbController.NetworkConnected();
         }
     }
