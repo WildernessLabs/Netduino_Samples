@@ -14,13 +14,13 @@ namespace RgbLedRemote
         static readonly int LISTEN_PORT = 17756;
         static readonly int LISTEN_TIMEOUT = 10000; //ms
 
-        public Task<UdpReceiveResult> UdpTimeoutTask()
+        public async Task<UdpReceiveResult> UdpTimeoutTask()
         {
-            Task.Delay(LISTEN_TIMEOUT);
-            return null;
+            await Task.Delay(LISTEN_TIMEOUT);
+            return new UdpReceiveResult();
         }
 
-        public Task<List<ServerItem>> FindMapleServers()
+        public async Task<List<ServerItem>> FindMapleServers()
         {
             var hostList = new List<ServerItem>();
             var listener = new UdpClient(LISTEN_PORT);
@@ -35,10 +35,14 @@ namespace RgbLedRemote
                     Console.WriteLine("Waiting for broadcast");
 
                     var tasks = new Task<UdpReceiveResult>[] { timeoutTask, listener.ReceiveAsync() };
-                    int index = Task.WaitAny(tasks);
+
+                    int index = 0;
+
+                    await Task.Run(() => index = Task.WaitAny(tasks));
+
                     var results = tasks[index].Result;
 
-                    if (results == null)
+                    if (results.RemoteEndPoint == null)
                         break;
                    
                     string host = Encoding.UTF8.GetString(results.Buffer, 0, results.Buffer.Length);
@@ -67,7 +71,9 @@ namespace RgbLedRemote
                 listener.Close();
             }
 
-            return Task.FromResult(hostList);
+            return hostList;
+
+            //return Task.FromResult(hostList);
         }
 
         protected async Task<bool> SendCommandAsync(string command, string hostAddress)

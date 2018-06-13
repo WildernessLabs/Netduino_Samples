@@ -135,6 +135,8 @@ namespace RgbLedRemote
                     ShowConfig = false;
 
                     await rgbClient.TurnOnAsync(SelectedServer);
+
+                    IsBusy = false;
                 }
             });
 
@@ -156,13 +158,23 @@ namespace RgbLedRemote
         async Task GetServersAsync ()
         {
             IsBusy = true;
+            IsLoading = true;
+
+            Status = "Looking for servers";
+
             var servers = await rgbClient.FindMapleServers();
 
             foreach(var server in servers)
             {
                 HostList.Add(server);
             }
-            IsBusy = false;
+
+            IsLoading = false;
+
+            IsEmpty = HostList.Count == 0;
+
+            if (HostList.Count > 0)
+                ShowConfig = true;
         }
 
         #region INotifyPropertyChanged Implementation
