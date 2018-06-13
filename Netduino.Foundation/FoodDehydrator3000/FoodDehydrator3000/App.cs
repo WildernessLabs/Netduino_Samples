@@ -206,7 +206,7 @@ namespace FoodDehydrator3000
         {
             switch (e.Command)
             {
-                case "toggleDoor":
+                case "power":
                     Debug.Print("menu power");
                     TogglePower();
                     break;
