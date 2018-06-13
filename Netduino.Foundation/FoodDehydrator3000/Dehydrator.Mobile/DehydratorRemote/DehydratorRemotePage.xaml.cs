@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using Sockets.Plugin;
 using Xamarin.Forms;
 
@@ -10,8 +11,7 @@ namespace DehydratorRemote
         private const int MAPLE_SERVER_BROADCAST_PORT = 17756;
 
         private Temperature _temperature;
-        private string _hostAddress;
-        private string _hostName = "dehydrator3000";
+
 
         public DehydratorRemotePage()
         {
@@ -20,36 +20,24 @@ namespace DehydratorRemote
             this.MyTemp = new Temperature { DisplayName = "125°F (52°C)", Description = "Vegetables & Herbs", Degrees = 52 };
         }
 
-		async protected override void OnAppearing()
+		protected override void OnAppearing()
 		{
 			base.OnAppearing();
 
-            var receiver = new UdpSocketReceiver();
-
-            receiver.MessageReceived += (sender, args) =>
+            Task.Run(async () =>
             {
-                var data = System.Text.Encoding.UTF8.GetString(args.ByteData, 0, args.ByteData.Length);
-                if(data.StartsWith(_hostName, System.StringComparison.CurrentCultureIgnoreCase) && string.IsNullOrEmpty(_hostAddress))
+                while(true)
                 {
-                    Device.BeginInvokeOnMainThread(async () =>
+                    if(string.IsNullOrEmpty(HostAddress.Text))
                     {
-                        HostAddress.Text = _hostAddress = data.Split(new char[] { '=' })[1];
-
-                        ApiHelper helper = new ApiHelper(_hostAddress);
-                        var isConnected = await helper.Connect();
-                        if (isConnected)
+                        Device.BeginInvokeOnMainThread(() =>
                         {
-                            PowerToggle.On = await helper.CheckStatus();
-                        }
-                    });
+                            HostAddress.Text = App.DehydratorHostAddress;    
+                        });
+                    }
+                    await Task.Delay(1000);
                 }
-
-                Debug.WriteLine(data);
-            };
-
-            // listen for udp traffic on listenPort
-            await receiver.StartListeningAsync(MAPLE_SERVER_BROADCAST_PORT);
-
+            });
 		}
 
 		public Temperature MyTemp
