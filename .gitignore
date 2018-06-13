@@ -286,3 +286,7 @@ __pycache__/
 *.btm.cs
 *.odx.cs
 *.xsd.cs
+
+# Netduino VS2015 build artifacts
+OnBoardFlash.dat
+OnBoardFlash.dat.smd

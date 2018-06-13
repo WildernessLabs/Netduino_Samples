@@ -4,7 +4,7 @@
         <TableRoot>
             <TableSection Title="Menu">
                 <SwitchCell Text="Power" x:Name="PowerToggle" OnChanged="Handle_OnChanged" />
-                <EntryCell Label="Host Address" Placeholder="0.0.0.0" HorizontalTextAlignment="End" Keyboard="Numeric" x:Name="HostAddress" />
+                <EntryCell Label="Host Address" Placeholder="0.0.0.0" HorizontalTextAlignment="End" Keyboard="Numeric" x:Name="HostAddress" Completed="Handle_Completed" />
                 <ViewCell Tapped="Handle_Tapped">
                     <ViewCell.View>
                         <StackLayout Orientation="Horizontal" Padding="13, 0">
