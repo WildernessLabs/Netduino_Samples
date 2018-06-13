@@ -52,8 +52,8 @@
       <HintPath>..\packages\Json.NetMF.1.3.0.0\lib\netmf43\Json.NetMF.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Maple, Version=0.0.7.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Maple.0.0.7\lib\netmf43\Maple.dll</HintPath>
+    <Reference Include="Maple, Version=0.0.9.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Maple.0.0.9\lib\netmf43\Maple.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.SPOT.Graphics" />
@@ -64,28 +64,25 @@
     <Reference Include="Microsoft.SPOT.Native" />
     <Reference Include="Microsoft.SPOT.Net" />
     <Reference Include="Microsoft.SPOT.TinyCore" />
-    <Reference Include="Netduino.Foundation, Version=0.15.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Netduino.Foundation\Source\Netduino.Foundation\bin\Debug\Netduino.Foundation.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="Netduino.Foundation, Version=0.17.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Netduino.Foundation.0.17.672\lib\netmf43\Netduino.Foundation.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Netduino.Foundation.Displays.LCD.Lcd2004">
-      <HintPath>..\..\..\..\Netduino.Foundation\Source\Peripheral_Libs\Displays.LCD.Lcd2004\Driver\bin\Debug\Netduino.Foundation.Displays.LCD.Lcd2004.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="Netduino.Foundation.Displays.LCD.Lcd2004, Version=0.27.0.0, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\packages\Netduino.Foundation.Lcd2004.0.27.672\lib\netmf43\Netduino.Foundation.Displays.LCD.Lcd2004.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Netduino.Foundation.Displays.TextDisplayMenu, Version=0.7.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Netduino.Foundation\Source\Peripheral_Libs\Displays.TextDisplayMenu\Driver\bin\Debug\Netduino.Foundation.Displays.TextDisplayMenu.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="Netduino.Foundation.Displays.TextDisplayMenu, Version=0.12.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Netduino.Foundation.TextDisplayMenu.0.12.672\lib\netmf43\Netduino.Foundation.Displays.TextDisplayMenu.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Netduino.Foundation.ICs.IOExpanders.MCP23008">
-      <HintPath>..\..\..\..\Netduino.Foundation\Source\Peripheral_Libs\ICs.MCP23008\Driver\ICs.MCP23008\bin\Debug\Netduino.Foundation.ICs.IOExpanders.MCP23008.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="Netduino.Foundation.ICs.IOExpanders.MCP23008, Version=0.9.0.0, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\packages\Netduino.Foundation.MCP23008.0.9.672\lib\netmf43\Netduino.Foundation.ICs.IOExpanders.MCP23008.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Netduino.Foundation.Network, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Netduino.Foundation\Source\Netduino.Foundation.Network\bin\Debug\Netduino.Foundation.Network.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="Netduino.Foundation.Network, Version=0.7.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Netduino.Foundation.Network.0.7.676\lib\netmf43\Netduino.Foundation.Network.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="SecretLabs.NETMF.Hardware.Netduino, Version=4.3.1.0, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="SecretLabs.NETMF.IO, Version=4.3.1.0, Culture=neutral, processorArchitecture=MSIL" />
