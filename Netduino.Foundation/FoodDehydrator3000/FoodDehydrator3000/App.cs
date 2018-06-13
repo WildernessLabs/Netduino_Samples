@@ -259,14 +259,14 @@ namespace FoodDehydrator3000
 
         public void Run()
         {
-            bool networkInit = Initializer.InitializeNetwork("http://google.com");
-
-            if (networkInit)
+            Initializer.NetworkConnected += (s, e) =>
             {
                 _menu.UpdateItemValue("IP", Initializer.CurrentNetworkInterface.IPAddress.ToString());
-                _server.Start();
+                _server.Start("dehydrator3000", Initializer.CurrentNetworkInterface.IPAddress.ToString());
                 Debug.Print("Maple server started.");
-            }
+            };
+
+            Initializer.InitializeNetwork("http://google.com");
         }
 
         public void Stop()
