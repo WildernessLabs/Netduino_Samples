@@ -12,7 +12,7 @@ namespace RgbLedRemote
     public class MapleClient
     {
         static readonly int LISTEN_PORT = 17756;
-        static readonly int LISTEN_TIMEOUT = 10000; //ms
+        static readonly int LISTEN_TIMEOUT = 5000; //ms
 
         public async Task<UdpReceiveResult> UdpTimeoutTask()
         {
@@ -72,8 +72,6 @@ namespace RgbLedRemote
             }
 
             return hostList;
-
-            //return Task.FromResult(hostList);
         }
 
         protected async Task<bool> SendCommandAsync(string command, string hostAddress)

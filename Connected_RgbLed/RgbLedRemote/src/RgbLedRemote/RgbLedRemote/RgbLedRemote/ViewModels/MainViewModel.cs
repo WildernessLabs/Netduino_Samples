@@ -10,27 +10,26 @@ namespace RgbLedRemote
     {
         RgbLedClient rgbClient;
 
-        bool isBusy;
+        bool _isBusy;
         public bool IsBusy
         {
-            get { return isBusy; }
-            set { isBusy = value; OnPropertyChanged("IsBusy"); }
+            get { return _isBusy; }
+            set { _isBusy = value; OnPropertyChanged("IsBusy"); }
         }
 
-        bool isLoading;
+        bool _isLoading;
         public bool IsLoading
         {
-            get { return isLoading; }
-            set { isLoading = value; OnPropertyChanged("IsLoading"); }
+            get { return _isLoading; }
+            set { _isLoading = value; OnPropertyChanged("IsLoading"); }
         }
 
-        bool isEmpty;
+        bool _isEmpty;
         public bool IsEmpty
         {
-            get { return isEmpty; }
-            set { isEmpty = value; OnPropertyChanged("IsEmpty"); }
+            get { return _isEmpty; }
+            set { _isEmpty = value; OnPropertyChanged("IsEmpty"); }
         }
-
 
         public string Status
         {
@@ -47,47 +46,41 @@ namespace RgbLedRemote
         }
 
         #region Toggle Buttons Flags
-        bool isOn;
+        bool _isOn;
         public bool IsOn
         {
-            get { return isOn; }
-            set { isOn = value; OnPropertyChanged("IsOn"); }
+            get { return _isOn; }
+            set { _isOn = value; OnPropertyChanged("IsOn"); }
         }
 
-        bool isOff;
+        bool _isOff;
         public bool IsOff
         {
-            get { return isOff; }
-            set { isOff = value; OnPropertyChanged("IsOff"); }
+            get { return _isOff; }
+            set { _isOff = value; OnPropertyChanged("IsOff"); }
         }
 
-        bool isStartBlink;
+        bool _isStartBlink;
         public bool IsStartBlink
         {
-            get { return isStartBlink; }
-            set { isStartBlink = value; OnPropertyChanged("IsStartBlink"); }
+            get { return _isStartBlink; }
+            set { _isStartBlink = value; OnPropertyChanged("IsStartBlink"); }
         }
 
-        bool isStartPulse;
+        bool _isStartPulse;
         public bool IsStartPulse
         {
-            get { return isStartPulse; }
-            set { isStartPulse = value; OnPropertyChanged("IsStartPulse"); }
+            get { return _isStartPulse; }
+            set { _isStartPulse = value; OnPropertyChanged("IsStartPulse"); }
         }
 
-        bool isStartRunningColors;
+        bool _isStartRunningColors;
         public bool IsStartRunningColors
         {
-            get { return isStartRunningColors; }
-            set { isStartRunningColors = value; OnPropertyChanged("IsStartRunningColors"); }
+            get { return _isStartRunningColors; }
+            set { _isStartRunningColors = value; OnPropertyChanged("IsStartRunningColors"); }
         }
         #endregion
-
-        public string HostAddress
-        {
-            get => App.HostAddress; 
-            set { App.HostAddress = value; OnPropertyChanged("HostAddress"); }
-        }
 
         ServerItem _selectedServer;
         public ServerItem SelectedServer
@@ -96,19 +89,13 @@ namespace RgbLedRemote
             set 
             { 
                 _selectedServer = value;
-                App.HostAddress = _selectedServer.IpAddress;
                 OnPropertyChanged("SelectedServer"); 
             }
         }
 
         public ObservableCollection<ServerItem> HostList { get; set; }
 
-        public Command BlinkCommand { private set; get; }
-        public Command PulseCommand { private set; get; }
-        public Command CycleColorsCommand { private set; get; }
-        public Command OffCommand { private set; get; }
-        public Command OnCommand { private set; get; }
-
+        public Command SendCommand { private set; get; }
 
         public Command ConnectCommand { private set; get; }
 
@@ -121,46 +108,39 @@ namespace RgbLedRemote
             rgbClient = new RgbLedClient();
             HostList = new ObservableCollection<ServerItem>();
 
-            BlinkCommand = new Command(async () => await rgbClient.BlinkAsync(SelectedServer));
-            PulseCommand = new Command(async () => await rgbClient.PulseAsync(SelectedServer));
-            CycleColorsCommand = new Command(async () => await rgbClient.CycleColorsAsync(SelectedServer));
-            OnCommand = new Command(async () => await rgbClient.TurnOnAsync(SelectedServer));
-            OffCommand = new Command(async () => await rgbClient.TurnOffAsync(SelectedServer));
+            SendCommand = new Command(async (s) => await SendCommandRequest((string)s));
 
-            ConnectCommand = new Command(async () =>
-            {
-                if (!string.IsNullOrEmpty(HostAddress))
-                {
-                    Status = "Connecting...";
-                    ShowConfig = false;
+            ConnectCommand = new Command(async () => await SendCommandRequest("TurnOn"));
 
-                    await rgbClient.TurnOnAsync(SelectedServer);
+            SwitchServersCommand = new Command(async () => await GetServersAsync());
 
-                    IsBusy = false;
-                }
-            });
-
-            SwitchServersCommand = new Command(() =>
-            {
-                IsBusy = true;
-                Status = "Select a server:";
-                ShowConfig = true;
-            });
-
-            SearchServersCommand = new Command(async () =>
-            {
-                await GetServersAsync();
-            });
+            SearchServersCommand = new Command(async () => await GetServersAsync());
 
             GetServersAsync();
         }
 
+        void ResetState()
+        {
+            // Block the UI and Show loading spinner
+            IsBusy = true;
+            IsEmpty = false;
+            IsLoading = true;
+            ShowConfig = false;
+
+            // All buttons inactive
+            IsOn = false;
+            IsOff = false;
+            IsStartBlink = false;
+            IsStartPulse = false;
+            IsStartRunningColors = false;
+        }
+
         async Task GetServersAsync ()
         {
-            IsBusy = true;
-            IsLoading = true;
-
             Status = "Looking for servers";
+            ResetState();
+
+            HostList.Clear();
 
             var servers = await rgbClient.FindMapleServers();
 
@@ -171,10 +151,62 @@ namespace RgbLedRemote
 
             IsLoading = false;
 
-            IsEmpty = HostList.Count == 0;
-
-            if (HostList.Count > 0)
+            if(HostList.Count == 0)
+            {
+                Status = "No servers found...";
+                IsEmpty = true;
+            }
+            else
+            {
+                SelectedServer = HostList[0];
+                Status = "Select a server";
                 ShowConfig = true;
+            }
+        }
+
+        async Task SendCommandRequest(string command)
+        {
+            bool wasCommandSuccessful = false;
+
+            Status = "Sending command...";
+            ResetState();
+
+            switch(command)
+            {
+                case "TurnOn":
+                    wasCommandSuccessful = await rgbClient.TurnOnAsync(SelectedServer);
+                    IsOn = true;
+                    break;
+
+                case "TurnOff":
+                    wasCommandSuccessful = await rgbClient.TurnOffAsync(SelectedServer);
+                    IsOff = true;
+                    break;
+                
+                case "StartBlink":
+                    wasCommandSuccessful = await rgbClient.BlinkAsync(SelectedServer);
+                    IsStartBlink = true;
+                    break;
+
+                case "StartPulse":
+                    wasCommandSuccessful = await rgbClient.PulseAsync(SelectedServer);
+                    IsStartPulse = true;
+                    break;
+
+                case "StartRunningColors":
+                    wasCommandSuccessful = await rgbClient.CycleColorsAsync(SelectedServer);
+                    IsStartRunningColors = true;
+                    break;
+            }
+
+            if (wasCommandSuccessful)
+            {
+                IsBusy = false;
+            }
+            else
+            {
+                await GetServersAsync();
+            }
         }
 
         #region INotifyPropertyChanged Implementation

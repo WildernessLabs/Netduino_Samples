@@ -4,66 +4,29 @@ namespace RgbLedRemote
 {
     public class RgbLedClient : MapleClient
     {
-        public bool IsOn { get; set; } = false;
-        public bool IsBlinking { get; set; } = false;
-        public bool IsPulsing { get; set; } = false;
-        public bool IsCyclingColors { get; set; } = false;
-
-        public RgbLedClient()
+        public async Task<bool> TurnOnAsync(ServerItem server)
         {
+            return (await SendCommandAsync("TurnOn", server.IpAddress));
         }
 
-        void ResetState ()
+        public async Task<bool> TurnOffAsync(ServerItem server)
         {
-            IsOn = false;
-            IsBlinking = false;
-            IsPulsing = false;
-            IsCyclingColors = false;
+            return (await SendCommandAsync("TurnOff", server.IpAddress));
         }
 
-        public async Task TurnOnAsync(ServerItem server)
+        public async Task<bool> PulseAsync(ServerItem server)
         {
-            if (await SendCommandAsync("TurnOn", server.IpAddress))
-            {
-                ResetState();
-                IsOn = true;
-            }
+            return (await SendCommandAsync("StartPulse", server.IpAddress));
         }
 
-        public async Task TurnOffAsync(ServerItem server)
+        public async Task<bool> BlinkAsync(ServerItem server)
         {
-            if (await SendCommandAsync("TurnOff", server.IpAddress))
-            {
-                ResetState();
-                IsOn = false;
-            }
+            return (await SendCommandAsync("StartBlink", server.IpAddress));
         }
 
-        public async Task PulseAsync(ServerItem server)
+        public async Task<bool> CycleColorsAsync(ServerItem server)
         {
-            if(await SendCommandAsync("StartPulse", server.IpAddress))
-            {
-                ResetState();
-                IsPulsing = true;
-            }
-        }
-
-        public async Task BlinkAsync(ServerItem server)
-        {
-            if(await SendCommandAsync("StartBlink", server.IpAddress))
-            {
-                ResetState();
-                IsBlinking = true;
-            }
-        }
-
-        public async Task CycleColorsAsync(ServerItem server)
-        {
-            if(await SendCommandAsync("StartRunning", server.IpAddress))
-            {
-                ResetState();
-                IsCyclingColors = true;
-            }
+            return (await SendCommandAsync("StartRunningColors", server.IpAddress));
         }
     }
 }
