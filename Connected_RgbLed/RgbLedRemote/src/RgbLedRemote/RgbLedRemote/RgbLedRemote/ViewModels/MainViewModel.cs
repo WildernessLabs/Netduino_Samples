@@ -31,12 +31,12 @@ namespace RgbLedRemote
             set { _isEmpty = value; OnPropertyChanged("IsEmpty"); }
         }
 
+        string _status;
         public string Status
         {
             get =>_status; 
             set { _status = value; OnPropertyChanged("Status"); }
         }
-        string _status;
 
         bool _showConfig;
         public bool ShowConfig
@@ -61,21 +61,21 @@ namespace RgbLedRemote
         }
 
         bool _isStartBlink;
-        public bool IsStartBlink
+        public bool IsBlinking
         {
             get { return _isStartBlink; }
             set { _isStartBlink = value; OnPropertyChanged("IsStartBlink"); }
         }
 
         bool _isStartPulse;
-        public bool IsStartPulse
+        public bool IsPulsing
         {
             get { return _isStartPulse; }
             set { _isStartPulse = value; OnPropertyChanged("IsStartPulse"); }
         }
 
         bool _isStartRunningColors;
-        public bool IsStartRunningColors
+        public bool IsRunningColors
         {
             get { return _isStartRunningColors; }
             set { _isStartRunningColors = value; OnPropertyChanged("IsStartRunningColors"); }
@@ -108,9 +108,9 @@ namespace RgbLedRemote
             rgbClient = new RgbLedClient();
             HostList = new ObservableCollection<ServerItem>();
 
-            SendCommand = new Command(async (s) => await SendCommandRequest((string)s));
+            SendCommand = new Command(async (s) => await SendRgbCommand((string)s));
 
-            ConnectCommand = new Command(async () => await SendCommandRequest("TurnOn"));
+            ConnectCommand = new Command(async () => await SendRgbCommand("TurnOn"));
 
             SwitchServersCommand = new Command(async () => await GetServersAsync());
 
@@ -121,7 +121,7 @@ namespace RgbLedRemote
 
         void ResetState()
         {
-            // Block the UI and Show loading spinner
+            // Cover the UI and show loading spinner
             IsBusy = true;
             IsEmpty = false;
             IsLoading = true;
@@ -130,9 +130,9 @@ namespace RgbLedRemote
             // All buttons inactive
             IsOn = false;
             IsOff = false;
-            IsStartBlink = false;
-            IsStartPulse = false;
-            IsStartRunningColors = false;
+            IsBlinking = false;
+            IsPulsing = false;
+            IsRunningColors = false;
         }
 
         async Task GetServersAsync ()
@@ -164,9 +164,9 @@ namespace RgbLedRemote
             }
         }
 
-        async Task SendCommandRequest(string command)
+        async Task SendRgbCommand(string command)
         {
-            bool wasCommandSuccessful = false;
+            bool isSuccessful = false;
 
             Status = "Sending command...";
             ResetState();
@@ -174,32 +174,28 @@ namespace RgbLedRemote
             switch(command)
             {
                 case "TurnOn":
-                    wasCommandSuccessful = await rgbClient.TurnOnAsync(SelectedServer);
-                    IsOn = true;
+                    if(isSuccessful = await rgbClient.TurnOnAsync(SelectedServer))
+                        IsOn = true;
                     break;
-
                 case "TurnOff":
-                    wasCommandSuccessful = await rgbClient.TurnOffAsync(SelectedServer);
-                    IsOff = true;
+                    if(isSuccessful = await rgbClient.TurnOffAsync(SelectedServer))
+                        IsOff = true;
                     break;
-                
                 case "StartBlink":
-                    wasCommandSuccessful = await rgbClient.BlinkAsync(SelectedServer);
-                    IsStartBlink = true;
+                    if(isSuccessful = await rgbClient.BlinkAsync(SelectedServer))
+                        IsBlinking = true;
                     break;
-
                 case "StartPulse":
-                    wasCommandSuccessful = await rgbClient.PulseAsync(SelectedServer);
-                    IsStartPulse = true;
+                    if(isSuccessful = await rgbClient.PulseAsync(SelectedServer))
+                        IsPulsing = true;
                     break;
-
                 case "StartRunningColors":
-                    wasCommandSuccessful = await rgbClient.CycleColorsAsync(SelectedServer);
-                    IsStartRunningColors = true;
+                    if(isSuccessful = await rgbClient.CycleColorsAsync(SelectedServer))
+                        IsRunningColors = true;
                     break;
             }
 
-            if (wasCommandSuccessful)
+            if (isSuccessful)
             {
                 IsBusy = false;
             }

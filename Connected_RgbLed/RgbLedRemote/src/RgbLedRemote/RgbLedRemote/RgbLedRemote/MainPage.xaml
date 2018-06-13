@@ -9,7 +9,7 @@
         <ResourceDictionary>
             <Color x:Key="ButtonActive">#23ABE3</Color>
             <Color x:Key="ButtonInactive">#555</Color>
-            
+
             <Style x:Key="ButtonStyle" TargetType="Button">
                 <Setter Property="TextColor" Value="White" />
                 <Setter Property="FontAttributes" Value="Bold" />
@@ -18,7 +18,7 @@
             </Style>
         </ResourceDictionary>
     </ContentPage.Resources>
-    
+
     <ContentPage.Content>
         <Grid>
             <StackLayout Padding="30">
@@ -52,22 +52,22 @@
                 <Button Text="Start Blink" Style="{StaticResource ButtonStyle}"
                     Command="{Binding SendCommand}" CommandParameter="StartBlink">
                     <Button.Triggers>
-                        <DataTrigger TargetType="Button" Binding="{Binding IsStartBlink}" Value="true">
+                        <DataTrigger TargetType="Button" Binding="{Binding IsBlinking}" Value="true">
                             <Setter Property="BackgroundColor" Value="{StaticResource ButtonActive}" />
                         </DataTrigger>
-                        <DataTrigger TargetType="Button" Binding="{Binding IsStartBlink}" Value="false">
+                        <DataTrigger TargetType="Button" Binding="{Binding IsSBlinking}" Value="false">
                             <Setter Property="BackgroundColor" Value="{StaticResource ButtonInactive}" />
                         </DataTrigger>
                     </Button.Triggers>
                 </Button>
 
                 <Button Text="Start Pulse" Style="{StaticResource ButtonStyle}"
-                    Command="{Binding SendCommand}" CommandParameter="StartPulse">  
+                    Command="{Binding SendCommand}" CommandParameter="StartPulse">
                     <Button.Triggers>
-                        <DataTrigger TargetType="Button" Binding="{Binding IsStartPulse}" Value="true">
+                        <DataTrigger TargetType="Button" Binding="{Binding IsPulsing}" Value="true">
                             <Setter Property="BackgroundColor" Value="{StaticResource ButtonActive}" />
                         </DataTrigger>
-                        <DataTrigger TargetType="Button" Binding="{Binding IsStartPulse}" Value="false">
+                        <DataTrigger TargetType="Button" Binding="{Binding IsPulsing}" Value="false">
                             <Setter Property="BackgroundColor" Value="{StaticResource ButtonInactive}" />
                         </DataTrigger>
                     </Button.Triggers>
@@ -76,10 +76,10 @@
                 <Button Text="Start Running Colors" Style="{StaticResource ButtonStyle}"
                     Command="{Binding SendCommand}" CommandParameter="StartRunningColors">
                     <Button.Triggers>
-                        <DataTrigger TargetType="Button" Binding="{Binding IsStartRunningColors}" Value="true">
+                        <DataTrigger TargetType="Button" Binding="{Binding IsRunningColors}" Value="true">
                             <Setter Property="BackgroundColor" Value="{StaticResource ButtonActive}" />
                         </DataTrigger>
-                        <DataTrigger TargetType="Button" Binding="{Binding IsStartRunningColors}" Value="false">
+                        <DataTrigger TargetType="Button" Binding="{Binding IsRunningColors}" Value="false">
                             <Setter Property="BackgroundColor" Value="{StaticResource ButtonInactive}" />
                         </DataTrigger>
                     </Button.Triggers>
