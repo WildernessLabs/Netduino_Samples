@@ -1,3 +1,4 @@
+using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -6,6 +7,9 @@ namespace RgbLedRemote
 {
 	public partial class App : Application
 	{
+        public static string HostAddress = string.Empty;
+        public static bool IsConnected = false;
+
         public App ()
 		{
 			InitializeComponent();
