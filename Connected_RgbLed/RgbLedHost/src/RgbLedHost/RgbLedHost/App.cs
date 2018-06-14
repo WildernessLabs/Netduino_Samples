@@ -2,6 +2,7 @@ using Maple;
 using Microsoft.SPOT;
 using Microsoft.SPOT.Hardware;
 using Netduino.Foundation.LEDs;
+using Netduino.Foundation.Network;
 using System.Threading;
 using N = SecretLabs.NETMF.Hardware.Netduino;
 
@@ -51,27 +52,13 @@ namespace RgbLedHost
 
         public void Run()
         {
-            Netduino.Foundation.Network.Initializer.NetworkConnected += InitializerNetworkConnected;
-            Netduino.Foundation.Network.Initializer.InitializeNetwork();
-
-            var led = new OutputPort(N.Pins.ONBOARD_LED, false);
+            Initializer.InitializeNetwork();
+            
             Debug.Print("InitializeNetwork()");
 
-            while (true)
-            {
-                led.Write(true);
-                Thread.Sleep(_blinkDuration);
-                led.Write(false);
-                Thread.Sleep(_blinkDuration);
-            }
-        }
+            while (Initializer.CurrentNetworkInterface == null) { }
 
-        void InitializerNetworkConnected(object sender, EventArgs e)
-        {
-            Debug.Print("Connected! (do work)");
-            _blinkDuration = 1000;
-
-            _server.Start();
+            _server.Start("RgbLedHost", Initializer.CurrentNetworkInterface.IPAddress);
             _rgbController.NetworkConnected();
         }
     }

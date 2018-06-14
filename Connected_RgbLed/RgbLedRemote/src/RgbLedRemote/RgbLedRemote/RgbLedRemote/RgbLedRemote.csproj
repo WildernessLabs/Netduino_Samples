@@ -4,8 +4,16 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
+  <PropertyGroup>
+      <DebugType>pdbonly</DebugType>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="Xamarin.Forms" Version="3.0.0.482510" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="AsyncExtensions.cs" />
+  </ItemGroup>
+
 </Project>
