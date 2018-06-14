@@ -55,7 +55,7 @@
                         <DataTrigger TargetType="Button" Binding="{Binding IsBlinking}" Value="true">
                             <Setter Property="BackgroundColor" Value="{StaticResource ButtonActive}" />
                         </DataTrigger>
-                        <DataTrigger TargetType="Button" Binding="{Binding IsSBlinking}" Value="false">
+                        <DataTrigger TargetType="Button" Binding="{Binding IsBlinking}" Value="false">
                             <Setter Property="BackgroundColor" Value="{StaticResource ButtonInactive}" />
                         </DataTrigger>
                     </Button.Triggers>
