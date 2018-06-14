@@ -64,21 +64,21 @@ namespace RgbLedRemote
         public bool IsBlinking
         {
             get { return _isStartBlink; }
-            set { _isStartBlink = value; OnPropertyChanged("IsStartBlink"); }
+            set { _isStartBlink = value; OnPropertyChanged("IsBlinking"); }
         }
 
         bool _isStartPulse;
         public bool IsPulsing
         {
             get { return _isStartPulse; }
-            set { _isStartPulse = value; OnPropertyChanged("IsStartPulse"); }
+            set { _isStartPulse = value; OnPropertyChanged("IsPulsing"); }
         }
 
         bool _isStartRunningColors;
         public bool IsRunningColors
         {
             get { return _isStartRunningColors; }
-            set { _isStartRunningColors = value; OnPropertyChanged("IsStartRunningColors"); }
+            set { _isStartRunningColors = value; OnPropertyChanged("IsRunningColors"); }
         }
         #endregion
 
