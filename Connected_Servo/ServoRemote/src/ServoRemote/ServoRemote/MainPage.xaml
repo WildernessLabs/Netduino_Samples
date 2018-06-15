@@ -3,12 +3,117 @@
     xmlns="http://xamarin.com/schemas/2014/forms" 
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
     xmlns:local="clr-namespace:ServoRemote" 
-    x:Class="ServoRemote.MainPage">
+    x:Class="ServoRemote.MainPage"
+    BackgroundColor="White">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Color x:Key="ButtonActive">#23ABE3</Color>
+            <Color x:Key="ButtonInactive">#555</Color>
+
+            <Style x:Key="ButtonStyle" TargetType="Button">
+                <Setter Property="TextColor" Value="White" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="BorderRadius" Value="10" />
+                <Setter Property="BorderRadius" Value="10" />
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
     <ContentPage.Content>
-        <StackLayout>
-            <!-- Place new controls here -->
-            <Label Text="Welcome to Xamarin.Forms!" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" />
-        </StackLayout>
+        <Grid>
+            <StackLayout Padding="30">
+                <Label Text="Control Servo Motor using Maple" TextColor="Black" FontSize="Large" FontAttributes="Bold" />
+                <Label Text="Choose a command:" TextColor="Black" Margin="0,10,0,10" />
+
+                <Button Text="Turn On" Style="{StaticResource ButtonStyle}"
+                    Command="{Binding SendCommand}" CommandParameter="TurnOn">
+                    <Button.Triggers>
+                        <DataTrigger TargetType="Button" Binding="{Binding IsOn}" Value="true">
+                            <Setter Property="BackgroundColor" Value="{StaticResource ButtonActive}" />
+                        </DataTrigger>
+                        <DataTrigger TargetType="Button" Binding="{Binding IsOn}" Value="false">
+                            <Setter Property="BackgroundColor" Value="{StaticResource ButtonInactive}" />
+                        </DataTrigger>
+                    </Button.Triggers>
+                </Button>
+
+                <Button Text="Turn Off" Style="{StaticResource ButtonStyle}"
+                    Command="{Binding SendCommand}" CommandParameter="TurnOff" >
+                    <Button.Triggers>
+                        <DataTrigger TargetType="Button" Binding="{Binding IsOff}" Value="true">
+                            <Setter Property="BackgroundColor" Value="{StaticResource ButtonActive}" />
+                        </DataTrigger>
+                        <DataTrigger TargetType="Button" Binding="{Binding IsOff}" Value="false">
+                            <Setter Property="BackgroundColor" Value="{StaticResource ButtonInactive}" />
+                        </DataTrigger>
+                    </Button.Triggers>
+                </Button>
+
+                <Button Text="Start Blink" Style="{StaticResource ButtonStyle}"
+                    Command="{Binding SendCommand}" CommandParameter="StartBlink">
+                    <Button.Triggers>
+                        <DataTrigger TargetType="Button" Binding="{Binding IsBlinking}" Value="true">
+                            <Setter Property="BackgroundColor" Value="{StaticResource ButtonActive}" />
+                        </DataTrigger>
+                        <DataTrigger TargetType="Button" Binding="{Binding IsBlinking}" Value="false">
+                            <Setter Property="BackgroundColor" Value="{StaticResource ButtonInactive}" />
+                        </DataTrigger>
+                    </Button.Triggers>
+                </Button>
+
+                <Button Text="Start Pulse" Style="{StaticResource ButtonStyle}"
+                    Command="{Binding SendCommand}" CommandParameter="StartPulse">
+                    <Button.Triggers>
+                        <DataTrigger TargetType="Button" Binding="{Binding IsPulsing}" Value="true">
+                            <Setter Property="BackgroundColor" Value="{StaticResource ButtonActive}" />
+                        </DataTrigger>
+                        <DataTrigger TargetType="Button" Binding="{Binding IsPulsing}" Value="false">
+                            <Setter Property="BackgroundColor" Value="{StaticResource ButtonInactive}" />
+                        </DataTrigger>
+                    </Button.Triggers>
+                </Button>
+
+                <Button Text="Start Running Colors" Style="{StaticResource ButtonStyle}"
+                    Command="{Binding SendCommand}" CommandParameter="StartRunningColors">
+                    <Button.Triggers>
+                        <DataTrigger TargetType="Button" Binding="{Binding IsRunningColors}" Value="true">
+                            <Setter Property="BackgroundColor" Value="{StaticResource ButtonActive}" />
+                        </DataTrigger>
+                        <DataTrigger TargetType="Button" Binding="{Binding IsRunningColors}" Value="false">
+                            <Setter Property="BackgroundColor" Value="{StaticResource ButtonInactive}" />
+                        </DataTrigger>
+                    </Button.Triggers>
+                </Button>
+            </StackLayout>
+
+            <Button Text="Change Servers" Style="{StaticResource ButtonStyle}" VerticalOptions="End" Margin="30"
+                Command="{Binding SwitchServersCommand}" BackgroundColor="#B09679" />
+
+            <Grid IsVisible="{Binding IsBusy}" BackgroundColor="#AA000000" Padding="60">
+                <StackLayout Spacing="10" VerticalOptions="Center">
+                    <ActivityIndicator Color="White" IsVisible="{Binding IsLoading}" IsRunning="True" />
+
+                    <Label Text="{Binding Status}" TextColor="White" HorizontalOptions="Center" />
+
+                    <Frame IsVisible="{Binding ShowConfig}" BackgroundColor="White" HasShadow="false" Padding="0">
+                        <Grid Padding="10,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="40" />
+                            </Grid.ColumnDefinitions>
+
+                            <Picker ItemsSource="{Binding HostList}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding SelectedServer}" 
+                                Title="Select a server" TextColor="Black" BackgroundColor="Transparent" VerticalOptions="Center" />
+
+                            <Image Grid.Column="1" Source="icon_connect" Scale="0.8" />
+                            <Button Command="{Binding ConnectCommand}" Grid.Column="1" BackgroundColor="Transparent" />
+                        </Grid>
+                    </Frame>
+
+                    <Button IsVisible="{Binding IsEmpty}" Command="{Binding SearchServersCommand}" Text="Retry" TextColor="White" FontAttributes="Bold" FontSize="Large" BackgroundColor="#23ABE3" />
+                </StackLayout>
+            </Grid>
+        </Grid>
     </ContentPage.Content>
 </ContentPage>
