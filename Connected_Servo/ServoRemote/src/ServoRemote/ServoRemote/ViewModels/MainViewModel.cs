@@ -45,6 +45,22 @@ namespace ServoRemote
             set { _showConfig = value; OnPropertyChanged("ShowConfig"); }
         }
 
+        #region Toggle Buttons Flags
+        bool _startCycling;
+        public bool StartCycling
+        {
+            get { return _startCycling; }
+            set { _startCycling = value; OnPropertyChanged("StartCycling"); }
+        }
+
+        bool _stopCycling;
+        public bool StopCycling
+        {
+            get { return _stopCycling; }
+            set { _stopCycling = value; OnPropertyChanged("StopCycling"); }
+        }
+        #endregion
+
         ServerItem _selectedServer;
         public ServerItem SelectedServer
         {
@@ -58,10 +74,26 @@ namespace ServoRemote
 
         public ObservableCollection<ServerItem> HostList { get; set; }
 
+        public Command SendCommand { private set; get; }
+
+        public Command ConnectCommand { private set; get; }
+
+        public Command SwitchServersCommand { private set; get; }
+
+        public Command SearchServersCommand { private set; get; }
+
         public MainViewModel()
         {
             servoClient = new ServoClient();
             HostList = new ObservableCollection<ServerItem>();
+
+            SendCommand = new Command(async (s) => await SendServoCommand((string)s));
+
+            ConnectCommand = new Command(async () => await SendServoCommand("StartCycling"));
+
+            SwitchServersCommand = new Command(async () => await GetServersAsync());
+
+            SearchServersCommand = new Command(async () => await GetServersAsync());
 
             GetServersAsync();
         }
@@ -75,11 +107,8 @@ namespace ServoRemote
             ShowConfig = false;
 
             // All buttons inactive
-            //IsOn = false;
-            //IsOff = false;
-            //IsBlinking = false;
-            //IsPulsing = false;
-            //IsRunningColors = false;
+            StartCycling = false;
+            StopCycling = false;
         }
 
         async Task GetServersAsync()
@@ -120,25 +149,17 @@ namespace ServoRemote
 
             switch (command)
             {
-                case "TurnOn":
+                case "RotateTo":
                     //if (isSuccessful = await servoClient.TurnOnAsync(SelectedServer))
                         //IsOn = true;
                     break;
-                case "TurnOff":
-                    //if (isSuccessful = await servoClient.TurnOffAsync(SelectedServer))
-                        //IsOff = true;
+                case "StartCycling":
+                    if (isSuccessful = await servoClient.StartCyclingAsync(SelectedServer))
+                        StartCycling = true;
                     break;
-                case "StartBlink":
-                    //if (isSuccessful = await servoClient.BlinkAsync(SelectedServer))
-                        //IsBlinking = true;
-                    break;
-                case "StartPulse":
-                    //if (isSuccessful = await servoClient.PulseAsync(SelectedServer))
-                        //IsPulsing = true;
-                    break;
-                case "StartRunningColors":
-                    //if (isSuccessful = await servoClient.CycleColorsAsync(SelectedServer))
-                        //IsRunningColors = true;
+                case "StopCycling":
+                    if (isSuccessful = await servoClient.StopCyclingAsync(SelectedServer))
+                        StopCycling = true;
                     break;
             }
 

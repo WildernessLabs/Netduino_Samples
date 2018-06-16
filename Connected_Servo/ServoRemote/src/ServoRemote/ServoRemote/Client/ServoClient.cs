@@ -4,29 +4,19 @@ namespace ServoRemote
 {
     public class ServoClient : MapleClient
     {
-        public async Task<bool> TurnOnAsync(ServerItem server)
+        public async Task<bool> RotateToAsync(ServerItem server, int degrees)
         {
-            return (await SendCommandAsync("TurnOn", server.IpAddress));
+            return (await SendCommandAsync("RotateTo", server.IpAddress));
         }
 
-        public async Task<bool> TurnOffAsync(ServerItem server)
+        public async Task<bool> StartCyclingAsync(ServerItem server)
         {
-            return (await SendCommandAsync("TurnOff", server.IpAddress));
+            return (await SendCommandAsync("StartCycling", server.IpAddress));
         }
 
-        public async Task<bool> PulseAsync(ServerItem server)
+        public async Task<bool> StopCyclingAsync(ServerItem server)
         {
-            return (await SendCommandAsync("StartPulse", server.IpAddress));
-        }
-
-        public async Task<bool> BlinkAsync(ServerItem server)
-        {
-            return (await SendCommandAsync("StartBlink", server.IpAddress));
-        }
-
-        public async Task<bool> CycleColorsAsync(ServerItem server)
-        {
-            return (await SendCommandAsync("StartRunningColors", server.IpAddress));
+            return (await SendCommandAsync("StopCycling", server.IpAddress));
         }
     }
 }
