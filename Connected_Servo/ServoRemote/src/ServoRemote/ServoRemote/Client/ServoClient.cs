@@ -6,7 +6,7 @@ namespace ServoRemote
     {
         public async Task<bool> RotateToAsync(ServerItem server, int degrees)
         {
-            return (await SendCommandAsync("RotateTo", server.IpAddress));
+            return (await SendCommandAsync("RotateTo?targetAngle="+degrees, server.IpAddress));
         }
 
         public async Task<bool> StartCyclingAsync(ServerItem server)

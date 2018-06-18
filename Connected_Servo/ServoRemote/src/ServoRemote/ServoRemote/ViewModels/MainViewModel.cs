@@ -13,21 +13,21 @@ namespace ServoRemote
         bool _isBusy;
         public bool IsBusy
         {
-            get { return _isBusy; }
+            get => _isBusy; 
             set { _isBusy = value; OnPropertyChanged("IsBusy"); }
         }
 
         bool _isLoading;
         public bool IsLoading
         {
-            get { return _isLoading; }
+            get => _isLoading; 
             set { _isLoading = value; OnPropertyChanged("IsLoading"); }
         }
 
         bool _isEmpty;
         public bool IsEmpty
         {
-            get { return _isEmpty; }
+            get => _isEmpty; 
             set { _isEmpty = value; OnPropertyChanged("IsEmpty"); }
         }
 
@@ -43,6 +43,13 @@ namespace ServoRemote
         {
             get => _showConfig;
             set { _showConfig = value; OnPropertyChanged("ShowConfig"); }
+        }
+
+        int angleDegrees;
+        public int AngleDegrees
+        {
+            get => angleDegrees;
+            set { angleDegrees = value; OnPropertyChanged("AngleDegrees"); }
         }
 
         #region Toggle Buttons Flags
@@ -150,8 +157,8 @@ namespace ServoRemote
             switch (command)
             {
                 case "RotateTo":
-                    //if (isSuccessful = await servoClient.TurnOnAsync(SelectedServer))
-                        //IsOn = true;
+                    if (isSuccessful = await servoClient.RotateToAsync(SelectedServer, AngleDegrees))
+                        StartCycling = true;
                     break;
                 case "StartCycling":
                     if (isSuccessful = await servoClient.StartCyclingAsync(SelectedServer))

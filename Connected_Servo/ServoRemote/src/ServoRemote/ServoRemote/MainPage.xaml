@@ -28,10 +28,11 @@
 
                 <Label Text="Rotate Servo" VerticalOptions="Center" />
                 
-                <Slider x:Name="slider"  Minimum="0" Maximum="270" Margin="10" />
+                <Slider x:Name="slider" Value="{Binding AngleDegrees}"  Minimum="0" Maximum="270" Margin="10" />
                 
                 <Button Text="{Binding Source={x:Reference slider}, Path=Value, StringFormat='Rotate Servo {0:F0} Degrees'}"
-                    Style="{StaticResource ButtonStyle}" BackgroundColor="#7ed321" />
+                    Style="{StaticResource ButtonStyle}" BackgroundColor="#7ed321"
+                    Command="{Binding SendCommand}" CommandParameter="RotateTo" />
 
                 <Button Text="Start Cycling" Style="{StaticResource ButtonStyle}"
                     Command="{Binding SendCommand}" CommandParameter="StartCycling" >
@@ -56,8 +57,6 @@
                         </DataTrigger>
                     </Button.Triggers>
                 </Button>
-
-
             </StackLayout>
 
             <Button Text="Change Servers" Style="{StaticResource ButtonStyle}" VerticalOptions="End" Margin="30"
