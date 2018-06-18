@@ -24,11 +24,11 @@ namespace DehydratorRemote
             set { _isLoading = value; OnPropertyChanged("IsLoading"); }
         }
 
-        bool _isEmpty;
-        public bool IsEmpty
+        bool _showRetryButton;
+        public bool ShowRetryButton
         {
-            get => _isEmpty;
-            set { _isEmpty = value; OnPropertyChanged("IsEmpty"); }
+            get => _showRetryButton;
+            set { _showRetryButton = value; OnPropertyChanged("ShowRetryButton"); }
         }
 
         bool _isOn;
@@ -89,7 +89,7 @@ namespace DehydratorRemote
             HostList = new ObservableCollection<ServerItem>();
 
             ConnectCommand = new Command(async () => await dehydratorClient.StatusAsync(SelectedServer));
-            TogglePowerCommand = new Command(async (s) => await TogglePowerCommandExecute());
+            TogglePowerCommand = new Command(async (s) => await TogglePowerAsync());
             SearchServersCommand = new Command(async () => await GetServersAsync());
 
             LoadTemperatureList();
@@ -111,12 +111,9 @@ namespace DehydratorRemote
         {
             // Cover the UI and show loading spinner
             IsBusy = true;
-            IsEmpty = false;
             IsLoading = true;
             ShowConfig = false;
-
-            // All buttons inactive
-            IsOn = false;
+            ShowRetryButton = false;
         }
 
         async Task GetServersAsync()
@@ -138,7 +135,7 @@ namespace DehydratorRemote
             if (HostList.Count == 0)
             {
                 Status = "No servers found...";
-                IsEmpty = true;
+                ShowRetryButton = true;
             }
             else
             {
@@ -148,10 +145,11 @@ namespace DehydratorRemote
             }
         }
 
-        async Task TogglePowerCommandExecute()
+        async Task TogglePowerAsync()
         {
-            bool isSuccessful = false;
-            Status = "Sending command...";
+            bool isSuccessful = true;
+            Status = (IsOn)? "Turning off..." : "Turning on...";
+            ResetState();
 
             if (IsOn)
             {
@@ -180,11 +178,5 @@ namespace DehydratorRemote
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
         #endregion
-    }
-
-    public class Temperature
-    {
-        public int Degrees { get; set; }
-        public string DisplayName { get; set; }
     }
 }

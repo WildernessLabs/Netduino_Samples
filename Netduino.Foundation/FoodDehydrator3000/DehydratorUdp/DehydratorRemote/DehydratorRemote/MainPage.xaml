@@ -46,7 +46,7 @@
             </StackLayout>
 
             <Button Text="Change Servers" Style="{StaticResource ButtonStyle}" VerticalOptions="End" Margin="30"
-                Command="{Binding SwitchServersCommand}" BackgroundColor="#B09679" />
+                Command="{Binding SearchServersCommand}" BackgroundColor="#B09679" />
 
             <Grid IsVisible="{Binding IsBusy}" BackgroundColor="#AA000000" Padding="60">
                 <StackLayout Spacing="10" VerticalOptions="Center">
@@ -69,7 +69,7 @@
                         </Grid>
                     </Frame>
 
-                    <Button IsVisible="{Binding IsEmpty}" Command="{Binding SearchServersCommand}" Text="Retry" TextColor="White" FontAttributes="Bold" FontSize="Large" BackgroundColor="#23ABE3" />
+                    <Button IsVisible="{Binding ShowRetryButton}" Command="{Binding SearchServersCommand}" Text="Retry" TextColor="White" FontAttributes="Bold" FontSize="Large" BackgroundColor="#23ABE3" />
                 </StackLayout>
             </Grid>
         </Grid>
