@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -53,6 +54,13 @@ namespace ServoRemote
         }
 
         #region Toggle Buttons Flags
+        bool _isRotating;
+        public bool IsRotating
+        {
+            get { return _isRotating; }
+            set { _isRotating = value; OnPropertyChanged("IsRotating"); }
+        }
+
         bool _startCycling;
         public bool StartCycling
         {
@@ -85,8 +93,6 @@ namespace ServoRemote
 
         public Command ConnectCommand { private set; get; }
 
-        public Command SwitchServersCommand { private set; get; }
-
         public Command SearchServersCommand { private set; get; }
 
         public MainViewModel()
@@ -97,8 +103,6 @@ namespace ServoRemote
             SendCommand = new Command(async (s) => await SendServoCommand((string)s));
 
             ConnectCommand = new Command(async () => await SendServoCommand("StartCycling"));
-
-            SwitchServersCommand = new Command(async () => await GetServersAsync());
 
             SearchServersCommand = new Command(async () => await GetServersAsync());
 
@@ -158,7 +162,12 @@ namespace ServoRemote
             {
                 case "RotateTo":
                     if (isSuccessful = await servoClient.RotateToAsync(SelectedServer, AngleDegrees))
-                        StartCycling = true;
+                        IsRotating = true;
+                        Device.StartTimer(TimeSpan.FromMilliseconds(500), () => 
+                        {
+                            IsRotating = false;
+                            return false;
+                        });
                     break;
                 case "StartCycling":
                     if (isSuccessful = await servoClient.StartCyclingAsync(SelectedServer))

@@ -32,7 +32,16 @@
                 
                 <Button Text="{Binding Source={x:Reference slider}, Path=Value, StringFormat='Rotate Servo {0:F0} Degrees'}"
                     Style="{StaticResource ButtonStyle}" BackgroundColor="#7ed321"
-                    Command="{Binding SendCommand}" CommandParameter="RotateTo" />
+                    Command="{Binding SendCommand}" CommandParameter="RotateTo">
+                    <Button.Triggers>
+                        <DataTrigger TargetType="Button" Binding="{Binding IsRotating}" Value="true">
+                            <Setter Property="BackgroundColor" Value="{StaticResource ButtonActive}" />
+                        </DataTrigger>
+                        <DataTrigger TargetType="Button" Binding="{Binding IsRotating}" Value="false">
+                            <Setter Property="BackgroundColor" Value="{StaticResource ButtonInactive}" />
+                        </DataTrigger>
+                    </Button.Triggers>
+                </Button>
 
                 <Button Text="Start Cycling" Style="{StaticResource ButtonStyle}"
                     Command="{Binding SendCommand}" CommandParameter="StartCycling" >
@@ -60,7 +69,7 @@
             </StackLayout>
 
             <Button Text="Change Servers" Style="{StaticResource ButtonStyle}" VerticalOptions="End" Margin="30"
-                Command="{Binding SwitchServersCommand}" BackgroundColor="#B09679" />
+                Command="{Binding SearchServersCommand}" BackgroundColor="#B09679" />
 
             <Grid IsVisible="{Binding IsBusy}" BackgroundColor="#AA000000" Padding="60">
                 <StackLayout Spacing="10" VerticalOptions="Center">
