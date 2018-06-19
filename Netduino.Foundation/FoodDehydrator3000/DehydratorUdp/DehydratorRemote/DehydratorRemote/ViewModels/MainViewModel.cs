@@ -147,7 +147,7 @@ namespace DehydratorRemote
 
         async Task TogglePowerAsync()
         {
-            bool isSuccessful = true;
+            bool isSuccessful = false;
             Status = (IsOn)? "Turning off..." : "Turning on...";
             ResetState();
 
