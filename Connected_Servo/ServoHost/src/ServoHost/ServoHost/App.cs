@@ -27,9 +27,9 @@ namespace ServoHost
         {
             var handler = new RequestHandler();
 
-            handler.GoToAngleZero += (s, e) => { _servoController.GoToAngleZero(); };
-            handler.StartCycling += (s, e) => { _servoController.StartCycling(); };
+            handler.RotateTo += (s, e) => { _servoController.RotateTo(((ServoEventArgs)e).Angle); }; ;
             handler.StopCycling += (s, e) => { _servoController.StopCycling(); };
+            handler.StartCycling += (s, e) => { _servoController.StartCycling(); };
 
             _server = new MapleServer();
             _server.AddHandler(handler);
