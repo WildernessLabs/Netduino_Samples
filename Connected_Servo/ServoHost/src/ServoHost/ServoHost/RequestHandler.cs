@@ -7,8 +7,8 @@ namespace ServoHost
     public class RequestHandler : RequestHandlerBase
     {
         public event EventHandler RotateTo = delegate { };
-        public event EventHandler StartCycling = delegate { };
-        public event EventHandler StopCycling = delegate { };
+        public event EventHandler StopSweeping = delegate { };
+        public event EventHandler StartSweeping = delegate { };
 
         public RequestHandler() { }
 
@@ -38,15 +38,15 @@ namespace ServoHost
             }            
         }
 
-        public void postStopCycling()
+        public void postStopSweeping()
         {
-            StopCycling(this, EventArgs.Empty);
+            StopSweeping(this, EventArgs.Empty);
             StatusResponse();
         }
 
-        public void postStartCycling()
+        public void postStartSweeping()
         {
-            StartCycling(this, EventArgs.Empty);
+            StartSweeping(this, EventArgs.Empty);
             StatusResponse();
         }
 

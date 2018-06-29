@@ -13,36 +13,48 @@ namespace ServoHost
         public ServoController(Servo servo)
         {
             _servo = servo;
-            StartCycling();
+            StartSweeping();
         }
 
         public void RotateTo(int degrees)
         {
-            StopCycling();
+            StopSweeping();
             _servo.RotateTo(degrees);
         }
 
-        public void StopCycling()
+        public void StopSweeping()
         {
             _isRotating = false;
         }
 
-        public void StartCycling()
+        public void StartSweeping()
         {
-            StopCycling();
+            StopSweeping();
 
             _isRotating = true;
             _animationThread = new Thread(() =>
             {
                 while (_isRotating)
                 {
-                    if (_rotationAngle == 270)
-                        _rotationAngle = 0;
-                    else
-                        _rotationAngle++;
+                    while (_rotationAngle < 180)
+                    {
+                        if (!_isRotating)
+                            break;
 
-                    _servo.RotateTo(_rotationAngle);
-                    Thread.Sleep(25);
+                        _servo.RotateTo(_rotationAngle);
+                        Thread.Sleep(25);
+                        _rotationAngle++;
+                    }
+
+                    while (_rotationAngle > 0)
+                    {
+                        if (!_isRotating)
+                            break;
+
+                        _servo.RotateTo(_rotationAngle);
+                        Thread.Sleep(25);
+                        _rotationAngle--;
+                    }
                 }
             });
             _animationThread.Start();
@@ -50,7 +62,7 @@ namespace ServoHost
 
         public void NetworkConnected()
         {
-            StopCycling();
+            StopSweeping();
             _servo.RotateTo(0);
         }
     }

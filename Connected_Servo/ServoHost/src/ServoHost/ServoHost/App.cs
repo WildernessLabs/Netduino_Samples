@@ -28,8 +28,8 @@ namespace ServoHost
             var handler = new RequestHandler();
 
             handler.RotateTo += (s, e) => { _servoController.RotateTo(((ServoEventArgs)e).Angle); }; ;
-            handler.StopCycling += (s, e) => { _servoController.StopCycling(); };
-            handler.StartCycling += (s, e) => { _servoController.StartCycling(); };
+            handler.StopSweeping += (s, e) => { _servoController.StopSweeping(); };
+            handler.StartSweeping += (s, e) => { _servoController.StartSweeping(); };
 
             _server = new MapleServer();
             _server.AddHandler(handler);
