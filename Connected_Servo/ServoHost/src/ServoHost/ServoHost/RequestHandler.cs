@@ -17,11 +17,11 @@ namespace ServoHost
             try
             {
                 int targetAngle = 0;
-                var prm = "targetAngle";
+                var param = "targetAngle";
 
                 try
                 {
-                    var temp = this.Body?[prm] ?? this.Form?[prm] ?? this.QueryString?[prm];
+                    var temp = this.Body?[param] ?? this.Form?[param] ?? this.QueryString?[param];
                     targetAngle = int.Parse(temp.ToString());
                 }
                 catch (Exception ex)

@@ -38,10 +38,12 @@ namespace ServoHost
         public void Run()
         {
             Initializer.InitializeNetwork();
+            Initializer.NetworkConnected += InitializerNetworkConnected;
+        }
 
+        private void InitializerNetworkConnected(object sender, EventArgs e)
+        {
             Debug.Print("InitializeNetwork()");
-
-            while (Initializer.CurrentNetworkInterface == null) { }
 
             _server.Start("ServoHost", Initializer.CurrentNetworkInterface.IPAddress);
             _servoController.NetworkConnected();
