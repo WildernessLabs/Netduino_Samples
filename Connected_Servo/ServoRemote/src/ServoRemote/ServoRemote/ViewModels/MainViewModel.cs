@@ -61,18 +61,18 @@ namespace ServoRemote
             set { _isRotating = value; OnPropertyChanged("IsRotating"); }
         }
 
-        bool _startCycling;
-        public bool StartCycling
+        bool _startSweeping;
+        public bool StartSweeping
         {
-            get { return _startCycling; }
-            set { _startCycling = value; OnPropertyChanged("StartCycling"); }
+            get { return _startSweeping; }
+            set { _startSweeping = value; OnPropertyChanged("StartSweeping"); }
         }
 
-        bool _stopCycling;
-        public bool StopCycling
+        bool _stopSweeping;
+        public bool StopSweeping
         {
-            get { return _stopCycling; }
-            set { _stopCycling = value; OnPropertyChanged("StopCycling"); }
+            get { return _stopSweeping; }
+            set { _stopSweeping = value; OnPropertyChanged("StopSweeping"); }
         }
         #endregion
 
@@ -102,7 +102,7 @@ namespace ServoRemote
 
             SendCommand = new Command(async (s) => await SendServoCommand((string)s));
 
-            ConnectCommand = new Command(async () => await SendServoCommand("StartCycling"));
+            ConnectCommand = new Command(async () => await SendServoCommand("StartSweeping"));
 
             SearchServersCommand = new Command(async () => await GetServersAsync());
 
@@ -118,8 +118,8 @@ namespace ServoRemote
             ShowConfig = false;
 
             // All buttons inactive
-            StartCycling = false;
-            StopCycling = false;
+            StartSweeping = false;
+            StopSweeping = false;
         }
 
         async Task GetServersAsync()
@@ -169,13 +169,13 @@ namespace ServoRemote
                             return false;
                         });
                     break;
-                case "StartCycling":
-                    if (isSuccessful = await servoClient.StartCyclingAsync(SelectedServer))
-                        StartCycling = true;
+                case "StartSweeping":
+                    if (isSuccessful = await servoClient.StartSweepingAsync(SelectedServer))
+                        StartSweeping = true;
                     break;
-                case "StopCycling":
-                    if (isSuccessful = await servoClient.StopCyclingAsync(SelectedServer))
-                        StopCycling = true;
+                case "StopSweeping":
+                    if (isSuccessful = await servoClient.StopSweepingAsync(SelectedServer))
+                        StopSweeping = true;
                     break;
             }
 

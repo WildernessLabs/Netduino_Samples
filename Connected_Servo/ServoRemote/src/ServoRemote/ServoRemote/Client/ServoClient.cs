@@ -9,14 +9,14 @@ namespace ServoRemote
             return (await SendCommandAsync("RotateTo?targetAngle="+degrees, server.IpAddress));
         }
 
-        public async Task<bool> StartCyclingAsync(ServerItem server)
+        public async Task<bool> StartSweepingAsync(ServerItem server)
         {
-            return (await SendCommandAsync("StartCycling", server.IpAddress));
+            return (await SendCommandAsync("StartSweeping", server.IpAddress));
         }
 
-        public async Task<bool> StopCyclingAsync(ServerItem server)
+        public async Task<bool> StopSweepingAsync(ServerItem server)
         {
-            return (await SendCommandAsync("StopCycling", server.IpAddress));
+            return (await SendCommandAsync("StopSweeping", server.IpAddress));
         }
     }
 }

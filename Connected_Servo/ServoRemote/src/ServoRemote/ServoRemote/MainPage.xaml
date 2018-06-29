@@ -28,7 +28,7 @@
 
                 <Label Text="Rotate Servo" VerticalOptions="Center" />
                 
-                <Slider x:Name="slider" Value="{Binding AngleDegrees}"  Minimum="0" Maximum="270" Margin="10" />
+                <Slider x:Name="slider" Value="{Binding AngleDegrees}" Minimum="0" Maximum="180" Margin="10" />
                 
                 <Button Text="{Binding Source={x:Reference slider}, Path=Value, StringFormat='Rotate Servo {0:F0} Degrees'}"
                     Style="{StaticResource ButtonStyle}" BackgroundColor="#7ed321"
@@ -43,25 +43,25 @@
                     </Button.Triggers>
                 </Button>
 
-                <Button Text="Start Cycling" Style="{StaticResource ButtonStyle}"
-                    Command="{Binding SendCommand}" CommandParameter="StartCycling" >
+                <Button Text="Start Sweeping" Style="{StaticResource ButtonStyle}"
+                    Command="{Binding SendCommand}" CommandParameter="StartSweeping" >
                     <Button.Triggers>
-                        <DataTrigger TargetType="Button" Binding="{Binding StartCycling}" Value="true">
+                        <DataTrigger TargetType="Button" Binding="{Binding StartSweeping}" Value="true">
                             <Setter Property="BackgroundColor" Value="{StaticResource ButtonActive}" />
                         </DataTrigger>
-                        <DataTrigger TargetType="Button" Binding="{Binding StartCycling}" Value="false">
+                        <DataTrigger TargetType="Button" Binding="{Binding StartSweeping}" Value="false">
                             <Setter Property="BackgroundColor" Value="{StaticResource ButtonInactive}" />
                         </DataTrigger>
                     </Button.Triggers>
                 </Button>
 
-                <Button Text="Stop Cycling" Style="{StaticResource ButtonStyle}"
-                    Command="{Binding SendCommand}" CommandParameter="StopCycling">
+                <Button Text="Stop Sweeping" Style="{StaticResource ButtonStyle}"
+                    Command="{Binding SendCommand}" CommandParameter="StopSweeping">
                     <Button.Triggers>
-                        <DataTrigger TargetType="Button" Binding="{Binding StopCycling}" Value="true">
+                        <DataTrigger TargetType="Button" Binding="{Binding StopSweeping}" Value="true">
                             <Setter Property="BackgroundColor" Value="{StaticResource ButtonActive}" />
                         </DataTrigger>
-                        <DataTrigger TargetType="Button" Binding="{Binding StopCycling}" Value="false">
+                        <DataTrigger TargetType="Button" Binding="{Binding StopSweeping}" Value="false">
                             <Setter Property="BackgroundColor" Value="{StaticResource ButtonInactive}" />
                         </DataTrigger>
                     </Button.Triggers>
