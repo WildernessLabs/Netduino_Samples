@@ -19,7 +19,7 @@ namespace ServoHost
 
         protected void InitializePeripherals()
         {
-            var _servo = new Servo(N.PWMChannels.PWM_PIN_D9, NamedServoConfigs.Ideal270Servo);
+            var _servo = new Servo(N.PWMChannels.PWM_PIN_D9, NamedServoConfigs.Ideal180Servo);
             _servoController = new ServoController(_servo);
         }
 
@@ -28,8 +28,8 @@ namespace ServoHost
             var handler = new RequestHandler();
 
             handler.RotateTo += (s, e) => { _servoController.RotateTo(((ServoEventArgs)e).Angle); }; ;
-            handler.StopSweeping += (s, e) => { _servoController.StopSweeping(); };
-            handler.StartSweeping += (s, e) => { _servoController.StartSweeping(); };
+            handler.StopSweep += (s, e) => { _servoController.StopSweep(); };
+            handler.StartSweep += (s, e) => { _servoController.StartSweep(); };
 
             _server = new MapleServer();
             _server.AddHandler(handler);
