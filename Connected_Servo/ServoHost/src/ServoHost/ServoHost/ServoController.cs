@@ -41,9 +41,9 @@ namespace ServoHost
                         if (!_isRotating)
                             break;
 
+                        _rotationAngle++;
                         _servo.RotateTo(_rotationAngle);
                         Thread.Sleep(15);
-                        _rotationAngle++;
                     }
 
                     while (_rotationAngle > 0)
@@ -51,9 +51,9 @@ namespace ServoHost
                         if (!_isRotating)
                             break;
 
+                        _rotationAngle--;
                         _servo.RotateTo(_rotationAngle);
                         Thread.Sleep(15);
-                        _rotationAngle--;
                     }
                 }
             });

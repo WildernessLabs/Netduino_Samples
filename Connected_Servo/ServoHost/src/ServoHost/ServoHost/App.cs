@@ -19,7 +19,7 @@ namespace ServoHost
 
         protected void InitializePeripherals()
         {
-            var _servo = new Servo(N.PWMChannels.PWM_PIN_D9, NamedServoConfigs.Ideal180Servo);
+            var _servo = new Servo(N.PWMChannels.PWM_PIN_D11, NamedServoConfigs.Ideal180Servo);
             _servoController = new ServoController(_servo);
         }
 
