@@ -1,5 +1,7 @@
 using System.Threading;
 using Netduino.Foundation.Servos;
+using System;
+using Microsoft.SPOT;
 
 namespace GoalPostsSample
 {
@@ -18,10 +20,14 @@ namespace GoalPostsSample
 
         public void StartGoalAnimation()
         {
-            _rotationAngle = 0;
-
             _animationThread = new Thread(() =>
             {
+                if (_isRotating)
+                    return;
+                _isRotating = true;
+
+                _rotationAngle = 0;
+
                 while (_rotationAngle < 180)
                 {
                     _servo.RotateTo(_rotationAngle);
@@ -35,6 +41,8 @@ namespace GoalPostsSample
                     Thread.Sleep(10);
                     _rotationAngle--;
                 }
+
+                _isRotating = false;
             });
             _animationThread.Start();
         }
