@@ -130,7 +130,7 @@ namespace ServoRemote
 
             HostList.Clear();
 
-            var servers = await servoClient.FindMapleServers();
+            var servers = await servoClient.FindMapleServersAsync();
 
             foreach (var server in servers)
             {

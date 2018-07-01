@@ -11,20 +11,20 @@ namespace ServoRemote
 {
     public class MapleClient
     {
-        static readonly int LISTEN_PORT = 17756;
-        static readonly int LISTEN_TIMEOUT = 5000; //ms
+        public int ListenPort { get; set; }
+        public int ListenTimeout { get; set; }
 
-        public async Task<UdpReceiveResult> UdpTimeoutTask()
+        public MapleClient(int listenPort = 17756, int listTimeout = 5000)
         {
-            await Task.Delay(LISTEN_TIMEOUT);
-            return new UdpReceiveResult();
+            ListenPort = listenPort;
+            ListenTimeout = listTimeout;
         }
 
-        public async Task<List<ServerItem>> FindMapleServers()
+        public async Task<List<ServerItem>> FindMapleServersAsync()
         {
             var hostList = new List<ServerItem>();
-            var listener = new UdpClient(LISTEN_PORT);
-            var ipEndPoint = new IPEndPoint(IPAddress.Any, LISTEN_PORT);
+            var listener = new UdpClient(ListenPort);
+            var ipEndPoint = new IPEndPoint(IPAddress.Any, ListenPort);
 
             var timeoutTask = UdpTimeoutTask();
 
@@ -68,10 +68,16 @@ namespace ServoRemote
             }
             finally
             {
-                listener.Close();
+                listener.Dispose();
             }
 
             return hostList;
+        }
+
+        public async Task<UdpReceiveResult> UdpTimeoutTask()
+        {
+            await Task.Delay(ListenTimeout);
+            return new UdpReceiveResult();
         }
 
         protected async Task<bool> SendCommandAsync(string command, string hostAddress)
