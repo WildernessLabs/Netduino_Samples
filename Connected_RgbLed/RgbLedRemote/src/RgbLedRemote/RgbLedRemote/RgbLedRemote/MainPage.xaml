@@ -87,7 +87,7 @@
             </StackLayout>
 
             <Button Text="Change Servers" Style="{StaticResource ButtonStyle}" VerticalOptions="End" Margin="30"
-                Command="{Binding SwitchServersCommand}" BackgroundColor="#B09679" />
+                Command="{Binding SearchServersCommand}" BackgroundColor="#B09679" />
 
             <Grid IsVisible="{Binding IsBusy}" BackgroundColor="#AA000000" Padding="60">
                 <StackLayout Spacing="10" VerticalOptions="Center">
@@ -106,7 +106,7 @@
                                 Title="Select a server" TextColor="Black" BackgroundColor="Transparent" VerticalOptions="Center" />
 
                             <Image Grid.Column="1" Source="icon_connect" Scale="0.8" />
-                            <Button Command="{Binding ConnectCommand}" Grid.Column="1" BackgroundColor="Transparent" />
+                            <Button Grid.Column="1" Command="{Binding SendCommand}" CommandParameter="TurnOn" BackgroundColor="Transparent" />
                         </Grid>
                     </Frame>
 

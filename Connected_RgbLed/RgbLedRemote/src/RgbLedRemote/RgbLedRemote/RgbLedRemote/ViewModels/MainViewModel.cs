@@ -13,35 +13,35 @@ namespace RgbLedRemote
         bool _isBusy;
         public bool IsBusy
         {
-            get { return _isBusy; }
+            get => _isBusy; 
             set { _isBusy = value; OnPropertyChanged("IsBusy"); }
         }
 
         bool _isLoading;
         public bool IsLoading
         {
-            get { return _isLoading; }
+            get => _isLoading;
             set { _isLoading = value; OnPropertyChanged("IsLoading"); }
         }
 
         bool _isEmpty;
         public bool IsEmpty
         {
-            get { return _isEmpty; }
+            get => _isEmpty; 
             set { _isEmpty = value; OnPropertyChanged("IsEmpty"); }
         }
 
         string _status;
         public string Status
         {
-            get =>_status; 
+            get => _status; 
             set { _status = value; OnPropertyChanged("Status"); }
         }
 
         bool _showConfig;
         public bool ShowConfig
         {
-            get =>_showConfig; 
+            get => _showConfig; 
             set { _showConfig = value; OnPropertyChanged("ShowConfig"); }
         }
 
@@ -49,35 +49,35 @@ namespace RgbLedRemote
         bool _isOn;
         public bool IsOn
         {
-            get { return _isOn; }
+            get => _isOn;
             set { _isOn = value; OnPropertyChanged("IsOn"); }
         }
 
         bool _isOff;
         public bool IsOff
         {
-            get { return _isOff; }
+            get => _isOff;
             set { _isOff = value; OnPropertyChanged("IsOff"); }
         }
 
         bool _isStartBlink;
         public bool IsBlinking
         {
-            get { return _isStartBlink; }
+            get => _isStartBlink;
             set { _isStartBlink = value; OnPropertyChanged("IsBlinking"); }
         }
 
         bool _isStartPulse;
         public bool IsPulsing
         {
-            get { return _isStartPulse; }
+            get => _isStartPulse;
             set { _isStartPulse = value; OnPropertyChanged("IsPulsing"); }
         }
 
         bool _isStartRunningColors;
         public bool IsRunningColors
         {
-            get { return _isStartRunningColors; }
+            get => _isStartRunningColors;
             set { _isStartRunningColors = value; OnPropertyChanged("IsRunningColors"); }
         }
         #endregion
@@ -97,10 +97,6 @@ namespace RgbLedRemote
 
         public Command SendCommand { private set; get; }
 
-        public Command ConnectCommand { private set; get; }
-
-        public Command SwitchServersCommand { private set; get; }
-
         public Command SearchServersCommand { private set; get; }
 
         public MainViewModel()
@@ -108,11 +104,7 @@ namespace RgbLedRemote
             rgbClient = new RgbLedClient();
             HostList = new ObservableCollection<ServerItem>();
 
-            SendCommand = new Command(async (s) => await SendRgbCommand((string)s));
-
-            ConnectCommand = new Command(async () => await SendRgbCommand("TurnOn"));
-
-            SwitchServersCommand = new Command(async () => await GetServersAsync());
+            SendCommand = new Command(async (s) => await SendRgbCommandAsync((string)s));
 
             SearchServersCommand = new Command(async () => await GetServersAsync());
 
@@ -142,7 +134,7 @@ namespace RgbLedRemote
 
             HostList.Clear();
 
-            var servers = await rgbClient.FindMapleServers();
+            var servers = await rgbClient.FindMapleServersAsync();
 
             foreach(var server in servers)
             {
@@ -164,7 +156,7 @@ namespace RgbLedRemote
             }
         }
 
-        async Task SendRgbCommand(string command)
+        async Task SendRgbCommandAsync (string command)
         {
             bool isSuccessful = false;
 
