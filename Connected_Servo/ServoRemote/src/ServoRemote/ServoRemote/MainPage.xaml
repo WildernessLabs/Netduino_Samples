@@ -43,25 +43,25 @@
                     </Button.Triggers>
                 </Button>
 
-                <Button Text="Start Sweeping" Style="{StaticResource ButtonStyle}"
-                    Command="{Binding SendCommand}" CommandParameter="StartSweeping" >
+                <Button Text="Start Sweep" Style="{StaticResource ButtonStyle}"
+                    Command="{Binding SendCommand}" CommandParameter="StartSweep" >
                     <Button.Triggers>
-                        <DataTrigger TargetType="Button" Binding="{Binding StartSweeping}" Value="true">
+                        <DataTrigger TargetType="Button" Binding="{Binding StartSweep}" Value="true">
                             <Setter Property="BackgroundColor" Value="{StaticResource ButtonActive}" />
                         </DataTrigger>
-                        <DataTrigger TargetType="Button" Binding="{Binding StartSweeping}" Value="false">
+                        <DataTrigger TargetType="Button" Binding="{Binding StartSweep}" Value="false">
                             <Setter Property="BackgroundColor" Value="{StaticResource ButtonInactive}" />
                         </DataTrigger>
                     </Button.Triggers>
                 </Button>
 
-                <Button Text="Stop Sweeping" Style="{StaticResource ButtonStyle}"
-                    Command="{Binding SendCommand}" CommandParameter="StopSweeping">
+                <Button Text="Stop Sweep" Style="{StaticResource ButtonStyle}"
+                    Command="{Binding SendCommand}" CommandParameter="StopSweep">
                     <Button.Triggers>
-                        <DataTrigger TargetType="Button" Binding="{Binding StopSweeping}" Value="true">
+                        <DataTrigger TargetType="Button" Binding="{Binding StopSweep}" Value="true">
                             <Setter Property="BackgroundColor" Value="{StaticResource ButtonActive}" />
                         </DataTrigger>
-                        <DataTrigger TargetType="Button" Binding="{Binding StopSweeping}" Value="false">
+                        <DataTrigger TargetType="Button" Binding="{Binding StopSweep}" Value="false">
                             <Setter Property="BackgroundColor" Value="{StaticResource ButtonInactive}" />
                         </DataTrigger>
                     </Button.Triggers>

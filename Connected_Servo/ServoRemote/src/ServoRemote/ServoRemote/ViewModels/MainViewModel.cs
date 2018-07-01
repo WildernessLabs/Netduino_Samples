@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Maple;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -57,22 +58,22 @@ namespace ServoRemote
         bool _isRotating;
         public bool IsRotating
         {
-            get { return _isRotating; }
+            get => _isRotating;
             set { _isRotating = value; OnPropertyChanged("IsRotating"); }
         }
 
-        bool _startSweeping;
-        public bool StartSweeping
+        bool _startSweep;
+        public bool StartSweep
         {
-            get { return _startSweeping; }
-            set { _startSweeping = value; OnPropertyChanged("StartSweeping"); }
+            get => _startSweep;
+            set { _startSweep = value; OnPropertyChanged("StartSweep"); }
         }
 
-        bool _stopSweeping;
-        public bool StopSweeping
+        bool _stopSweep;
+        public bool StopSweep
         {
-            get { return _stopSweeping; }
-            set { _stopSweeping = value; OnPropertyChanged("StopSweeping"); }
+            get => _stopSweep;
+            set { _stopSweep = value; OnPropertyChanged("StopSweep"); }
         }
         #endregion
 
@@ -100,9 +101,9 @@ namespace ServoRemote
             servoClient = new ServoClient();
             HostList = new ObservableCollection<ServerItem>();
 
-            SendCommand = new Command(async (s) => await SendServoCommand((string)s));
+            SendCommand = new Command(async (s) => await SendServoCommandAsync((string)s));
 
-            ConnectCommand = new Command(async () => await SendServoCommand("StartSweeping"));
+            ConnectCommand = new Command(async () => await SendServoCommandAsync("StartSweep"));
 
             SearchServersCommand = new Command(async () => await GetServersAsync());
 
@@ -118,8 +119,8 @@ namespace ServoRemote
             ShowConfig = false;
 
             // All buttons inactive
-            StartSweeping = false;
-            StopSweeping = false;
+            StartSweep = false;
+            StopSweep = false;
         }
 
         async Task GetServersAsync()
@@ -151,7 +152,7 @@ namespace ServoRemote
             }
         }
 
-        async Task SendServoCommand(string command)
+        async Task SendServoCommandAsync(string command)
         {
             bool isSuccessful = false;
 
@@ -169,13 +170,13 @@ namespace ServoRemote
                             return false;
                         });
                     break;
-                case "StartSweeping":
-                    if (isSuccessful = await servoClient.StartSweepingAsync(SelectedServer))
-                        StartSweeping = true;
+                case "StartSweep":
+                    if (isSuccessful = await servoClient.StartSweepAsync(SelectedServer))
+                        StartSweep = true;
                     break;
-                case "StopSweeping":
-                    if (isSuccessful = await servoClient.StopSweepingAsync(SelectedServer))
-                        StopSweeping = true;
+                case "StopSweep":
+                    if (isSuccessful = await servoClient.StopSweepAsync(SelectedServer))
+                        StopSweep = true;
                     break;
             }
 

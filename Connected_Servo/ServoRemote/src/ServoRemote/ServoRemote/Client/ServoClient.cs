@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Maple;
 
 namespace ServoRemote
 {
@@ -9,14 +10,14 @@ namespace ServoRemote
             return (await SendCommandAsync("RotateTo?targetAngle="+degrees, server.IpAddress));
         }
 
-        public async Task<bool> StartSweepingAsync(ServerItem server)
+        public async Task<bool> StartSweepAsync(ServerItem server)
         {
-            return (await SendCommandAsync("StartSweeping", server.IpAddress));
+            return (await SendCommandAsync("StartSweep", server.IpAddress));
         }
 
-        public async Task<bool> StopSweepingAsync(ServerItem server)
+        public async Task<bool> StopSweepAsync(ServerItem server)
         {
-            return (await SendCommandAsync("StopSweeping", server.IpAddress));
+            return (await SendCommandAsync("StopSweep", server.IpAddress));
         }
     }
 }
