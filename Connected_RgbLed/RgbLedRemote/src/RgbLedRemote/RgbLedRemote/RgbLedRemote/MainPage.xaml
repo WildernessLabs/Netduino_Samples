@@ -20,7 +20,7 @@
     </ContentPage.Resources>
 
     <ContentPage.Content>
-        <Grid>
+        <Grid BackgroundColor="White">
             <StackLayout Padding="30">
                 <Label Text="Control RGB LED using Maple" TextColor="Black" FontSize="Large" FontAttributes="Bold" />
                 <Label Text="Choose a command:" TextColor="Black" Margin="0,10,0,10" />
@@ -105,7 +105,7 @@
                             <Picker ItemsSource="{Binding HostList}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding SelectedServer}" 
                                 Title="Select a server" TextColor="Black" BackgroundColor="Transparent" VerticalOptions="Center" />
 
-                            <Image Grid.Column="1" Source="icon_connect" Scale="0.8" />
+                            <Image Grid.Column="1" Source="icon_connect.png" Scale="0.8" />
                             <Button Grid.Column="1" Command="{Binding SendCommand}" CommandParameter="TurnOn" BackgroundColor="Transparent" />
                         </Grid>
                     </Frame>
