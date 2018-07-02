@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Xamarin.Forms;
+using Maple;
 
 namespace RgbLedRemote
 {
@@ -102,6 +103,10 @@ namespace RgbLedRemote
         public MainViewModel()
         {            
             rgbClient = new RgbLedClient();
+
+            //ToDo: Remove this value assign when new version of MapleClient is out
+            rgbClient.ListenTimeout = 5000; 
+
             HostList = new ObservableCollection<ServerItem>();
 
             SendCommand = new Command(async (s) => await SendRgbCommandAsync((string)s));
