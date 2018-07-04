@@ -1,10 +1,9 @@
 using System;
-using Microsoft.SPOT;
 using Netduino.Foundation.Servos;
 using N = SecretLabs.NETMF.Hardware.Netduino;
 using Microsoft.SPOT.Hardware;
 
-namespace GoalPostsSample
+namespace SoccerSample
 {
     public class App
     {
@@ -42,7 +41,7 @@ namespace GoalPostsSample
         private void OnButtonTeamB(uint data1, uint data2, DateTime time)
         {
             _flagTeamB.StartGoalAnimation();
-        }        
+        }
 
         public void Run()
         {

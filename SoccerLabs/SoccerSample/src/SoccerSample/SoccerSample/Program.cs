@@ -1,6 +1,6 @@
 using System.Threading;
 
-namespace GoalPostsSample
+namespace SoccerSample
 {
     public class Program
     {

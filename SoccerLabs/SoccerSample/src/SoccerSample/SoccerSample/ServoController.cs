@@ -1,7 +1,7 @@
 using System.Threading;
 using Netduino.Foundation.Servos;
 
-namespace GoalPostsSample
+namespace SoccerSample
 {
     public class ServoController
     {
