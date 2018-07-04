@@ -1,14 +1,11 @@
 using System.Threading;
 using Netduino.Foundation.Servos;
-using System;
-using Microsoft.SPOT;
 
 namespace GoalPostsSample
 {
     public class ServoController
     {
-        protected int _rotationAngle;
-        protected bool _isRotating;
+        protected bool _rotateRight;
         protected Servo _servo;
         protected Thread _animationThread = null;
 
@@ -22,27 +19,16 @@ namespace GoalPostsSample
         {
             _animationThread = new Thread(() =>
             {
-                if (_isRotating)
-                    return;
-                _isRotating = true;
+                _rotateRight = !_rotateRight;
 
-                _rotationAngle = 0;
-
-                while (_rotationAngle < 180)
+                if (_rotateRight)
                 {
-                    _servo.RotateTo(_rotationAngle);
-                    Thread.Sleep(10);
-                    _rotationAngle++;
+                    _servo.RotateTo(180);
                 }
-
-                while (_rotationAngle > 0)
+                else
                 {
-                    _servo.RotateTo(_rotationAngle);
-                    Thread.Sleep(10);
-                    _rotationAngle--;
+                    _servo.RotateTo(0);
                 }
-
-                _isRotating = false;
             });
             _animationThread.Start();
         }
