@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -11,24 +12,24 @@ namespace SoccerRemote
     {
         ServoClient _servoClient;
 
-        bool _isBusy;
-        public bool IsBusy
+        bool _areButtonsBlocked;
+        public bool AreButtonsBlocked
         {
-            get { return _isBusy; }
-            set { _isBusy = value; OnPropertyChanged("IsBusy"); }
+            get => _areButtonsBlocked;
+            set { _areButtonsBlocked = value; OnPropertyChanged("AreButtonsBlocked"); }
         }
 
         bool _isLoading;
         public bool IsLoading
         {
-            get { return _isLoading; }
+            get => _isLoading;
             set { _isLoading = value; OnPropertyChanged("IsLoading"); }
         }
 
         bool _isEmpty;
         public bool IsEmpty
         {
-            get { return _isEmpty; }
+            get => _isEmpty; 
             set { _isEmpty = value; OnPropertyChanged("IsEmpty"); }
         }
 
@@ -49,14 +50,14 @@ namespace SoccerRemote
         bool _teamA;
         public bool TeamA
         {
-            get { return _teamA; }
+            get => _teamA;
             set { _teamA = value; OnPropertyChanged("TeamCommandA"); }
         }
 
         bool _teamB;
         public bool TeamB
         {
-            get { return _teamB; }
+            get => _teamB;
             set { _teamB = value; OnPropertyChanged("TeamCommandB"); }
         }
 
@@ -87,26 +88,61 @@ namespace SoccerRemote
             _servoClient.ListenTimeout = 5000;
             ServerList = new ObservableCollection<ServerItem>();
 
-            TeamACommand = new Command(async () => await SendServoCommand("ThrowKickA"));
+            TeamACommand = new Command(async () => 
+            {
+                if (await _servoClient.ThrowKickAAsync(SelectedServer))
+                    TeamA = true;
+                else
+                    await GetServersAsync();
+            });
 
-            TeamBCommand = new Command(async () => await SendServoCommand("ThrowKickB"));
+            TeamBCommand = new Command(async () => 
+            {
+                if (await _servoClient.ThrowKickBAsync(SelectedServer))
+                    TeamA = true;
+                else
+                    await GetServersAsync();
+            });
 
-            ConnectCommand = new Command(async () => await SendServoCommand("ThrowKickA"));
+            ConnectCommand = new Command(async () => 
+            {
+                if (await _servoClient.ConnectAsync(SelectedServer))
+                    AreButtonsBlocked = false;
+                else
+                    await GetServersAsync();
+            });
 
             SearchServersCommand = new Command(async () => await GetServersAsync());
 
             GetServersAsync();
         }
 
+        void ResetState()
+        {
+            // Cover the UI and show loading spinner
+            AreButtonsBlocked = true;
+            IsEmpty = false;
+            IsLoading = true;
+            ShowConfig = false;
+
+            // All buttons inactive
+            TeamA = false;
+            TeamB = false;
+        }
+
+        void ShowCommandSent(string message)
+        {
+            Status = message;
+            ResetState();
+        }
+
         async Task GetServersAsync()
         {
-            Status = "Looking for servers";
-            ResetState();
+            ShowCommandSent("Looking for servers");
 
             ServerList.Clear();
 
             var servers = await _servoClient.FindMapleServersAsync();
-
             foreach (var server in servers)
             {
                 ServerList.Add(server);
@@ -126,49 +162,6 @@ namespace SoccerRemote
                 ShowConfig = true;
             }
         }
-
-        void ResetState()
-        {
-            // Cover the UI and show loading spinner
-            IsBusy = true;
-            IsEmpty = false;
-            IsLoading = true;
-            ShowConfig = false;
-
-            // All buttons inactive
-            TeamA = false;
-            TeamB = false;
-        }
-
-        async Task SendServoCommand(string command)
-        {
-            bool isSuccessful = false;
-
-            Status = "Sending command...";
-            ResetState();
-
-            switch (command)
-            {
-                case "ThrowKickA":
-                    if (isSuccessful = await _servoClient.TurnOnAsync(SelectedServer))
-                        TeamA = true;
-                    break;
-                case "ThrowKickB":
-                    if (isSuccessful = await _servoClient.TurnOffAsync(SelectedServer))
-                        TeamB = true;
-                    break;
-            }
-
-            if (isSuccessful)
-            {
-                IsBusy = false;
-            }
-            else
-            {
-                await GetServersAsync();
-            }
-        }
-
 
         #region INotifyPropertyChanged Implementation
         public event PropertyChangedEventHandler PropertyChanged;

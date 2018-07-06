@@ -5,14 +5,19 @@ namespace SoccerRemote
 {
     public class ServoClient : MapleClient
     {
-        public async Task<bool> TurnOnAsync(ServerItem server)
+        public async Task<bool> ConnectAsync(ServerItem server)
         {
-            return (await SendCommandAsync("ThrowKickA", server.IpAddress));
+            return (await SendCommandAsync(ApiConstants.Connect.ToString(), server.IpAddress));
         }
 
-        public async Task<bool> TurnOffAsync(ServerItem server)
+        public async Task<bool> ThrowKickAAsync(ServerItem server)
         {
-            return (await SendCommandAsync("ThrowKickB", server.IpAddress));
+            return (await SendCommandAsync(ApiConstants.ThrowKickA.ToString(), server.IpAddress));
+        }
+
+        public async Task<bool> ThrowKickBAsync(ServerItem server)
+        {
+            return (await SendCommandAsync(ApiConstants.ThrowKickB.ToString(), server.IpAddress));
         }
     }
 }
