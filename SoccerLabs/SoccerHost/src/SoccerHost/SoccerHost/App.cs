@@ -32,6 +32,12 @@ namespace SoccerHost
         {
             var handler = new RequestHandler();
 
+            handler.Connect += (s, e) => 
+            {
+                _servoTeamA.Salute();
+                _servoTeamB.Salute();
+            };
+
             handler.ThrowKickA += (s, e) => { _servoTeamA.ThrowKick(); };
             handler.ThrowKickB += (s, e) => { _servoTeamB.ThrowKick(); };
 

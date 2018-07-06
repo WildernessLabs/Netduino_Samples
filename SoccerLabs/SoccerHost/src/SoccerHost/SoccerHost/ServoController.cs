@@ -56,6 +56,17 @@ namespace SoccerHost
             _servo.RotateTo(0);
         }
 
+        public void Salute()
+        {
+            Thread _animationThread = new Thread(() =>
+            {
+                _servo.RotateTo(90);
+                Thread.Sleep(1000);
+                _servo.RotateTo(0);
+            });
+            _animationThread.Start();
+        }
+
         public void ThrowKick()
         {
             Thread _animationThread = new Thread(() =>

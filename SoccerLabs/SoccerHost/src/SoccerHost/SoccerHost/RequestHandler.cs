@@ -5,10 +5,15 @@ namespace SoccerHost
 {
     public class RequestHandler : RequestHandlerBase
     {
+        public event EventHandler Connect = delegate { };
         public event EventHandler ThrowKickA = delegate { };
         public event EventHandler ThrowKickB = delegate { };
 
-        public RequestHandler() { }
+        public void postConnect()
+        {
+            Connect(this, EventArgs.Empty);
+            StatusResponse();
+        }
 
         public void postThrowKickA()
         {
