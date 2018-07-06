@@ -26,33 +26,40 @@
                 <Label Text="Soccer with Servos" TextColor="Black" FontSize="Large" FontAttributes="Bold" />
                 <Label Text="Choose a command:" TextColor="Black" Margin="0,10,0,10" />
 
-                <Button Text="Team A" Style="{StaticResource ButtonStyle}"
-                    Command="{Binding TeamACommand}">
-                    <Button.Triggers>
-                        <DataTrigger TargetType="Button" Binding="{Binding TeamA}" Value="true">
-                            <Setter Property="BackgroundColor" Value="{StaticResource ButtonActive}" />
-                        </DataTrigger>
-                        <DataTrigger TargetType="Button" Binding="{Binding TeamA}" Value="false">
-                            <Setter Property="BackgroundColor" Value="{StaticResource ButtonInactive}" />
-                        </DataTrigger>
-                    </Button.Triggers>
-                </Button>
+                <Grid VerticalOptions="FillAndExpand">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    
+                    <Button Grid.Column="0" Text="Team A" Style="{StaticResource ButtonStyle}"
+                        Command="{Binding TeamACommand}">
+                        <Button.Triggers>
+                            <DataTrigger TargetType="Button" Binding="{Binding TeamA}" Value="true">
+                                <Setter Property="BackgroundColor" Value="Red" />
+                            </DataTrigger>
+                            <DataTrigger TargetType="Button" Binding="{Binding TeamA}" Value="false">
+                                <Setter Property="BackgroundColor" Value="{StaticResource ButtonInactive}" />
+                            </DataTrigger>
+                        </Button.Triggers>
+                    </Button>
 
-                <Button Text="Team B" Style="{StaticResource ButtonStyle}"
-                    Command="{Binding TeamBCommand}">
-                    <Button.Triggers>
-                        <DataTrigger TargetType="Button" Binding="{Binding TeamB}" Value="true">
-                            <Setter Property="BackgroundColor" Value="{StaticResource ButtonActive}" />
-                        </DataTrigger>
-                        <DataTrigger TargetType="Button" Binding="{Binding TeamB}" Value="false">
-                            <Setter Property="BackgroundColor" Value="{StaticResource ButtonInactive}" />
-                        </DataTrigger>
-                    </Button.Triggers>
-                </Button>
-            </StackLayout>
+                    <Button Grid.Column="1" Text="Team B" Style="{StaticResource ButtonStyle}"
+                        Command="{Binding TeamBCommand}" VerticalOptions="Fill">
+                        <Button.Triggers>
+                            <DataTrigger TargetType="Button" Binding="{Binding TeamB}" Value="true">
+                                <Setter Property="BackgroundColor" Value="Blue" />
+                            </DataTrigger>
+                            <DataTrigger TargetType="Button" Binding="{Binding TeamB}" Value="false">
+                                <Setter Property="BackgroundColor" Value="{StaticResource ButtonInactive}" />
+                            </DataTrigger>
+                        </Button.Triggers>
+                    </Button>
+                </Grid>
 
-            <Button Text="Change Servers" Style="{StaticResource ButtonStyle}" VerticalOptions="End" Margin="30"
+                <Button Text="Change Servers" Style="{StaticResource ButtonStyle}" VerticalOptions="End" 
                 Command="{Binding SwitchServersCommand}" BackgroundColor="#B09679" />
+            </StackLayout>
 
             <Grid IsVisible="{Binding AreButtonsBlocked}" BackgroundColor="#AA000000" Padding="60">
                 <StackLayout Spacing="10" VerticalOptions="Center">

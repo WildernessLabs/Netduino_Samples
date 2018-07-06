@@ -51,14 +51,14 @@ namespace SoccerRemote
         public bool TeamA
         {
             get => _teamA;
-            set { _teamA = value; OnPropertyChanged("TeamCommandA"); }
+            set { _teamA = value; OnPropertyChanged("TeamA"); }
         }
 
         bool _teamB;
         public bool TeamB
         {
             get => _teamB;
-            set { _teamB = value; OnPropertyChanged("TeamCommandB"); }
+            set { _teamB = value; OnPropertyChanged("TeamB"); }
         }
 
         ServerItem _selectedServer;
@@ -90,16 +90,18 @@ namespace SoccerRemote
 
             TeamACommand = new Command(async () => 
             {
+                TeamA = true;
                 if (await _servoClient.ThrowKickAAsync(SelectedServer))
-                    TeamA = true;
+                    TeamA = false;
                 else
                     await GetServersAsync();
             });
 
             TeamBCommand = new Command(async () => 
             {
+                TeamB = true;
                 if (await _servoClient.ThrowKickBAsync(SelectedServer))
-                    TeamA = true;
+                    TeamB = false;
                 else
                     await GetServersAsync();
             });
