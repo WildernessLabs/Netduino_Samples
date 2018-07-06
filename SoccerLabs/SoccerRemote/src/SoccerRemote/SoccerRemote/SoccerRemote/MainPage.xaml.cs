@@ -12,6 +12,7 @@ namespace SoccerRemote
 		public MainPage()
 		{
 			InitializeComponent();
+            BindingContext = new MainViewModel();
 		}
 	}
 }
