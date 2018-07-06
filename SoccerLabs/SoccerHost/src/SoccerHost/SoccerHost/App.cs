@@ -8,7 +8,6 @@ namespace SoccerHost
 {
     public class App
     {
-        static int _blinkDuration = 100;
         protected MapleServer _server;
 
         protected ServoController _servoTeamA;
