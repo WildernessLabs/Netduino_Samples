@@ -60,7 +60,7 @@
       <Version>3.1.0.583944</Version>
     </PackageReference>
     <PackageReference Include="MapleClient">
-      <Version>0.1.0</Version>
+      <Version>0.2.0</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
