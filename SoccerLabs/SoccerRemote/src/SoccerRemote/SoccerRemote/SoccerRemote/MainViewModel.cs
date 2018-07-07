@@ -85,7 +85,6 @@ namespace SoccerRemote
         public MainViewModel()
         {
             _servoClient = new ServoClient();
-            _servoClient.ListenTimeout = 5000;
             ServerList = new ObservableCollection<ServerItem>();
 
             TeamACommand = new Command(async () => 
