@@ -20,13 +20,13 @@ namespace SoccerSample
 
         protected void InitializePeripherals()
         {
-            _buttonTeamA = new InterruptPort(N.Pins.GPIO_PIN_D2, true, Port.ResistorMode.PullDown, Port.InterruptMode.InterruptEdgeHigh);
+            _buttonTeamA = new InterruptPort(N.Pins.GPIO_PIN_D4, true, Port.ResistorMode.PullDown, Port.InterruptMode.InterruptEdgeHigh);
             _buttonTeamA.OnInterrupt += OnButtonTeamA;
 
             var servoA = new Servo(N.PWMChannels.PWM_PIN_D3, NamedServoConfigs.Ideal180Servo);
             _flagTeamA = new ServoController(servoA);
 
-            _buttonTeamB = new InterruptPort(N.Pins.GPIO_PIN_D12, true, Port.ResistorMode.PullDown, Port.InterruptMode.InterruptEdgeHigh);
+            _buttonTeamB = new InterruptPort(N.Pins.GPIO_PIN_D10, true, Port.ResistorMode.PullDown, Port.InterruptMode.InterruptEdgeHigh);
             _buttonTeamB.OnInterrupt += OnButtonTeamB;
 
             var servoB = new Servo(N.PWMChannels.PWM_PIN_D11, NamedServoConfigs.Ideal180Servo);
