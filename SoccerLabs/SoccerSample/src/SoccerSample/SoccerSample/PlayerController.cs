@@ -3,25 +3,25 @@ using Netduino.Foundation.Servos;
 
 namespace SoccerSample
 {
-    public class ServoController
+    public class PlayerController
     {
-        protected bool _rotateRight;
+        protected bool _kickRight;
         protected Servo _servo;
         protected Thread _animationThread = null;
 
-        public ServoController(Servo servo)
+        public PlayerController(Servo servo)
         {
             _servo = servo;
             _servo.RotateTo(0);
         }
 
-        public void StartGoalAnimation()
+        public void Kick()
         {
             _animationThread = new Thread(() =>
             {
-                _rotateRight = !_rotateRight;
+                _kickRight = !_kickRight;
 
-                if (_rotateRight)
+                if (_kickRight)
                 {
                     _servo.RotateTo(180);
                 }
