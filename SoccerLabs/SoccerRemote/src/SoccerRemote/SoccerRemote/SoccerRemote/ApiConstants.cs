@@ -4,7 +4,7 @@ namespace SoccerRemote
     public enum ApiConstants
     {
         Connect,
-        ThrowKickA,
-        ThrowKickB
+        KickA,
+        KickB
     }
 }
