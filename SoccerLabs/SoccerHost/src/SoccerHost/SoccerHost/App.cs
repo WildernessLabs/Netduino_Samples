@@ -9,9 +9,8 @@ namespace SoccerHost
     public class App
     {
         protected MapleServer _server;
-
-        protected ServoController _servoTeamA;
-        protected ServoController _servoTeamB;
+        protected PlayerController _playerTeamA;
+        protected PlayerController _playerTeamB;
 
         public App()
         {
@@ -22,10 +21,10 @@ namespace SoccerHost
         protected void InitializePeripherals()
         {
             var servoA = new Servo(N.PWMChannels.PWM_PIN_D3, NamedServoConfigs.Ideal180Servo);
-            _servoTeamA = new ServoController(servoA);
+            _playerTeamA = new PlayerController(servoA);
 
             var servoB = new Servo(N.PWMChannels.PWM_PIN_D11, NamedServoConfigs.Ideal180Servo);
-            _servoTeamB = new ServoController(servoB);
+            _playerTeamB = new PlayerController(servoB);
         }
 
         protected void InitializeWebServer()
@@ -34,12 +33,12 @@ namespace SoccerHost
 
             handler.Connect += (s, e) => 
             {
-                _servoTeamA.Salute();
-                _servoTeamB.Salute();
+                _playerTeamA.Salute();
+                _playerTeamB.Salute();
             };
 
-            handler.ThrowKickA += (s, e) => { _servoTeamA.ThrowKick(); };
-            handler.ThrowKickB += (s, e) => { _servoTeamB.ThrowKick(); };
+            handler.KickA += (s, e) => { _playerTeamA.Kick(); };
+            handler.KickB += (s, e) => { _playerTeamB.Kick(); };
 
             _server = new MapleServer();
             _server.AddHandler(handler);
@@ -53,8 +52,8 @@ namespace SoccerHost
 
         private void InitializerNetworkConnected(object sender, EventArgs e)
         {
-            _servoTeamA.NetworkConnected();
-            _servoTeamB.NetworkConnected();
+            _playerTeamA.NetworkConnected();
+            _playerTeamB.NetworkConnected();
 
             _server.Start("SoccerHost01", Initializer.CurrentNetworkInterface.IPAddress);
         }

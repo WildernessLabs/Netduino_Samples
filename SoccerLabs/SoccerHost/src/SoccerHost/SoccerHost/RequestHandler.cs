@@ -6,8 +6,8 @@ namespace SoccerHost
     public class RequestHandler : RequestHandlerBase
     {
         public event EventHandler Connect = delegate { };
-        public event EventHandler ThrowKickA = delegate { };
-        public event EventHandler ThrowKickB = delegate { };
+        public event EventHandler KickA = delegate { };
+        public event EventHandler KickB = delegate { };
 
         public void postConnect()
         {
@@ -15,15 +15,15 @@ namespace SoccerHost
             StatusResponse();
         }
 
-        public void postThrowKickA()
+        public void postKickA()
         {
-            ThrowKickA(this, EventArgs.Empty);
+            KickA(this, EventArgs.Empty);
             StatusResponse();
         }
 
-        public void postThrowKickB()
+        public void postKickB()
         {
-            ThrowKickB(this, EventArgs.Empty);
+            KickB(this, EventArgs.Empty);
             StatusResponse();
         }
 
