@@ -7,7 +7,6 @@ namespace SoccerSample
     {
         protected bool _kickRight;
         protected Servo _servo;
-        protected Thread _animationThread = null;
 
         public PlayerController(Servo servo)
         {
@@ -17,7 +16,7 @@ namespace SoccerSample
 
         public void Kick()
         {
-            _animationThread = new Thread(() =>
+            Thread _animationThread = new Thread(() =>
             {
                 _kickRight = !_kickRight;
 
