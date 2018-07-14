@@ -8,7 +8,6 @@ namespace ServoHost
         protected int _rotationAngle;
         protected bool _isRotating;
         protected Servo _servo;
-        protected Thread _animationThread = null;
 
         public ServoController(Servo servo)
         {
@@ -32,7 +31,7 @@ namespace ServoHost
             StopSweep();
 
             _isRotating = true;
-            _animationThread = new Thread(() =>
+            Thread _animationThread = new Thread(() =>
             {
                 while (_isRotating)
                 {

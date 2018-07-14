@@ -47,7 +47,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Maple, Version=0.0.9.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Maple.0.0.9\lib\netmf43\Maple.dll</HintPath>
+      <HintPath>..\packages\Maple.0.0.10\lib\netmf43\Maple.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.SPOT.Graphics" />
