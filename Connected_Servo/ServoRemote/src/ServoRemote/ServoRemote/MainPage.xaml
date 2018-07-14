@@ -28,7 +28,8 @@
 
                 <Label Text="Rotate Servo" VerticalOptions="Center" />
                 
-                <Slider x:Name="slider" Value="{Binding AngleDegrees}" Minimum="0" Maximum="180" Margin="10" />
+                <Slider x:Name="slider" Value="{Binding AngleDegrees}" Minimum="0" Maximum="180" Margin="10"
+                     ThumbColor="{StaticResource ButtonActive}" MinimumTrackColor="{StaticResource ButtonActive}" MaximumTrackColor="{StaticResource ButtonActive}" />
                 
                 <Button Text="{Binding Source={x:Reference slider}, Path=Value, StringFormat='Rotate Servo {0:F0} Degrees'}"
                     Style="{StaticResource ButtonStyle}" BackgroundColor="#7ed321"
