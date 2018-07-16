@@ -10,48 +10,48 @@ namespace ServoRemote
 {
     public class MainViewModel : INotifyPropertyChanged
     {
-        ServoClient servoClient;
+        ServoControllerClient servoControllerClient;
 
         bool _isBusy;
         public bool IsBusy
         {
             get => _isBusy; 
-            set { _isBusy = value; OnPropertyChanged("IsBusy"); }
+            set { _isBusy = value; OnPropertyChanged(nameof(IsBusy)); }
         }
 
         bool _isLoading;
         public bool IsLoading
         {
             get => _isLoading; 
-            set { _isLoading = value; OnPropertyChanged("IsLoading"); }
+            set { _isLoading = value; OnPropertyChanged(nameof(IsLoading)); }
         }
 
         bool _isEmpty;
         public bool IsEmpty
         {
             get => _isEmpty; 
-            set { _isEmpty = value; OnPropertyChanged("IsEmpty"); }
+            set { _isEmpty = value; OnPropertyChanged(nameof(IsEmpty)); }
         }
 
         string _status;
         public string Status
         {
             get => _status;
-            set { _status = value; OnPropertyChanged("Status"); }
+            set { _status = value; OnPropertyChanged(nameof(Status)); }
         }
 
         bool _showConfig;
         public bool ShowConfig
         {
             get => _showConfig;
-            set { _showConfig = value; OnPropertyChanged("ShowConfig"); }
+            set { _showConfig = value; OnPropertyChanged(nameof(ShowConfig)); }
         }
 
         int angleDegrees;
         public int AngleDegrees
         {
             get => angleDegrees;
-            set { angleDegrees = value; OnPropertyChanged("AngleDegrees"); }
+            set { angleDegrees = value; OnPropertyChanged(nameof(AngleDegrees)); }
         }
 
         #region Toggle Buttons Flags
@@ -59,21 +59,21 @@ namespace ServoRemote
         public bool IsRotating
         {
             get => _isRotating;
-            set { _isRotating = value; OnPropertyChanged("IsRotating"); }
+            set { _isRotating = value; OnPropertyChanged(nameof(IsRotating)); }
         }
 
         bool _startSweep;
         public bool StartSweep
         {
             get => _startSweep;
-            set { _startSweep = value; OnPropertyChanged("StartSweep"); }
+            set { _startSweep = value; OnPropertyChanged(nameof(StartSweep)); }
         }
 
         bool _stopSweep;
         public bool StopSweep
         {
             get => _stopSweep;
-            set { _stopSweep = value; OnPropertyChanged("StopSweep"); }
+            set { _stopSweep = value; OnPropertyChanged(nameof(StopSweep)); }
         }
         #endregion
 
@@ -81,11 +81,7 @@ namespace ServoRemote
         public ServerItem SelectedServer
         {
             get => _selectedServer;
-            set
-            {
-                _selectedServer = value;
-                OnPropertyChanged("SelectedServer");
-            }
+            set { _selectedServer = value; OnPropertyChanged(nameof(SelectedServer)); }
         }
 
         public ObservableCollection<ServerItem> HostList { get; set; }
@@ -98,7 +94,7 @@ namespace ServoRemote
 
         public MainViewModel()
         {
-            servoClient = new ServoClient();
+            servoControllerClient = new ServoControllerClient();
             HostList = new ObservableCollection<ServerItem>();
 
             SendCommand = new Command(async (s) => await SendServoCommandAsync((string)s));
@@ -130,7 +126,7 @@ namespace ServoRemote
 
             HostList.Clear();
 
-            var servers = await servoClient.FindMapleServersAsync();
+            var servers = await servoControllerClient.FindMapleServersAsync();
 
             foreach (var server in servers)
             {
@@ -162,7 +158,7 @@ namespace ServoRemote
             switch (command)
             {
                 case "RotateTo":
-                    if (isSuccessful = await servoClient.RotateToAsync(SelectedServer, AngleDegrees))
+                    if (isSuccessful = await servoControllerClient.RotateToAsync(SelectedServer, AngleDegrees))
                         IsRotating = true;
                         Device.StartTimer(TimeSpan.FromMilliseconds(500), () => 
                         {
@@ -171,11 +167,11 @@ namespace ServoRemote
                         });
                     break;
                 case "StartSweep":
-                    if (isSuccessful = await servoClient.StartSweepAsync(SelectedServer))
+                    if (isSuccessful = await servoControllerClient.StartSweepAsync(SelectedServer))
                         StartSweep = true;
                     break;
                 case "StopSweep":
-                    if (isSuccessful = await servoClient.StopSweepAsync(SelectedServer))
+                    if (isSuccessful = await servoControllerClient.StopSweepAsync(SelectedServer))
                         StopSweep = true;
                     break;
             }

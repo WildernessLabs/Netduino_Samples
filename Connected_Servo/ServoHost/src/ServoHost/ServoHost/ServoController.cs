@@ -58,11 +58,5 @@ namespace ServoHost
             });
             _animationThread.Start();
         }
-
-        public void NetworkConnected()
-        {
-            StopSweep();
-            _servo.RotateTo(0);
-        }
     }
 }

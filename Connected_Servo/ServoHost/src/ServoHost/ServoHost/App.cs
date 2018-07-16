@@ -46,7 +46,7 @@ namespace ServoHost
             Debug.Print("InitializeNetwork()");
 
             _server.Start("ServoHost", Initializer.CurrentNetworkInterface.IPAddress);
-            _servoController.NetworkConnected();
+            _servoController.RotateTo(0);
         }
     }
 }
