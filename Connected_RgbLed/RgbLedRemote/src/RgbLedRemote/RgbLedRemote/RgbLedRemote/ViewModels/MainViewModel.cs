@@ -15,35 +15,35 @@ namespace RgbLedRemote
         public bool IsBusy
         {
             get => _isBusy; 
-            set { _isBusy = value; OnPropertyChanged("IsBusy"); }
+            set { _isBusy = value; OnPropertyChanged(nameof(IsBusy)); }
         }
 
         bool _isLoading;
         public bool IsLoading
         {
             get => _isLoading;
-            set { _isLoading = value; OnPropertyChanged("IsLoading"); }
+            set { _isLoading = value; OnPropertyChanged(nameof(IsLoading)); }
         }
 
         bool _isEmpty;
         public bool IsEmpty
         {
             get => _isEmpty; 
-            set { _isEmpty = value; OnPropertyChanged("IsEmpty"); }
+            set { _isEmpty = value; OnPropertyChanged(nameof(IsEmpty)); }
         }
 
         string _status;
         public string Status
         {
             get => _status; 
-            set { _status = value; OnPropertyChanged("Status"); }
+            set { _status = value; OnPropertyChanged(nameof(Status)); }
         }
 
         bool _showConfig;
         public bool ShowConfig
         {
             get => _showConfig; 
-            set { _showConfig = value; OnPropertyChanged("ShowConfig"); }
+            set { _showConfig = value; OnPropertyChanged(nameof(ShowConfig)); }
         }
 
         #region Toggle Buttons Flags
@@ -51,35 +51,35 @@ namespace RgbLedRemote
         public bool IsOn
         {
             get => _isOn;
-            set { _isOn = value; OnPropertyChanged("IsOn"); }
+            set { _isOn = value; OnPropertyChanged(nameof(IsOn)); }
         }
 
         bool _isOff;
         public bool IsOff
         {
             get => _isOff;
-            set { _isOff = value; OnPropertyChanged("IsOff"); }
+            set { _isOff = value; OnPropertyChanged(nameof(IsOff)); }
         }
 
         bool _isStartBlink;
         public bool IsBlinking
         {
             get => _isStartBlink;
-            set { _isStartBlink = value; OnPropertyChanged("IsBlinking"); }
+            set { _isStartBlink = value; OnPropertyChanged(nameof(IsBlinking)); }
         }
 
         bool _isStartPulse;
         public bool IsPulsing
         {
             get => _isStartPulse;
-            set { _isStartPulse = value; OnPropertyChanged("IsPulsing"); }
+            set { _isStartPulse = value; OnPropertyChanged(nameof(IsPulsing)); }
         }
 
         bool _isStartRunningColors;
         public bool IsRunningColors
         {
             get => _isStartRunningColors;
-            set { _isStartRunningColors = value; OnPropertyChanged("IsRunningColors"); }
+            set { _isStartRunningColors = value; OnPropertyChanged(nameof(IsRunningColors)); }
         }
         #endregion
 
@@ -87,11 +87,7 @@ namespace RgbLedRemote
         public ServerItem SelectedServer
         {
             get => _selectedServer; 
-            set 
-            { 
-                _selectedServer = value;
-                OnPropertyChanged("SelectedServer"); 
-            }
+            set { _selectedServer = value; OnPropertyChanged(nameof(SelectedServer)); }
         }
 
         public ObservableCollection<ServerItem> HostList { get; set; }
