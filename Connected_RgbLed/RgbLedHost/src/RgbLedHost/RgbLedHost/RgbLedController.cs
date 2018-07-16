@@ -57,10 +57,10 @@ namespace RgbLedHost
             _rgbPwmLed.StartRunningColors(arrayColors, intervals);
         }
 
-        public void NetworkConnected()
+        public void SetColor(Netduino.Foundation.Color color)
         {
             _rgbPwmLed.Stop();
-            _rgbPwmLed.SetColor(Netduino.Foundation.Color.Green);
+            _rgbPwmLed.SetColor(color);
         }
 
         protected Netduino.Foundation.Color GetRandomColor()
