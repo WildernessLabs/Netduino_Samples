@@ -55,6 +55,9 @@
     <PackageReference Include="Xamarin.Android.Support.v4" Version="27.0.2.1" />
     <PackageReference Include="Xamarin.Android.Support.v7.CardView" Version="27.0.2.1" />
     <PackageReference Include="Xamarin.Android.Support.v7.MediaRouter" Version="27.0.2.1" />
+    <PackageReference Include="MapleClient">
+      <Version>0.2.0</Version>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MainActivity.cs" />
@@ -83,6 +86,11 @@
     <AndroidResource Include="Resources\mipmap-xxhdpi\launcher_foreground.png" />
     <AndroidResource Include="Resources\mipmap-xxxhdpi\Icon.png" />
     <AndroidResource Include="Resources\mipmap-xxxhdpi\launcher_foreground.png" />
+    <AndroidResource Include="Resources\drawable-xxxhdpi\icon_connect.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi\icon_connect.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\icon_connect.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\icon_connect.png" />
+    <AndroidResource Include="Resources\drawable\icon_connect.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\drawable\" />
@@ -93,7 +101,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PlantRemote\PlantRemote.csproj">
-      <Project>{E0205E2B-A3DD-4459-B0DA-A7A83F4E62C7}</Project>
+      <Project>{3539D476-892D-426D-B0DF-6E924A642195}</Project>
       <Name>PlantRemote</Name>
     </ProjectReference>
   </ItemGroup>

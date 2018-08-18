@@ -149,11 +149,14 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Xamarin.Forms" Version="3.1.0.697729" />
+    <PackageReference Include="MapleClient">
+      <Version>0.2.0</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <ItemGroup>
     <ProjectReference Include="..\PlantRemote\PlantRemote.csproj">
-      <Project>{E0205E2B-A3DD-4459-B0DA-A7A83F4E62C7}</Project>
+      <Project>{3539D476-892D-426D-B0DF-6E924A642195}</Project>
       <Name>PlantRemote</Name>
     </ProjectReference>
   </ItemGroup>

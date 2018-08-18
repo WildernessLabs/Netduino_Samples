@@ -1,14 +1,74 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:local="clr-namespace:PlantRemote"
-             x:Class="PlantRemote.MainPage">
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage 
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:PlantRemote"
+    x:Class="PlantRemote.MainPage"
+    BackgroundColor="White">
 
-    <StackLayout>
-        <!-- Place new controls here -->
-        <Label Text="Welcome to Xamarin.Forms!" 
-           HorizontalOptions="Center"
-           VerticalOptions="CenterAndExpand" />
-    </StackLayout>
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Color x:Key="ButtonActive">#23ABE3</Color>
+            <Color x:Key="ButtonInactive">#555</Color>
 
+            <Style x:Key="ButtonStyle" TargetType="Button">
+                <Setter Property="TextColor" Value="White" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="BorderRadius" Value="10" />
+                <Setter Property="BorderRadius" Value="10" />
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.Content>
+        <Grid>
+            <StackLayout Padding="30">
+                <Label Text="Plant soil humidity sensor" TextColor="Black" FontSize="Large" FontAttributes="Bold" />
+                <Label Text="Choose a plant:" TextColor="Black" Margin="0,10,0,10" />
+
+                <Grid>
+                    <Frame BackgroundColor="Black" HasShadow="false" Padding="1">
+                        <Frame BackgroundColor="White" HasShadow="false" Padding="0">
+                            <Grid Padding="10,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="40" />
+                                </Grid.ColumnDefinitions>
+
+                                <Picker ItemsSource="{Binding HostList}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding SelectedServer}" 
+                                    Title="Select a server" TextColor="Black" BackgroundColor="Transparent" VerticalOptions="Center" />
+
+                                <Image Grid.Column="1" Source="icon_connect" Scale="0.8" />
+                                <Button Command="{Binding ConnectCommand}" Grid.Column="1" BackgroundColor="Transparent" />
+                            </Grid>
+                        </Frame>
+                    </Frame>
+
+                    <Button IsVisible="{Binding IsEmpty}" Command="{Binding SearchServersCommand}" Text="Retry" 
+                        TextColor="White" FontAttributes="Bold" FontSize="Large" BackgroundColor="#23ABE3" />
+
+                    <Frame IsVisible="{Binding IsBusy}" BackgroundColor="White" HasShadow="false" Padding="0" Margin="1">
+                        <ActivityIndicator Color="Black" IsRunning="true" HorizontalOptions="Center" VerticalOptions="Center" />
+                    </Frame>
+                </Grid>
+
+                <Label Text="Soil Humidity Level" TextColor="Black" Margin="0,10,0,10" />
+
+                <ListView ItemsSource="{Binding LevelList}" BackgroundColor="Transparent" SeparatorVisibility="None">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <Frame HasShadow="false" Margin="0,2,0,2" Padding="10,0" BackgroundColor="#23ABE3">
+                                    <Grid>
+                                        <Label Text="{Binding Date}" TextColor="White" VerticalOptions="Center" />
+                                        <Label Text="{Binding Level}" TextColor="White" FontSize="Large" FontAttributes="Bold" VerticalOptions="Center" HorizontalOptions="End" />
+                                    </Grid>
+                                </Frame>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackLayout>
+        </Grid>
+    </ContentPage.Content>
 </ContentPage>
