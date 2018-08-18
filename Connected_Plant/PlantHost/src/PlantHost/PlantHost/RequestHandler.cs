@@ -41,7 +41,7 @@ namespace PlantHost
             Context.Response.ContentType = "application/json";
             Context.Response.StatusCode = 200;
             Hashtable result = new Hashtable { { "humidity", humidity.ToString() } };
-            Send();
+            Send(result);
         }
     }
 }
