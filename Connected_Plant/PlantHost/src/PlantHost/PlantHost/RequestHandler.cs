@@ -4,6 +4,7 @@ using Maple;
 using Microsoft.SPOT;
 using SecretLabs.NETMF.Hardware.Netduino;
 using SLH = SecretLabs.NETMF.Hardware;
+using System;
 
 namespace PlantHost
 {
@@ -26,7 +27,7 @@ namespace PlantHost
                 d7.Write(false);
             }
 
-            humidity = 100 - Map((sample / 5), 520, 930, 0, 100);
+            humidity = 100 - Map((sample / 5), 400, 1023, 0, 100);
             Debug.Print("humidity =" + humidity);
             StatusResponse();
         }
@@ -40,7 +41,11 @@ namespace PlantHost
         {
             Context.Response.ContentType = "application/json";
             Context.Response.StatusCode = 200;
-            Hashtable result = new Hashtable { { "humidity", humidity.ToString() } };
+            Hashtable result = new Hashtable
+            {
+                { "humidity", humidity > 100? 100 : (int)humidity },
+                { "date", DateTime.Now }
+            };
             Send(result);
         }
     }
