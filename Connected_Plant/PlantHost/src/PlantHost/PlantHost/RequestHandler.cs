@@ -44,7 +44,6 @@ namespace PlantHost
             Hashtable result = new Hashtable
             {
                 { "humidity", humidity > 100? 100 : (int)humidity },
-                { "date", DateTime.Now }
             };
             Send(result);
         }

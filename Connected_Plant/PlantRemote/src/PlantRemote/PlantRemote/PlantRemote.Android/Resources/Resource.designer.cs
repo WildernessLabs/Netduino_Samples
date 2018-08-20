@@ -2913,7 +2913,7 @@ namespace PlantRemote.Droid
 			public const int ic_vol_type_tv_light = 2130837771;
 			
 			// aapt resource value: 0x7f02010c
-			public const int icon_connect = 2130837772;
+			public const int icon_refresh = 2130837772;
 			
 			// aapt resource value: 0x7f02010d
 			public const int mr_button_connected_dark = 2130837773;
