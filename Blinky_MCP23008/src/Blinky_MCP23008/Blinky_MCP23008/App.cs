@@ -1,7 +1,5 @@
 using Microsoft.SPOT;
-using Microsoft.SPOT.Hardware;
 using Netduino.Foundation.ICs.IOExpanders.MCP23008;
-using SecretLabs.NETMF.Hardware.Netduino;
 using System.Threading;
 
 namespace Blinky_MCP23008
