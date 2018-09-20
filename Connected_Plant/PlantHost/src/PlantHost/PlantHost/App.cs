@@ -1,11 +1,14 @@
 ﻿using Maple;
 using Microsoft.SPOT;
+using Netduino.Foundation.LEDs;
 using Netduino.Foundation.Network;
+using SecretLabs.NETMF.Hardware.Netduino;
 
 namespace PlantHost
 {
     public class App
     {
+        RgbPwmLed rgbPwmLed;
         protected MapleServer _server;
 
         public App()
@@ -16,7 +19,18 @@ namespace PlantHost
 
         protected void InitializePeripherals()
         {
+            rgbPwmLed = new RgbPwmLed
+            (
+                PWMChannels.PWM_PIN_D11,
+                PWMChannels.PWM_PIN_D10,
+                PWMChannels.PWM_PIN_D9,
+                1.05f,
+                1.5f,
+                1.5f,
+                false
+            );
 
+            rgbPwmLed.SetColor(Netduino.Foundation.Color.Red);
         }
 
         protected void InitializeWebServer()
@@ -35,9 +49,8 @@ namespace PlantHost
 
         void InitializerNetworkConnected(object sender, EventArgs e)
         {
-            Debug.Print("InitializeNetwork()");
-
             _server.Start("PlantHost", Initializer.CurrentNetworkInterface.IPAddress);
+            rgbPwmLed.SetColor(Netduino.Foundation.Color.Green);
         }
     }
 }
