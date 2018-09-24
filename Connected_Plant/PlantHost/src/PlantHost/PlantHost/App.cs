@@ -21,9 +21,9 @@ namespace PlantHost
         {
             rgbPwmLed = new RgbPwmLed
             (
-                PWMChannels.PWM_PIN_D11,
-                PWMChannels.PWM_PIN_D10,
-                PWMChannels.PWM_PIN_D9,
+                PWMChannels.PWM_PIN_D6,
+                PWMChannels.PWM_PIN_D5,
+                PWMChannels.PWM_PIN_D3,
                 1.05f,
                 1.5f,
                 1.5f,
