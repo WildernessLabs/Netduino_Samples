@@ -1,14 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Maple;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace PlantRemote
 {
     public class PlantClient : MapleClient
     {
-        public async Task<int> GetHumidityAsync(ServerItem server)
+        public async Task<List<HumidityLog>> GetHumidityAsync(ServerItem server)
         {
             var client = new HttpClient
             {
@@ -18,11 +20,14 @@ namespace PlantRemote
 
             try
             {
-                var response = await client.GetAsync("PlantHumidity");
+                var response = await client.GetAsync("PlantHumidity", HttpCompletionOption.ResponseContentRead).ConfigureAwait(false);
                 if (response.IsSuccessStatusCode)
                 {
-                    var result = JObject.Parse(await response.Content.ReadAsStringAsync());
-                    return (result["humidity"].Value<int>());
+                    string jsonResponse = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    var result = JsonConvert.DeserializeObject<object>(jsonResponse);
+                    var result2 = JsonConvert.DeserializeObject<List<HumidityLog>>(result.ToString());
+
+                    return result2;
                 }
                 else
                 {
@@ -32,7 +37,7 @@ namespace PlantRemote
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine(ex.Message);
-                return -1;
+                return new List<HumidityLog>();
             }
         }
     }

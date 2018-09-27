@@ -50,7 +50,7 @@
                                 <Frame HasShadow="false" Margin="0,2,0,2" Padding="10,0" BackgroundColor="#23ABE3">
                                     <Grid>
                                         <Label Text="{Binding Date}" TextColor="White" VerticalOptions="Center" />
-                                        <Label Text="{Binding Level, StringFormat='{0}%'}" TextColor="White" FontAttributes="Bold" VerticalOptions="Center" HorizontalOptions="End" />
+                                        <Label Text="{Binding Humidity, StringFormat='{0}%'}" TextColor="White" FontAttributes="Bold" VerticalOptions="Center" HorizontalOptions="End" />
                                     </Grid>
                                 </Frame>
                             </ViewCell>

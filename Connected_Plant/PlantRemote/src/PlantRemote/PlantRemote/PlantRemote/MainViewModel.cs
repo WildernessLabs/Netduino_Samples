@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -15,21 +14,21 @@ namespace PlantRemote
         bool _isBusy;
         public bool IsBusy
         {
-            get { return _isBusy; }
+            get => _isBusy; 
             set { _isBusy = value; OnPropertyChanged(nameof(IsBusy)); }
         }
 
         bool _isRefreshing;
         public bool IsRefreshing
         {
-            get { return _isRefreshing; }
+            get => _isRefreshing;
             set { _isRefreshing = value; OnPropertyChanged(nameof(IsRefreshing)); }
         }
 
         bool _isEmpty;
         public bool IsEmpty
         {
-            get { return _isEmpty; }
+            get => _isEmpty;
             set { _isEmpty = value; OnPropertyChanged(nameof(IsEmpty)); }
         }
 
@@ -41,7 +40,7 @@ namespace PlantRemote
         }
 
         public ObservableCollection<ServerItem> ServerList { get; set; }
-        public ObservableCollection<HumidityLevel> LevelList { get; set; }
+        public ObservableCollection<HumidityLog> LevelList { get; set; }
 
         public Command GetHumidityCommand { private set; get; }
         public Command RefreshServersCommand { private set; get; }
@@ -50,7 +49,7 @@ namespace PlantRemote
         {
             plantClient = new PlantClient();
 
-            LevelList = new ObservableCollection<HumidityLevel>();
+            LevelList = new ObservableCollection<HumidityLog>();
             ServerList = new ObservableCollection<ServerItem>();
 
             GetHumidityCommand = new Command(async (s) => await GetHumidityCommandExecute());
@@ -91,17 +90,11 @@ namespace PlantRemote
             if (SelectedServer == null)
                 return;
 
-            int humitidy = -1;
-            while(humitidy == -1)
-            {
-                humitidy = await plantClient.GetHumidityAsync(SelectedServer);
-            }
+            LevelList.Clear();
 
-            LevelList.Insert(0, new HumidityLevel()
-            {
-                Date = DateTime.Now.ToString("hh:mm tt dd'/'MMM'/'yyyy"),
-                Level = humitidy
-            });
+            var humitidyLogs = await plantClient.GetHumidityAsync(SelectedServer);
+            foreach(var log in humitidyLogs)
+                LevelList.Insert(0, log);
 
             IsRefreshing = false;
         }
