@@ -1,6 +1,5 @@
 ﻿using MSH = Microsoft.SPOT.Hardware;
 using SLH = SecretLabs.NETMF.Hardware;
-using SLHN = SecretLabs.NETMF.Hardware.Netduino;
 using System.Threading;
 
 namespace PlantHost
