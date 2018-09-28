@@ -6,14 +6,23 @@
     x:Class="PlantRemote.MainPage"
     BackgroundColor="White">
 
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Color x:Key="TextColor">#555</Color>
+            <Color x:Key="HIGH">#2D9B27</Color>
+            <Color x:Key="MEDIUM">#BFA730</Color>
+            <Color x:Key="LOW">#BF3A30</Color>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
     <ContentPage.Content>
         <Grid>
             <StackLayout Padding="30">
-                <Label Text="Plant soil humidity sensor" TextColor="Black" FontSize="Large" FontAttributes="Bold" />
-                <Label Text="Choose a plant:" TextColor="Black" Margin="0,10,0,10" />
+                <Label Text="Plant Soil Humidity Monitor" TextColor="{StaticResource TextColor}" FontSize="Large" FontAttributes="Bold" />
+                <Label Text="Choose a plant:" TextColor="{StaticResource TextColor}" Margin="0,10,0,10" />
 
                 <Grid>
-                    <Frame BackgroundColor="Black" HasShadow="false" Padding="1">
+                    <Frame BackgroundColor="{StaticResource TextColor}" HasShadow="false" Padding="1">
                         <Frame BackgroundColor="White" HasShadow="false" Padding="0">
                             <Grid Padding="10,0">
                                 <Grid.ColumnDefinitions>
@@ -22,7 +31,7 @@
                                 </Grid.ColumnDefinitions>
 
                                 <Picker ItemsSource="{Binding ServerList}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding SelectedServer}" 
-                                    Title="Select a server" TextColor="Black" BackgroundColor="Transparent" VerticalOptions="Center" />
+                                    Title="Select a server" TextColor="{StaticResource TextColor}" BackgroundColor="Transparent" VerticalOptions="Center" />
 
                                 <Image Grid.Column="1" Source="icon_refresh.png" Scale="0.8" />
                                 <Button Command="{Binding RefreshServersCommand}" Grid.Column="1" BackgroundColor="Transparent" />
@@ -36,7 +45,7 @@
                     </Grid>
 
                     <Frame IsVisible="{Binding IsBusy}" BackgroundColor="White" HasShadow="false" Padding="0" Margin="1">
-                        <ActivityIndicator Color="Black" IsRunning="true" HorizontalOptions="Center" VerticalOptions="Center" />
+                        <ActivityIndicator Color="{StaticResource TextColor}" IsRunning="true" HorizontalOptions="Center" VerticalOptions="Center" />
                     </Frame>
                 </Grid>
 
@@ -48,9 +57,22 @@
                         <DataTemplate>
                             <ViewCell>
                                 <Frame HasShadow="false" Margin="0,2,0,2" Padding="10,0" BackgroundColor="#23ABE3">
+                                    <Frame.Triggers>
+                                        <DataTrigger TargetType="Frame" Binding="{Binding Level}" Value="1">
+                                            <Setter Property="BackgroundColor" Value="{StaticResource HIGH}" />
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Frame" Binding="{Binding Level}" Value="2">
+                                            <Setter Property="BackgroundColor" Value="{StaticResource MEDIUM}" />
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Frame" Binding="{Binding Level}" Value="3">
+                                            <Setter Property="BackgroundColor" Value="{StaticResource LOW}" />
+                                        </DataTrigger>
+                                    </Frame.Triggers>
+                                    
                                     <Grid>
                                         <Label Text="{Binding Date}" TextColor="White" VerticalOptions="Center" />
-                                        <Label Text="{Binding Humidity, StringFormat='{0}%'}" TextColor="White" FontAttributes="Bold" VerticalOptions="Center" HorizontalOptions="End" />
+                                        <Label Text="{Binding Humidity, StringFormat='{0}%'}" TextColor="White" FontSize="Large"
+                                            FontAttributes="Bold" VerticalOptions="Center" HorizontalOptions="End" />
                                     </Grid>
                                 </Frame>
                             </ViewCell>

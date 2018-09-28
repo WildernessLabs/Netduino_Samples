@@ -10,7 +10,7 @@ namespace PlantRemote
 {
     public class PlantClient : MapleClient
     {
-        public async Task<List<HumidityLog>> GetHumidityAsync(ServerItem server)
+        public async Task<List<HumidityModel>> GetHumidityAsync(ServerItem server)
         {
             var client = new HttpClient
             {
@@ -25,7 +25,7 @@ namespace PlantRemote
                 {
                     string jsonResponse = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                     var result = JsonConvert.DeserializeObject<object>(jsonResponse);
-                    var result2 = JsonConvert.DeserializeObject<List<HumidityLog>>(result.ToString());
+                    var result2 = JsonConvert.DeserializeObject<List<HumidityModel>>(result.ToString());
 
                     return result2;
                 }
@@ -37,7 +37,7 @@ namespace PlantRemote
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine(ex.Message);
-                return new List<HumidityLog>();
+                return new List<HumidityModel>();
             }
         }
     }
