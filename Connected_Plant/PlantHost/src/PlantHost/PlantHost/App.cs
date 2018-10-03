@@ -1,12 +1,12 @@
-﻿using Maple;
-using Microsoft.SPOT;
-using Netduino.Foundation.LEDs;
-using Netduino.Foundation.Network;
-using Netduino.Foundation.RTCs;
-using N = SecretLabs.NETMF.Hardware.Netduino;
 using System;
-using System.Collections;
+using Microsoft.SPOT;
 using System.Threading;
+using Netduino.Foundation.Network;
+using Maple;
+using Netduino.Foundation.LEDs;
+using System.Collections;
+using N = SecretLabs.NETMF.Hardware.Netduino;
+using Netduino.Foundation.RTCs;
 
 namespace PlantHost
 {
@@ -33,7 +33,6 @@ namespace PlantHost
         protected void InitializePeripherals()
         {
             _rtc = new DS3231(0x68, 100);
-            //_rtc.CurrentDateTime = new DateTime(2018, 9, 26, 11, 39, 0);
 
             _rgbPwmLed = new RgbPwmLed
             (
@@ -70,7 +69,7 @@ namespace PlantHost
             Initializer.NetworkConnected += InitializerNetworkConnected;
 
             timerCallback = new TimerCallback(TimerInterrupt);
-            timer = new Timer(timerCallback, null, TimeSpan.FromTicks(0), new TimeSpan(0,1,0));
+            timer = new Timer(timerCallback, null, TimeSpan.FromTicks(0), new TimeSpan(0, 1, 0));
             Thread.Sleep(Timeout.Infinite);
         }
 
@@ -85,7 +84,7 @@ namespace PlantHost
             HumidityLogs.Add(new HumidityLog()
             {
                 Date = _rtc.CurrentDateTime.ToString("hh:mm tt dd/MMM/yyyy"), 
-                Humidity = (int) _humiditySensor.Read()
+                Humidity = (int)_humiditySensor.Read()
             });
 
             Thread _animationThread = new Thread(() =>

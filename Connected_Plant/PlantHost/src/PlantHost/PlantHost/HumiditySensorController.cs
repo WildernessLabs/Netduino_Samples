@@ -1,4 +1,4 @@
-﻿using MSH = Microsoft.SPOT.Hardware;
+using MSH = Microsoft.SPOT.Hardware;
 using SLH = SecretLabs.NETMF.Hardware;
 using System.Threading;
 
