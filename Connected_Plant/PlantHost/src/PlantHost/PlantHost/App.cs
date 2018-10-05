@@ -28,6 +28,7 @@ namespace PlantHost
             InitializeWebServer();
 
             HumidityLogs = new ArrayList();
+            HumidityLogs = MicroSDController.Load();
         }
 
         protected void InitializePeripherals()
@@ -66,25 +67,27 @@ namespace PlantHost
         public void Run()
         {
             Initializer.InitializeNetwork();
-            Initializer.NetworkConnected += InitializerNetworkConnected;
+            Initializer.NetworkConnected += OnNetworkConnected;
         }
 
-        void InitializerNetworkConnected(object sender, EventArgs e)
+        private void OnNetworkConnected(object sender, EventArgs e)
         {
-            _timerCallback = new TimerCallback(TimerInterrupt);
+            _timerCallback = new TimerCallback(OnTimerInterrupt);
             _timer = new Timer(_timerCallback, null, TimeSpan.FromTicks(0), new TimeSpan(0, 1, 0));
 
             _server.Start("PlantHost", Initializer.CurrentNetworkInterface.IPAddress);
             _rgbPwmLed.SetColor(Netduino.Foundation.Color.Green);
         }
 
-        void TimerInterrupt(object state)
+        private void OnTimerInterrupt(object state)
         {
             HumidityLogs.Add(new HumidityLog()
             {
                 Date = _rtc.CurrentDateTime.ToString("hh:mm tt dd/MMM/yyyy"), 
                 Humidity = (int)_humiditySensor.Read()
             });
+
+            MicroSDController.Save(HumidityLogs);
 
             Thread _animationThread = new Thread(() =>
             {

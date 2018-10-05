@@ -37,6 +37,7 @@
     <Compile Include="App.cs" />
     <Compile Include="HumidityLog.cs" />
     <Compile Include="HumiditySensorController.cs" />
+    <Compile Include="MicroSDController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="RequestHandler.cs" />
@@ -73,6 +74,7 @@
     <Reference Include="SecretLabs.NETMF.Hardware.AnalogInput, Version=4.3.1.0, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="SecretLabs.NETMF.Hardware.Netduino, Version=4.3.1.0, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="System.Http" />
+    <Reference Include="System.IO" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
