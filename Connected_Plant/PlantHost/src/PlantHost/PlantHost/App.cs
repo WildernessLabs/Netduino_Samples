@@ -14,8 +14,8 @@ namespace PlantHost
     {
         public static ArrayList HumidityLogs;
 
-        protected Timer timer = null;
-        protected TimerCallback timerCallback = null;
+        protected Timer _timer = null;
+        protected TimerCallback _timerCallback = null;
 
         protected DS3231 _rtc;
         protected RgbPwmLed _rgbPwmLed;
@@ -67,14 +67,13 @@ namespace PlantHost
         {
             Initializer.InitializeNetwork();
             Initializer.NetworkConnected += InitializerNetworkConnected;
-
-            timerCallback = new TimerCallback(TimerInterrupt);
-            timer = new Timer(timerCallback, null, TimeSpan.FromTicks(0), new TimeSpan(0, 1, 0));
-            Thread.Sleep(Timeout.Infinite);
         }
 
         void InitializerNetworkConnected(object sender, EventArgs e)
         {
+            _timerCallback = new TimerCallback(TimerInterrupt);
+            _timer = new Timer(_timerCallback, null, TimeSpan.FromTicks(0), new TimeSpan(0, 1, 0));
+
             _server.Start("PlantHost", Initializer.CurrentNetworkInterface.IPAddress);
             _rgbPwmLed.SetColor(Netduino.Foundation.Color.Green);
         }
