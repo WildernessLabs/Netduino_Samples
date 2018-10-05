@@ -17,8 +17,7 @@ namespace PlantHost
         {
             Context.Response.ContentType = "application/json";
             Context.Response.StatusCode = 200;
-            string json = Json.NETMF.JsonSerializer.SerializeObject(App.HumidityLogs);
-            Send(json);
+            Send(App.HumidityLogs);
         }
     }
 }
