@@ -73,7 +73,7 @@ namespace PlantHost
         private void OnNetworkConnected(object sender, EventArgs e)
         {
             _timerCallback = new TimerCallback(OnTimerInterrupt);
-            _timer = new Timer(_timerCallback, null, TimeSpan.FromTicks(0), new TimeSpan(0, 1, 0));
+            _timer = new Timer(_timerCallback, null, TimeSpan.FromTicks(0), new TimeSpan(0, 30, 0));
 
             _server.Start("PlantHost", Initializer.CurrentNetworkInterface.IPAddress);
             _rgbPwmLed.SetColor(Netduino.Foundation.Color.Green);
