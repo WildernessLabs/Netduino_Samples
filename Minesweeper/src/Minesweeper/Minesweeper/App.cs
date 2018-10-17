@@ -16,11 +16,14 @@ namespace Minesweeper
         protected InputPort[] rowPorts = new InputPort[4];
         protected OutputPort[] columnPorts = new OutputPort[4];
 
+        protected bool[] mines;
+
         public App()
         {
+            mines = new bool[16];
 
             InitializePeripherals();
-            CyclingColumnVDD();
+            
         }
 
         protected void InitializePeripherals()
@@ -39,6 +42,49 @@ namespace Minesweeper
             columnPorts[3] = new OutputPort(SecretLabs.NETMF.Hardware.Netduino.Pins.GPIO_PIN_D7, false);
 
             currentColumn = 0;
+        }
+
+        void RenderMines()
+        {
+            int buttonIndex = 0;
+
+            graphics.Clear(true);
+            for (int row = 0; row < 2; row++)
+            {
+                for (int column = 0; column < 8; column++)
+                {
+                    graphics.DrawRectangle((column * 13) + 1, (row * 17) + 1, 12, 14, true, false);
+
+                    buttonIndex++;
+                    graphics.CurrentFont = new Font8x8();
+                    graphics.DrawText(108, (buttonIndex < 9)? 5 : 22, buttonIndex.ToString());
+
+                    graphics.Show();
+                    Thread.Sleep(100);
+                }
+            }
+
+            Thread.Sleep(1000);
+        }
+
+        void RefreshMines()
+        {
+            int buttonIndex = 0;
+            //graphics.Clear(true);
+            for (int row = 0; row < 2; row++)
+            {
+                for (int column = 0; column < 8; column++)
+                {
+                    graphics.DrawRectangle((column * 13) + 1, (row * 17) + 1, 12, 14, true, mines[buttonIndex]);
+                    buttonIndex++;
+                }
+            }
+
+            graphics.CurrentFont = new Font8x8();
+            graphics.DrawText(108, 5, "8");
+            graphics.DrawText(108, 22, "16");
+            graphics.Show();
+            Thread.Sleep(1000);
         }
 
         void CyclingColumnVDD()
@@ -110,19 +156,19 @@ namespace Minesweeper
 
                     if(currentButton != lastButton)
                     { 
-                        graphics.Clear(true);
-                        graphics.CurrentFont = new Font8x8();
+                        //graphics.Clear(true);
+                        //graphics.CurrentFont = new Font8x8();
                         if (currentButton != -1)
                         {
-                            graphics.DrawText(0, 0, "Button = " + currentButton);
+                            mines[currentButton - 1] = true;
+                            //    graphics.DrawText(0, 10, "Button = " + currentButton);
+                            //    graphics.Show();
+                            //    Thread.Sleep(1000);
                         }
                         else
                         {
-                            graphics.DrawText(0, 0, "Ready!");
-                        }
-                        graphics.Show();
-
-                        Thread.Sleep(1000);
+                            RefreshMines();
+                        }                        
                     }
 
                     lastButton = currentButton;
@@ -133,7 +179,8 @@ namespace Minesweeper
 
         public void Run()
         {
-
+            RenderMines();
+            CyclingColumnVDD();
         }
     }
 }
