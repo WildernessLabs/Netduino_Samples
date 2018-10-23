@@ -1,29 +1,33 @@
-using System;
-using Microsoft.SPOT;
 using Microsoft.SPOT.Hardware;
 using System.Threading;
 using Netduino.Foundation.Displays;
+using System;
+using Microsoft.SPOT;
 
 namespace Minesweeper
 {
     public class App
     {
-        protected int currentColumn;
-
         protected SSD1306 display;
         protected GraphicsLibrary graphics;
 
+        protected int currentColumn;
         protected InputPort[] rowPorts = new InputPort[4];
         protected OutputPort[] columnPorts = new OutputPort[4];
 
-        protected bool[] mines;
+        protected char[] options;
+        protected bool[] optionsSolved;
+        protected char[] optionsPossible;
+        protected int option1, option2;
 
         public App()
         {
-            mines = new bool[16];
+            options = new char[16];
+            optionsSolved = new bool[16];
+            optionsPossible = new char[8] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H' };
 
+            option1 = option2 = -1;
             InitializePeripherals();
-            
         }
 
         protected void InitializePeripherals()
@@ -44,47 +48,50 @@ namespace Minesweeper
             currentColumn = 0;
         }
 
-        void RenderMines()
+        void LoadMemoryBoard()
         {
-            int buttonIndex = 0;
+            for (int i = 0; i < 16; i++)
+                options[i] = ' ';
 
-            graphics.Clear(true);
-            for (int row = 0; row < 2; row++)
+            var r = new Random();
+            for (int i = 0; i < 8; i++)
             {
-                for (int column = 0; column < 8; column++)
+                bool isPlaced = false;
+                while(!isPlaced)
                 {
-                    graphics.DrawRectangle((column * 13) + 1, (row * 17) + 1, 12, 14, true, false);
+                    int index = r.Next(16);
+                    if(options[index] == ' ')
+                    {
+                        options[index] = optionsPossible[i];
+                        isPlaced = true;
+                    }
+                }
 
-                    buttonIndex++;
-                    graphics.CurrentFont = new Font8x8();
-                    graphics.DrawText(108, (buttonIndex < 9)? 5 : 22, buttonIndex.ToString());
-
-                    graphics.Show();
-                    Thread.Sleep(100);
+                isPlaced = false;
+                while (!isPlaced)
+                {
+                    int index = r.Next(16);
+                    if (options[index] == ' ')
+                    {
+                        options[index] = optionsPossible[i];
+                        isPlaced = true;
+                    }
                 }
             }
 
-            Thread.Sleep(1000);
+            for (int i = 0; i < 16; i++)
+                Debug.Print((i+1).ToString() + " " + options[i].ToString() + " ");
         }
 
-        void RefreshMines()
+        void StartGameAnimation()
         {
-            int buttonIndex = 0;
-            //graphics.Clear(true);
-            for (int row = 0; row < 2; row++)
-            {
-                for (int column = 0; column < 8; column++)
-                {
-                    graphics.DrawRectangle((column * 13) + 1, (row * 17) + 1, 12, 14, true, mines[buttonIndex]);
-                    buttonIndex++;
-                }
-            }
-
-            graphics.CurrentFont = new Font8x8();
-            graphics.DrawText(108, 5, "8");
-            graphics.DrawText(108, 22, "16");
-            graphics.Show();
+            DisplayText("MEMORY GAME", 20, 12);
             Thread.Sleep(1000);
+            DisplayText("Ready?", 40, 12);
+            Thread.Sleep(1000);
+            DisplayText("Start!", 40, 12);
+            Thread.Sleep(1000);
+            DisplayText("Select Button");
         }
 
         void CyclingColumnVDD()
@@ -149,26 +156,46 @@ namespace Minesweeper
                             break;
                     }
 
-                    if (currentColumn == 3)
-                        currentColumn = 0;
-                    else
-                        currentColumn++;
+                    currentColumn = (currentColumn == 3)? 0 : currentColumn + 1;
 
                     if(currentButton != lastButton)
-                    { 
-                        //graphics.Clear(true);
-                        //graphics.CurrentFont = new Font8x8();
+                    {
                         if (currentButton != -1)
                         {
-                            mines[currentButton - 1] = true;
-                            //    graphics.DrawText(0, 10, "Button = " + currentButton);
-                            //    graphics.Show();
-                            //    Thread.Sleep(1000);
+                            if (optionsSolved[currentButton - 1])
+                            {
+                                DisplayText("OPTION SOLVED", 12, 12);
+                                Thread.Sleep(1000);
+                            }
+                            else
+                            {
+                                if (option1 == -1)
+                                    option1 = currentButton - 1;
+                                else
+                                    option2 = currentButton - 1;
+
+                                DisplayText("Button = " + options[currentButton - 1], 24, 12);
+                                Thread.Sleep(1000);
+
+                                if (option2 != -1 && option1 != option2)
+                                {
+                                    if (options[option1] == options[option2])
+                                    {
+                                        DisplayText(options[option1] + " == " + options[option2], 40, 12);
+                                        optionsSolved[option1] = optionsSolved[option2] = true;
+                                    }
+                                    else
+                                        DisplayText(options[option1] + " != " + options[option2], 40, 12);
+
+                                    Thread.Sleep(1000);
+                                    option1 = option2 = -1;
+                                }
+                            }
                         }
                         else
                         {
-                            RefreshMines();
-                        }                        
+                            DisplayText("Select Button");
+                        }
                     }
 
                     lastButton = currentButton;
@@ -177,9 +204,19 @@ namespace Minesweeper
             thread.Start();
         }
 
+        protected void DisplayText(string text, int x = 12, int y = 12)
+        {
+            graphics.Clear(true);
+            graphics.CurrentFont = new Font8x12();
+            graphics.DrawRectangle(0, 0, 128, 32);
+            graphics.DrawText(x, y, text);
+            graphics.Show();
+        }
+
         public void Run()
         {
-            RenderMines();
+            LoadMemoryBoard();
+            StartGameAnimation();
             CyclingColumnVDD();
         }
     }
