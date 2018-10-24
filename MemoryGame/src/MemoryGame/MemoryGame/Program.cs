@@ -1,6 +1,6 @@
 using System.Threading;
 
-namespace Minesweeper
+namespace MemoryGame
 {
     public class Program
     {

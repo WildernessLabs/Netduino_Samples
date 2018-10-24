@@ -4,7 +4,7 @@ using Netduino.Foundation.Displays;
 using System;
 using Microsoft.SPOT;
 
-namespace Minesweeper
+namespace MemoryGame
 {
     public class App
     {
@@ -30,6 +30,22 @@ namespace Minesweeper
             InitializePeripherals();
         }
 
+        protected bool IsLevelComplete()
+        {
+            bool isComplete = true;
+
+            for(int i = 0; i < 16; i++)
+            {
+                if (!optionsSolved[i])
+                {
+                    isComplete = false;
+                    break;
+                }
+            }
+
+            return isComplete;
+        }
+
         protected void InitializePeripherals()
         {
             display = new SSD1306(0x3c, 400, SSD1306.DisplayType.OLED128x32);
@@ -48,7 +64,7 @@ namespace Minesweeper
             currentColumn = 0;
         }
 
-        void LoadMemoryBoard()
+        protected void LoadMemoryBoard()
         {
             for (int i = 0; i < 16; i++)
                 options[i] = ' ';
@@ -83,18 +99,18 @@ namespace Minesweeper
                 Debug.Print((i+1).ToString() + " " + options[i].ToString() + " ");
         }
 
-        void StartGameAnimation()
+        protected void StartGameAnimation()
         {
-            DisplayText("MEMORY GAME", 20, 12);
+            DisplayText("MEMORY GAME", 20);
             Thread.Sleep(1000);
-            DisplayText("Ready?", 40, 12);
+            DisplayText("Ready?", 40);
             Thread.Sleep(1000);
-            DisplayText("Start!", 40, 12);
+            DisplayText("Start!", 40);
             Thread.Sleep(1000);
             DisplayText("Select Button");
         }
 
-        void CyclingColumnVDD()
+        protected void CyclingColumnVDD()
         {
             Thread thread = new Thread(()=> 
             {
@@ -164,7 +180,7 @@ namespace Minesweeper
                         {
                             if (optionsSolved[currentButton - 1])
                             {
-                                DisplayText("OPTION SOLVED", 12, 12);
+                                DisplayText("Button "+ options[currentButton - 1] + " Found", 8);
                                 Thread.Sleep(1000);
                             }
                             else
@@ -174,18 +190,18 @@ namespace Minesweeper
                                 else
                                     option2 = currentButton - 1;
 
-                                DisplayText("Button = " + options[currentButton - 1], 24, 12);
+                                DisplayText("Button = " + options[currentButton - 1], 24);
                                 Thread.Sleep(1000);
 
                                 if (option2 != -1 && option1 != option2)
                                 {
                                     if (options[option1] == options[option2])
                                     {
-                                        DisplayText(options[option1] + " == " + options[option2], 40, 12);
+                                        DisplayText(options[option1] + " == " + options[option2], 40);
                                         optionsSolved[option1] = optionsSolved[option2] = true;
                                     }
                                     else
-                                        DisplayText(options[option1] + " != " + options[option2], 40, 12);
+                                        DisplayText(options[option1] + " != " + options[option2], 40);
 
                                     Thread.Sleep(1000);
                                     option1 = option2 = -1;
@@ -194,7 +210,16 @@ namespace Minesweeper
                         }
                         else
                         {
-                            DisplayText("Select Button");
+                            if (IsLevelComplete())
+                            {
+                                DisplayText("You Win!", 32);
+                                LoadMemoryBoard();
+                                StartGameAnimation();
+                            }
+                            else
+                            {
+                                DisplayText("Select Button");
+                            }
                         }
                     }
 
@@ -204,12 +229,12 @@ namespace Minesweeper
             thread.Start();
         }
 
-        protected void DisplayText(string text, int x = 12, int y = 12)
+        protected void DisplayText(string text, int x = 12)
         {
             graphics.Clear(true);
             graphics.CurrentFont = new Font8x12();
             graphics.DrawRectangle(0, 0, 128, 32);
-            graphics.DrawText(x, y, text);
+            graphics.DrawText(x, 12, text);
             graphics.Show();
         }
 
