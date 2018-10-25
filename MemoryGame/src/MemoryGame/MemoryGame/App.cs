@@ -213,6 +213,7 @@ namespace MemoryGame
                             if (IsLevelComplete())
                             {
                                 DisplayText("You Win!", 32);
+                                Thread.Sleep(1000);
                                 LoadMemoryBoard();
                                 StartGameAnimation();
                             }
