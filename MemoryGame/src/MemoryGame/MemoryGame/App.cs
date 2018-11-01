@@ -2,7 +2,6 @@ using Microsoft.SPOT.Hardware;
 using System.Threading;
 using Netduino.Foundation.Displays;
 using System;
-using Microsoft.SPOT;
 
 namespace MemoryGame
 {
@@ -69,34 +68,31 @@ namespace MemoryGame
             for (int i = 0; i < 16; i++)
                 options[i] = ' ';
 
-            var r = new Random();
             for (int i = 0; i < 8; i++)
             {
-                bool isPlaced = false;
-                while(!isPlaced)
-                {
-                    int index = r.Next(16);
-                    if(options[index] == ' ')
-                    {
-                        options[index] = optionsPossible[i];
-                        isPlaced = true;
-                    }
-                }
-
-                isPlaced = false;
-                while (!isPlaced)
-                {
-                    int index = r.Next(16);
-                    if (options[index] == ' ')
-                    {
-                        options[index] = optionsPossible[i];
-                        isPlaced = true;
-                    }
-                }
+                PlaceCharacter(i);
+                PlaceCharacter(i);
             }
 
-            for (int i = 0; i < 16; i++)
-                Debug.Print((i+1).ToString() + " " + options[i].ToString() + " ");
+            // Uncomment to print all board values
+            // for (int i = 0; i < 16; i++)
+            //    Debug.Print((i+1).ToString() + " " + options[i].ToString() + " ");
+        }
+
+        protected void PlaceCharacter(int i)
+        {
+            var r = new Random();
+            bool isPlaced = false;
+            
+            while (!isPlaced)
+            {
+                int index = r.Next(16);
+                if (options[index] == ' ')
+                {
+                    options[index] = optionsPossible[i];
+                    isPlaced = true;
+                }
+            }
         }
 
         protected void StartGameAnimation()
