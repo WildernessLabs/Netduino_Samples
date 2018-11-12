@@ -3,17 +3,20 @@ using Microsoft.SPOT.Hardware;
 using N = SecretLabs.NETMF.Hardware.Netduino;
 using Netduino.Foundation.Audio;
 using System.Threading;
+using Netduino.Foundation.LEDs;
 
 namespace Piano
 {
     public class App
     {
-        InputPort[] pianoKeys = new InputPort[8];
-        float[] notes = new float[] { 261.6f, 293.7f, 329.6f, 349.2f, 392.0f, 440.0f, 493.9f, 523.3f };
-                                    //C4    , D4    , E4    , F4    , G4    , A4    , B4    , C5
+        Led onboardLed;
 
         PiezoSpeaker[] speakers = new PiezoSpeaker[3];
         bool[] isSpeakerPlaying = new bool[3];
+
+        InputPort[] pianoKeys = new InputPort[8];
+        float[] notes = new float[] { 261.6f, 293.7f, 329.6f, 349.2f, 392.0f, 440.0f, 493.9f, 523.3f };
+                                    //C4    , D4    , E4    , F4    , G4    , A4    , B4    , C5        
 
         public App()
         {
@@ -34,6 +37,8 @@ namespace Piano
             speakers[0] = new PiezoSpeaker(Cpu.PWMChannel.PWM_2);
             speakers[1] = new PiezoSpeaker(Cpu.PWMChannel.PWM_3);
             speakers[2] = new PiezoSpeaker(Cpu.PWMChannel.PWM_5);
+
+            onboardLed = new Led(N.Pins.ONBOARD_LED);
 
             isSpeakerPlaying[0] = isSpeakerPlaying[1] = isSpeakerPlaying[2] = false;
         }
@@ -68,14 +73,13 @@ namespace Piano
                                 speakers[speakersPlaying].PlayTone(notes[i]);
                                 speakersPlaying++;
                             }
-                            else
+                            else if (speakersPlaying > 0)
                             {
-                                if (speakersPlaying > 0)
-                                {
-                                    speakers[speakersPlaying - 1].StopTone();
-                                    speakersPlaying--;
-                                }
+                                speakers[speakersPlaying - 1].StopTone();
+                                speakersPlaying--;
                             }
+
+                            onboardLed.IsOn = (speakersPlaying > 0);
                         }
                     }
 
