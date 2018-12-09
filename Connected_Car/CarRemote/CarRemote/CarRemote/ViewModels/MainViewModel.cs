@@ -15,6 +15,7 @@ namespace CarRemote
     {
         CarClient carClient;
 
+        #region Property/Fields
         bool _isConnected;
         public bool IsConnected
         {
@@ -81,6 +82,7 @@ namespace CarRemote
         public ObservableCollection<ServerItem> ServerList { get; set; }
 
         public Command RefreshServersCommand { private set; get; }
+        #endregion
 
         public MainViewModel()
         {
@@ -122,6 +124,51 @@ namespace CarRemote
             
 
             IsBusy = false;
+        }
+
+        public async Task SendCommandAsync(string command)
+        {
+            bool isSuccessful = false;
+            Status = "Sending Command...";
+
+            switch (command)
+            {
+                case CommandConstants.STOP:
+                    if (isSuccessful = await carClient.StopAsync(SelectedServer))
+                        IsButtonUpPressed = IsButtonDownPressed = IsButtonLeftPressed = IsButtonRightPressed = false;
+                    break;
+
+                case CommandConstants.TURN_LEFT:
+                    if (isSuccessful = await carClient.TurnLeftAsync(SelectedServer))
+                        IsButtonLeftPressed = true;
+                    break;
+
+                case CommandConstants.TURN_RIGHT:
+                    if (isSuccessful = await carClient.TurnRightAsync(SelectedServer))
+                        IsButtonRightPressed = true;
+                    break;
+
+                case CommandConstants.MOVE_FORWARD:
+                    if (isSuccessful = await carClient.MoveForwardAsync(SelectedServer))
+                        IsButtonUpPressed = true;
+                    break;
+
+                case CommandConstants.MOVE_BACKWARD:
+                    if (isSuccessful = await carClient.MoveBackwardAsync(SelectedServer))
+                        IsButtonDownPressed = true;
+                    break;
+            }
+
+            if (isSuccessful)
+            {
+                Status = "Connected";
+                IsBusy = false;
+            }
+            else
+            {
+                IsConnected = false;
+                await GetServersAsync();
+            }
         }
 
         #region INotifyPropertyChanged Implementation

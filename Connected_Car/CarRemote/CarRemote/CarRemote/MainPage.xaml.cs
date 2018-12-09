@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace CarRemote
@@ -17,44 +13,44 @@ namespace CarRemote
             BindingContext = vm = new MainViewModel();
         }
 
-        private void BtnUpPressed(object sender, EventArgs e)
+        private async void BtnUpPressed(object sender, EventArgs e)
         {
-            vm.IsButtonUpPressed = true;
+            await vm.SendCommandAsync(CommandConstants.MOVE_FORWARD);
         }
 
-        private void BtnUpReleased(object sender, EventArgs e)
+        private async void BtnUpReleased(object sender, EventArgs e)
         {
-            vm.IsButtonUpPressed = false;
+            await vm.SendCommandAsync(CommandConstants.STOP);
         }
 
-        private void BtnDownPressed(object sender, EventArgs e)
+        private async void BtnDownPressed(object sender, EventArgs e)
         {
-            vm.IsButtonDownPressed = true;
+            await vm.SendCommandAsync(CommandConstants.MOVE_BACKWARD);
         }
 
-        private void BtnDownReleased(object sender, EventArgs e)
+        private async void BtnDownReleased(object sender, EventArgs e)
         {
-            vm.IsButtonDownPressed = false;
+            await vm.SendCommandAsync(CommandConstants.STOP);
         }
 
-        private void BtnLeftPressed(object sender, EventArgs e)
+        private async void BtnLeftPressed(object sender, EventArgs e)
         {
-            vm.IsButtonLeftPressed = true;
+            await vm.SendCommandAsync(CommandConstants.TURN_LEFT);
         }
 
-        private void BtnLeftReleased(object sender, EventArgs e)
+        private async void BtnLeftReleased(object sender, EventArgs e)
         {
-            vm.IsButtonLeftPressed = false;
+            await vm.SendCommandAsync(CommandConstants.STOP);
         }
 
-        private void BtnRightPressed(object sender, EventArgs e)
+        private async void BtnRightPressed(object sender, EventArgs e)
         {
-            vm.IsButtonRightPressed = true;
+            await vm.SendCommandAsync(CommandConstants.TURN_RIGHT);
         }
 
-        private void BtnRightReleased(object sender, EventArgs e)
+        private async void BtnRightReleased(object sender, EventArgs e)
         {
-            vm.IsButtonRightPressed = false;
+            await vm.SendCommandAsync(CommandConstants.STOP);
         }
 
         protected override void OnAppearing()

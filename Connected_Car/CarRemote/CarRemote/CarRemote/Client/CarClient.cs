@@ -1,40 +1,33 @@
 ﻿using Maple;
-using System;
-using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace CarRemote.Client
 {
     public class CarClient : MapleClient
     {
-        public async Task MoveAsync(ServerItem server)
+        public async Task<bool> StopAsync(ServerItem server)
         {
-            var client = new HttpClient
-            {
-                BaseAddress = new Uri("http://" + server.IpAddress + "/"),
-                Timeout = TimeSpan.FromSeconds(ListenTimeout)
-            };
+            return (await SendCommandAsync(CommandConstants.STOP, server.IpAddress));
+        }
 
-            try
-            {
-                var response = await client.GetAsync("PlantHumidity", HttpCompletionOption.ResponseContentRead);
-                if (response.IsSuccessStatusCode)
-                {
-                    //string jsonResponse = await response.Content.ReadAsStringAsync();
-                    //var result = JsonConvert.DeserializeObject<List<HumidityLog>>(jsonResponse);
+        public async Task<bool> TurnLeftAsync(ServerItem server)
+        {
+            return (await SendCommandAsync(CommandConstants.TURN_LEFT, server.IpAddress));
+        }
 
-                    return;
-                }
-                else
-                {
-                    throw new InvalidOperationException("Could not connect to device");
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                return;
-            }
+        public async Task<bool> TurnRightAsync(ServerItem server)
+        {
+            return (await SendCommandAsync(CommandConstants.TURN_RIGHT, server.IpAddress));
+        }
+
+        public async Task<bool> MoveForwardAsync(ServerItem server)
+        {
+            return (await SendCommandAsync(CommandConstants.MOVE_FORWARD, server.IpAddress));
+        }
+
+        public async Task<bool> MoveBackwardAsync(ServerItem server)
+        {
+            return (await SendCommandAsync(CommandConstants.MOVE_BACKWARD, server.IpAddress));
         }
     }
 }
