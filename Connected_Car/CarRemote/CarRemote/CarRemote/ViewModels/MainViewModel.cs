@@ -162,11 +162,10 @@ namespace CarRemote
             if (isSuccessful)
             {
                 Status = "Connected";
-                IsBusy = false;
             }
             else
-            {
-                IsConnected = false;
+            {   
+                IsConnected = IsButtonUpPressed = IsButtonDownPressed = IsButtonLeftPressed = IsButtonRightPressed = false;
                 await GetServersAsync();
             }
         }

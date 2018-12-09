@@ -79,9 +79,9 @@
                     <Grid Grid.Column="1" RowSpacing="10">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*" />
-                            <RowDefinition Height="2*" />
-                            <RowDefinition Height="2*" />
                             <RowDefinition Height="3*" />
+                            <RowDefinition Height="2*" />
+                            <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
 
@@ -106,7 +106,7 @@
                                         </Grid.ColumnDefinitions>
 
                                         <Picker Grid.Column="0" ItemsSource="{Binding ServerList}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding SelectedServer}" 
-                                            TextColor="#1a1a1a" BackgroundColor="Transparent" VerticalOptions="Center" />
+                                            FontSize="Small" TextColor="#1a1a1a" BackgroundColor="Transparent" VerticalOptions="Center" />
 
                                         <Image Grid.Column="1" Source="icon_refresh.png" Scale="0.8" Opacity="0.75" />
                                         <Button Grid.Column="1" Command="{Binding RefreshServersCommand}" BackgroundColor="Transparent" />

@@ -11,8 +11,6 @@ namespace CarHost
         {
             _motor1 = motor1;
             _motor2 = motor2;
-
-            //TurnRight();
         }
 
         public void Stop()
