@@ -14,13 +14,13 @@ namespace ChristmasCounter
 
         public App()
         {
-
             InitializePeripherals();
         }
 
         protected void InitializePeripherals()
         {
             _rtc = new DS3231(0x68, 100);
+            _rtc.CurrentDateTime = new DateTime(2018, 12, 17, 22, 41, 0);
 
             _lcd = new Lcd2004
             (
@@ -39,12 +39,24 @@ namespace ChristmasCounter
 
         public void Run()
         {
+            DateTime ChristmasDate = new DateTime(_rtc.CurrentDateTime.Year, 12, 25);
+
             _lcd.WriteLine("Current Date:", 0);
             _lcd.WriteLine(_rtc.CurrentDateTime.Month + "/" + _rtc.CurrentDateTime.Day + "/" + "2018", 1);
             _lcd.WriteLine("Christmas Countdown:", 2);
-            _lcd.WriteLine("14 Days to go!", 3);
 
-            Thread.Sleep(Timeout.Infinite);
+            while (true)
+            {
+                var date = ChristmasDate.Subtract(_rtc.CurrentDateTime);
+                UpdateCountdown(date);
+                Thread.Sleep(1000);
+            }            
+        }
+
+        protected void UpdateCountdown(TimeSpan date)
+        {
+            _lcd.ClearLine(3);
+            _lcd.WriteLine(date.Days+"d"+ date.Hours + "h" + date.Minutes + "m" + date.Seconds + "s to go!", 3);
         }
     }
 }
