@@ -20,7 +20,8 @@ namespace ChristmasCounter
         protected void InitializePeripherals()
         {
             _rtc = new DS3231(0x68, 100);
-            _rtc.CurrentDateTime = new DateTime(2018, 12, 17, 22, 41, 0);
+            // Run once to adjust the time on the RTC
+            // _rtc.CurrentDateTime = new DateTime(2018, 12, 17, 22, 41, 0);
 
             _lcd = new Lcd2004
             (
