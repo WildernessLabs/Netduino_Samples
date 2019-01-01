@@ -4,43 +4,43 @@ namespace CarHost
 {
     public class CarController
     {
-        protected HBridgeMotor _motor1;
-        protected HBridgeMotor _motor2;
+        protected HBridgeMotor _motorLeft;
+        protected HBridgeMotor _motorRight;
 
-        public CarController(HBridgeMotor motor1, HBridgeMotor motor2)
+        public CarController(HBridgeMotor motorLeft, HBridgeMotor motorRight)
         {
-            _motor1 = motor1;
-            _motor2 = motor2;
+            _motorLeft = motorLeft;
+            _motorRight = motorRight;
         }
 
         public void Stop()
         {
-            _motor1.Speed = 0f;
-            _motor2.Speed = 0f;
+            _motorLeft.Speed = 0f;
+            _motorRight.Speed = 0f;
         }
 
         public void TurnLeft()
         {
-            _motor1.Speed = 1f;
-            _motor2.Speed = -1f;
+            _motorLeft.Speed = 1f;
+            _motorRight.Speed = -1f;
         }
 
         public void TurnRight()
         {
-            _motor1.Speed = -1f;
-            _motor2.Speed = 1f;
+            _motorLeft.Speed = -1f;
+            _motorRight.Speed = 1f;
         }
 
         public void MoveForward()
         {
-            _motor1.Speed = -1f;
-            _motor2.Speed = -1f;
+            _motorLeft.Speed = -1f;
+            _motorRight.Speed = -1f;
         }
 
         public void MoveBackward()
         {
-            _motor1.Speed = 1f;
-            _motor2.Speed = 1f;
+            _motorLeft.Speed = 1f;
+            _motorRight.Speed = 1f;
         }
     }
 }

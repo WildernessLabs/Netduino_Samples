@@ -1,6 +1,5 @@
 using Microsoft.SPOT;
 using N = SecretLabs.NETMF.Hardware.Netduino;
-using Netduino.Foundation.Sensors.Distance;
 using Netduino.Foundation.Motors;
 using Maple;
 using Netduino.Foundation.Network;
@@ -9,9 +8,8 @@ namespace CarHost
 {
     public class App
     {
-        protected HCSR04 _HCSR04;
-        protected HBridgeMotor _motor1;
-        protected HBridgeMotor _motor2;
+        protected HBridgeMotor motorLeft;
+        protected HBridgeMotor motorRight;
         protected MapleServer _mapleServer;
         protected CarController _carController;
 
@@ -23,12 +21,9 @@ namespace CarHost
 
         protected void InitializePeripherals()
         {
-            _HCSR04 = new HCSR04(N.Pins.GPIO_PIN_D12, N.Pins.GPIO_PIN_D11);
-            _HCSR04.DistanceDetected += OnDistanceDetected;
-
-            _motor1 = new HBridgeMotor(N.PWMChannels.PWM_PIN_D3, N.PWMChannels.PWM_PIN_D5, N.Pins.GPIO_PIN_D4);
-            _motor2 = new HBridgeMotor(N.PWMChannels.PWM_PIN_D6, N.PWMChannels.PWM_PIN_D10, N.Pins.GPIO_PIN_D7);
-            _carController = new CarController(_motor1, _motor2);
+            motorLeft = new HBridgeMotor(N.PWMChannels.PWM_PIN_D3, N.PWMChannels.PWM_PIN_D5, N.Pins.GPIO_PIN_D4);
+            motorRight = new HBridgeMotor(N.PWMChannels.PWM_PIN_D6, N.PWMChannels.PWM_PIN_D10, N.Pins.GPIO_PIN_D7);
+            _carController = new CarController(motorLeft, motorRight);
         }
 
         protected void InitializeWebServer()
@@ -42,16 +37,6 @@ namespace CarHost
 
             _mapleServer = new MapleServer();
             _mapleServer.AddHandler(handler);
-        }
-
-        protected void OnDistanceDetected(object sender, DistanceEventArgs e)
-        {
-            if (e.Distance == -1 || e.Distance > 30)
-                _carController.MoveForward();
-            else
-                _carController.MoveBackward();
-
-            Debug.Print("current distance: " + e.Distance);
         }
 
         public void Run()

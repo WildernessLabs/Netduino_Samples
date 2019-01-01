@@ -6,7 +6,7 @@
 
     <ContentPage.Content>
         <Grid>
-            <Frame BackgroundColor="#dcdcdc">
+            <Frame BackgroundColor="#dcdcdc" Padding="10">
                 <Grid BackgroundColor="#1a1a1a">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
@@ -96,19 +96,19 @@
                             <Image Source="img_netduino.png" Aspect="AspectFit" />
                         </Frame>
 
-                        <Frame Grid.Row="3" BackgroundColor="#dddddd" HasShadow="False" Padding="10" CornerRadius="10">
+                        <Frame Grid.Row="3" BackgroundColor="#dddddd" HasShadow="False" Padding="5" CornerRadius="10">
                             <Frame BackgroundColor="#808080" HasShadow="False" Padding="5" CornerRadius="10">
                                 <Frame Grid.Row="3" BackgroundColor="#dddddd" HasShadow="False" Padding="0" CornerRadius="10">
-                                    <Grid Padding="10,0">
+                                    <Grid Padding="5,0">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*" />
-                                            <ColumnDefinition Width="40" />
+                                            <ColumnDefinition Width="30" />
                                         </Grid.ColumnDefinitions>
 
                                         <Picker Grid.Column="0" ItemsSource="{Binding ServerList}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding SelectedServer}" 
                                             FontSize="Small" TextColor="#1a1a1a" BackgroundColor="Transparent" VerticalOptions="Center" />
 
-                                        <Image Grid.Column="1" Source="icon_refresh.png" Scale="0.8" Opacity="0.75" />
+                                        <Image Grid.Column="1" Source="icon_refresh.png" Opacity="0.75" />
                                         <Button Grid.Column="1" Command="{Binding RefreshServersCommand}" BackgroundColor="Transparent" />
                                     </Grid>
                                 </Frame>
@@ -133,9 +133,9 @@
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
 
-                            <Label Grid.Column="0" Text="{Binding Status}" TextColor="White" HorizontalTextAlignment="End" VerticalTextAlignment="Center" />
+                            <Label Grid.Column="0" Text="{Binding Status}" TextColor="White" FontSize="Small" HorizontalTextAlignment="End" VerticalTextAlignment="Center" />
 
-                            <Frame Grid.Column="1" BackgroundColor="Green" HasShadow="False" CornerRadius="25" Padding="0"
+                            <Frame Grid.Column="1" BackgroundColor="Green" HasShadow="False" CornerRadius="8" Padding="0"
                                 WidthRequest="15" HeightRequest="15" HorizontalOptions="Center" VerticalOptions="Center">
                                 <Frame.Triggers>
                                     <DataTrigger TargetType="Frame" Binding="{Binding IsConnected}" Value="true">
