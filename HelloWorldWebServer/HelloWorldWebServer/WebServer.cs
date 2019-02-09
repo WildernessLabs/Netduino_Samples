@@ -46,7 +46,7 @@ namespace HelloWorldWebServer
                         string request = new string(Encoding.UTF8.GetChars(buffer));
                         Debug.Print(request);
                         //Compose a response
-                        string response = "Hello World";
+                        string response = "Hello World from HelloWorldWebServer!";
                         string header = "HTTP/1.0 200 OK\r\nContent-Type: text; charset=utf-8\r\nContent-Length: " + response.Length.ToString() + "\r\nConnection: close\r\n\r\n";
                         clientSocket.Send(Encoding.UTF8.GetBytes(header), header.Length, SocketFlags.None);
                         clientSocket.Send(Encoding.UTF8.GetBytes(response), response.Length, SocketFlags.None);
