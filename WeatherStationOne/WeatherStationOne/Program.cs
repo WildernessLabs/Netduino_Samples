@@ -60,8 +60,6 @@ namespace WeatherStationOne
                     delay = bmp180.startPressure(3);
                     Thread.Sleep(delay);
                     bmp180.getPressure(&pressure, temp);
-                    Random rnd = new Random();
-                    int tempX = rnd.NextBytes(20, 100);
                 }
 
                 double normalizedPressure = bmp180.sealevel(pressure, 350 /* meters */);
