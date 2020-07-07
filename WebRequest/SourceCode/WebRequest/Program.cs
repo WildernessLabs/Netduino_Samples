@@ -13,20 +13,18 @@ namespace Blinky
 	{
 		public static void Main()
 		{
-			
 			App app = new App ();
 
 			// Start up the app
 			new Thread(app.Run).Start();
 
-			OutputPort led = new OutputPort(Pins.ONBOARD_LED, false);
-
-			while (app.IsRunning)
+            Thread.Sleep(500); // sleep for 500ms
+            while (app.IsRunning)
 			{
-				led.Write(true); // turn on the LED
-				Thread.Sleep(250); // sleep for 250ms
-				led.Write(false); // turn off the LED
-				Thread.Sleep(250); // sleep for 250ms
+				app.led.Write(true); // turn on the LED
+				Thread.Sleep(app.time); // sleep for 500ms
+				app.led.Write(false); // turn off the LED
+				Thread.Sleep(app.time); // sleep for 500ms
 
 			}
 
@@ -40,23 +38,36 @@ namespace Blinky
 	{
 		NetworkInterface[] _interfaces;
 
+        public OutputPort led;
+        public int time = 250;
 
-		public bool IsRunning { get; set; }
+        public bool IsRunning { get; set; }
 
 		public void Run()
 		{
             this.IsRunning = true;
+            led = new OutputPort(Pins.ONBOARD_LED, false);
 
-			// wait for network hardware to spinup
-			//Thread.Sleep(10000);
+            // wait for network hardware to spinup
+            //Thread.Sleep(10000);
 
-			bool goodToGo = InitializeNetwork ();
+            bool goodToGo = InitializeNetwork ();
 
 			if (goodToGo) {
 				MakeWebRequest ("http://google.com");
-			}
 
-			this.IsRunning = false;
+                while (this.IsRunning)
+                {
+                    Thread.Sleep(1000); // sleep for 250ms
+                    time -= 10;
+                    if ( time == 0 )
+                    {
+                        time = 250;
+                    }
+                }
+            }
+
+            this.IsRunning = false;
 		}
 
 
